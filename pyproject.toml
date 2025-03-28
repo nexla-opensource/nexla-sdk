@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nexla-sdk"
+version = "0.1.0"
+description = "A Python SDK for the Nexla API"
+readme = "README.md"
+authors = [
+    {name = "Nexla", email = "support@nexla.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.6"
+dependencies = [
+    "requests>=2.25.0",
+    "pydantic>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/nexla/nexla-sdk"
+Documentation = "https://github.com/nexla/nexla-sdk"
+"Bug Tracker" = "https://github.com/nexla/nexla-sdk/issues" 
