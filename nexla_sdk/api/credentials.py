@@ -1,31 +1,47 @@
 """
 Credentials API endpoints
 """
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 
 from .base import BaseAPI
-from ..models.credentials import Credential, CredentialList, CredentialExpanded
+from ..models.access import AccessRole
+from ..models.credentials import (
+    Credential, 
+    CredentialList, 
+    CredentialExpanded, 
+    CredentialCreate,
+    CredentialUpdate,
+    ProbeResult,
+    DirectoryTree,
+    DataSample
+)
 
 
 class CredentialsAPI(BaseAPI):
-    """API client for credentials endpoints"""
+    """API client for data credentials endpoints"""
     
-    def list(self, limit: int = 100, offset: int = 0) -> CredentialList:
+    def list(self, access_role: Optional[AccessRole] = None, credentials_type: Optional[str] = None) -> List[Credential]:
         """
-        List credentials
+        List data credentials
         
         Args:
-            limit: Number of items to return
-            offset: Pagination offset
+            access_role: Filter by access role
+            credentials_type: Filter by credentials type
             
         Returns:
-            CredentialList containing credentials
+            List of Credential objects
         """
-        return self._get("/credentials", params={"limit": limit, "offset": offset}, model_class=CredentialList)
+        params = {}
+        if access_role:
+            params["access_role"] = access_role.value
+        if credentials_type:
+            params["credentials_type"] = credentials_type
+            
+        return self._get("/data_credentials", params=params)
         
-    def get(self, credential_id: str, expand: bool = False) -> Credential:
+    def get(self, credential_id: Union[str, int], expand: bool = False) -> Union[Credential, CredentialExpanded]:
         """
-        Get a credential by ID
+        Get a data credential by ID
         
         Args:
             credential_id: Credential ID
@@ -34,15 +50,15 @@ class CredentialsAPI(BaseAPI):
         Returns:
             Credential object
         """
-        path = f"/credentials/{credential_id}"
+        path = f"/data_credentials/{credential_id}"
         if expand:
             path += "?expand=1"
             
-        return self._get(path, model_class=Credential if not expand else CredentialExpanded)
+        return self._get(path, model_class=CredentialExpanded if expand else Credential)
         
-    def create(self, credential_data: Dict[str, Any]) -> Credential:
+    def create(self, credential_data: CredentialCreate) -> Credential:
         """
-        Create a new credential
+        Create a new data credential
         
         Args:
             credential_data: Credential configuration
@@ -50,11 +66,11 @@ class CredentialsAPI(BaseAPI):
         Returns:
             Created Credential object
         """
-        return self._post("/credentials", json=credential_data, model_class=Credential)
+        return self._post("/data_credentials", json=credential_data.dict(), model_class=Credential)
         
-    def update(self, credential_id: str, credential_data: Dict[str, Any]) -> Credential:
+    def update(self, credential_id: Union[str, int], credential_data: CredentialUpdate) -> Credential:
         """
-        Update a credential
+        Update a data credential
         
         Args:
             credential_id: Credential ID
@@ -63,38 +79,21 @@ class CredentialsAPI(BaseAPI):
         Returns:
             Updated Credential object
         """
-        return self._put(f"/credentials/{credential_id}", json=credential_data, model_class=Credential)
+        return self._put(f"/data_credentials/{credential_id}", json=credential_data.dict(), model_class=Credential)
         
-    def delete(self, credential_id: str) -> Dict[str, Any]:
+    def delete(self, credential_id: Union[str, int]) -> Dict[str, Any]:
         """
-        Delete a credential
+        Delete a data credential
         
         Args:
             credential_id: Credential ID
             
         Returns:
-            Empty dictionary on success
+            Response with status code and message
         """
-        return self._delete(f"/credentials/{credential_id}")
+        return self._delete(f"/data_credentials/{credential_id}")
         
-    def copy(self, credential_id: str, new_name: Optional[str] = None) -> Credential:
-        """
-        Create a copy of a credential
-        
-        Args:
-            credential_id: Credential ID
-            new_name: Optional new name for the copied credential
-            
-        Returns:
-            New Credential object
-        """
-        params = {}
-        if new_name:
-            params["name"] = new_name
-            
-        return self._post(f"/credentials/{credential_id}/copy", params=params, model_class=Credential)
-        
-    def probe(self, credential_id: str) -> Dict[str, Any]:
+    def probe(self, credential_id: Union[str, int]) -> Dict[str, Any]:
         """
         Test a data credential
         
@@ -104,37 +103,68 @@ class CredentialsAPI(BaseAPI):
         Returns:
             Probe results
         """
-        return self._post(f"/data_credentials/{credential_id}/probe")
+        return self._get(f"/data_credentials/{credential_id}/probe")
         
-    def probe_tree(self, credential_id: str, path: Optional[str] = None) -> Dict[str, Any]:
+    def probe_tree(
+        self, 
+        credential_id: Union[str, int], 
+        depth: int = 1,
+        path: Optional[str] = None, 
+        database: Optional[str] = None,
+        table: Optional[str] = None
+    ) -> DirectoryTree:
         """
         Get a directory/file tree for a data credential
         
         Args:
             credential_id: Data credential ID
-            path: Optional path to get the tree for
+            depth: Hierarchy depth to scan
+            path: Optional path to get the tree for (file-type connectors)
+            database: Optional database name (database connectors)
+            table: Optional table name (database connectors)
             
         Returns:
-            Directory tree
+            Directory tree or database schema
         """
-        params = {}
+        payload = {"depth": depth}
         if path:
-            params["path"] = path
+            payload["path"] = path
+        if database:
+            payload["database"] = database
+        if table:
+            payload["table"] = table
             
-        return self._post(f"/data_credentials/{credential_id}/probe/tree", params=params)
+        return self._post(
+            f"/data_credentials/{credential_id}/probe/tree", 
+            json=payload,
+            model_class=DirectoryTree
+        )
         
-    def probe_sample(self, credential_id: str, path: str) -> Dict[str, Any]:
+    def probe_sample(
+        self, 
+        credential_id: Union[str, int], 
+        path: Optional[str] = None,
+        **connector_config
+    ) -> DataSample:
         """
         Get a sample of data for a data credential
         
         Args:
             credential_id: Data credential ID
-            path: Path to the file to sample
+            path: Path to the file to sample (for file-type connectors)
+            **connector_config: Additional connector-specific configuration
             
         Returns:
             Data sample
         """
+        payload = {}
+        if path:
+            payload["path"] = path
+        # Add any additional connector-specific config
+        payload.update(connector_config)
+            
         return self._post(
             f"/data_credentials/{credential_id}/probe/sample",
-            params={"path": path}
+            json=payload,
+            model_class=DataSample
         ) 

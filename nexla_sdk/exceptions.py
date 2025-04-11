@@ -30,4 +30,13 @@ class NexlaValidationError(NexlaError):
 
 class NexlaClientError(NexlaError):
     """Client configuration error"""
-    pass 
+    pass
+
+
+class NexlaNotFoundError(NexlaAPIError):
+    """Resource not found error"""
+    
+    def __init__(self, message: str, resource_type: Optional[str] = None, resource_id: Optional[str] = None):
+        super().__init__(message, status_code=404)
+        self.resource_type = resource_type
+        self.resource_id = resource_id 

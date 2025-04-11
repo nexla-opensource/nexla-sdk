@@ -3,26 +3,51 @@ Team models for the Nexla SDK
 """
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
+from enum import Enum
+from pydantic import BaseModel, Field, EmailStr
 
 from .common import Resource, PaginatedList
+from .access import AccessRole
+from .users import UserDetail
 
 
 class TeamMember(BaseModel):
     """Team member model"""
-    user_id: str = Field(..., description="User ID")
-    team_id: str = Field(..., description="Team ID")
-    role: str = Field(..., description="Member role ('admin', 'member')")
+    id: int = Field(..., description="Unique ID of the user")
     email: Optional[str] = Field(None, description="User email")
-    name: Optional[str] = Field(None, description="User name")
-    added_at: Optional[datetime] = Field(None, description="When the user was added to the team")
+    admin: bool = Field(False, description="Whether the user is an administrator of this team")
+
+
+class TeamOwner(BaseModel):
+    """Team owner model"""
+    id: int = Field(..., description="Owner user ID")
+    full_name: str = Field(..., description="Owner full name")
+    email: str = Field(..., description="Owner email")
+    email_verified_at: Optional[datetime] = Field(None, description="When the email was verified")
+
+
+class TeamOrganization(BaseModel):
+    """Team organization model"""
+    id: int = Field(..., description="Organization ID")
+    name: str = Field(..., description="Organization name")
+    email_domain: str = Field(..., description="Organization email domain")
+    email: str = Field(..., description="Organization email")
+    client_identifier: Optional[str] = Field(None, description="Client identifier")
+    org_webhook_host: Optional[str] = Field(None, description="Organization webhook host")
 
 
 class Team(Resource):
     """Team resource model"""
-    members_count: Optional[int] = Field(None, description="Number of members in the team")
-    owner_id: Optional[str] = Field(None, description="Owner user ID")
-    org_id: Optional[str] = Field(None, description="Organization ID")
+    name: str = Field(..., description="Team name")
+    description: Optional[str] = Field(None, description="Team description")
+    owner: Optional[TeamOwner] = Field(None, description="Team owner information")
+    org: Optional[TeamOrganization] = Field(None, description="Team organization information")
+    member: Optional[bool] = Field(None, description="Whether the authenticated user is a member of this team")
+    members: Optional[List[TeamMember]] = Field(None, description="Team members")
+    access_roles: Optional[List[AccessRole]] = Field(None, description="Access roles for the team")
+    created_at: Optional[datetime] = Field(None, description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
+    tags: Optional[List[str]] = Field(None, description="Team tags")
 
 
 class TeamList(PaginatedList[Team]):
@@ -30,8 +55,6 @@ class TeamList(PaginatedList[Team]):
     pass
 
 
-class TeamMembers(BaseModel):
-    """Team members list"""
-    team_id: str = Field(..., description="Team ID")
-    members: List[TeamMember] = Field(..., description="Team members")
-    total: int = Field(..., description="Total number of members") 
+class TeamMemberList(BaseModel):
+    """Team members list with operations response"""
+    members: List[TeamMember] = Field(..., description="Team members") 

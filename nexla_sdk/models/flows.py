@@ -1,11 +1,21 @@
 """
 Flow models for the Nexla SDK
 """
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 from datetime import datetime
+from enum import Enum
 from pydantic import BaseModel, Field
 
-from .common import Resource, PaginatedList, Status
+from .common import Resource, PaginatedList, Status, ResourceType
+from .access import AccessRole
+from .sources import Source
+from .destinations import DataSink
+from .nexsets import DataSet
+from .code_containers import CodeContainer
+from .credentials import Credential
+from .organizations import Organization
+from .users import User
+from .projects import Project
 
 
 class FlowSchedule(BaseModel):
@@ -24,8 +34,61 @@ class FlowConfig(BaseModel):
     options: Optional[Dict[str, Any]] = Field(None, description="Additional flow options")
 
 
+class FlowNode(BaseModel):
+    """Flow node model representing a node in the flow chain"""
+    id: Optional[int] = Field(None, description="Flow node ID")
+    parent_node_id: Optional[int] = Field(
+        None,
+        description="Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`."
+    )
+    origin_node_id: Optional[int] = Field(
+        None, description="Flow id of the root node in the flow chain."
+    )
+    data_source_id: Optional[int] = Field(
+        None,
+        description="The ID of the data source this flow node is linked to if this is a flow node for a data source."
+    )
+    data_set_id: Optional[int] = Field(
+        None,
+        description="The ID of the Nexset this flow node is linked to if this is flow node for a Nexset."
+    )
+    data_sink_id: Optional[int] = Field(
+        None,
+        description="The ID of the data sink this flow node is linked to if this is a flow node for a data sink."
+    )
+    shared_origin_node_id: Optional[int] = Field(None, description="Shared origin node ID")
+    runtime_status: Optional[str] = Field(None, description="Runtime status of the flow node")
+    node_type: Optional[str] = Field(None, description="Type of the node")
+    status: Optional[str] = Field(None, description="Status of the flow node")
+    project_id: Optional[int] = Field(None, description="Project ID associated with this flow")
+    flow_type: Optional[str] = Field(None, description="Type of the flow")
+    ingestion_mode: Optional[str] = Field(None, description="Ingestion mode of the flow")
+    managed: Optional[bool] = Field(None, description="Whether the flow is managed")
+    name: Optional[str] = Field(None, description="Name of the flow")
+    description: Optional[str] = Field(None, description="Description of the flow")
+    linked_flows: Optional[List[Union[str, int]]] = Field(None, description="Linked flows")
+    children: Optional[List["FlowNode"]] = Field(
+        None,
+        description="Each element of this array is a flow node that is directly linked to this flow node."
+    )
+
+
+class FlowResponse(BaseModel):
+    """Flow response model containing the flow and related resources"""
+    flows: List[FlowNode] = Field(..., description="List of flow nodes")
+    code_containers: Optional[List[CodeContainer]] = Field(None, description="Code containers linked to flow nodes")
+    data_sources: Optional[List[Source]] = Field(None, description="Data sources linked to flow nodes")
+    data_sets: Optional[List[DataSet]] = Field(None, description="Data sets linked to flow nodes")
+    data_sinks: Optional[List[DataSink]] = Field(None, description="Data sinks linked to flow nodes")
+    data_credentials: Optional[List[Credential]] = Field(None, description="Credentials referenced by flow nodes")
+    shared_data_sets: Optional[List[Any]] = Field(None, description="Shared data sets metadata")
+    orgs: Optional[List[Organization]] = Field(None, description="Organizations")
+    users: Optional[List[User]] = Field(None, description="Users")
+    projects: Optional[List[Project]] = Field(None, description="Projects linked to flows")
+
+
 class Flow(Resource):
-    """Flow resource model"""
+    """Flow resource model (legacy model kept for backward compatibility)"""
     flow_type: str = Field(..., description="Type of the flow")
     source_id: Optional[str] = Field(None, description="ID of the source in this flow")
     sink_id: Optional[str] = Field(None, description="ID of the sink in this flow")
@@ -36,13 +99,16 @@ class Flow(Resource):
     tags: Optional[List[str]] = Field(None, description="Tags associated with the flow")
     
 
-class FlowList(PaginatedList[Flow]):
-    """Paginated list of flows"""
-    pass
+class FlowList(BaseModel):
+    """Updated model for flow list API response"""
+    flows: List[FlowNode] = Field(..., description="List of flow nodes")
+    triggered_flows: Optional[List[Any]] = Field([], description="Triggered flows")
+    triggering_flows: Optional[List[Any]] = Field([], description="Triggering flows") 
+    linked_flows: Optional[List[Any]] = Field([], description="Linked flows")
 
 
 class FlowCondensed(BaseModel):
-    """Condensed flow information"""
+    """Condensed flow information (legacy model kept for backward compatibility)"""
     id: str = Field(..., description="Flow ID")
     name: str = Field(..., description="Flow name")
     is_active: bool = Field(..., description="Whether the flow is active")

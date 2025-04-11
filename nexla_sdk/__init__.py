@@ -11,7 +11,7 @@ Example:
 """
 
 from .client import NexlaClient
-from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError
+from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError, NexlaNotFoundError
 
 __version__ = "0.1.0"
 __all__ = [
@@ -19,5 +19,7 @@ __all__ = [
     "NexlaError",
     "NexlaAuthError",
     "NexlaAPIError",
-    "NexlaValidationError"
+    "NexlaValidationError",
+    "NexlaClientError",
+    "NexlaNotFoundError"
 ] 

@@ -1,48 +1,71 @@
 """
 Transforms API endpoints
 """
-from typing import Dict, Any, List, Optional
-
+from typing import Dict, Any, List, Optional, Union
+from ..models.transforms import (
+    Transform, TransformList, AttributeTransform, AttributeTransformList,
+    CreateTransformRequest, UpdateTransformRequest, DeleteTransformResponse,
+    CreateAttributeTransformRequest
+)
 from .base import BaseAPI
-from ..models.transforms import Transform, TransformList, TransformExpanded
 
 
 class TransformsAPI(BaseAPI):
     """API client for transforms endpoints"""
     
-    def list(self, limit: int = 100, offset: int = 0) -> TransformList:
+    def list(self, page: int = 1, per_page: int = 100) -> TransformList:
         """
-        List transforms
+        Get all Reusable Record Transforms
         
         Args:
-            limit: Number of items to return
-            offset: Pagination offset
+            page: Page number for pagination
+            per_page: Number of items per page
             
         Returns:
             TransformList containing transforms
         """
-        return self._get("/transforms", params={"limit": limit, "offset": offset}, model_class=TransformList)
+        # Get raw response as a list of transforms
+        response = self._get("/transforms", params={"page": page, "per_page": per_page})
         
-    def get(self, transform_id: str, expand: bool = False) -> Transform:
+        # If response is empty, return an empty TransformList
+        if not response:
+            return TransformList(items=[], total=0, page=page, page_size=per_page)
+            
+        # Convert the list of transforms to Transform objects
+        transforms = [Transform.model_validate(transform) for transform in response]
+        
+        # Create and return a TransformList with the expected fields
+        return TransformList(
+            items=transforms,
+            total=len(transforms),
+            page=page,
+            page_size=per_page
+        )
+    
+    def list_public(self) -> List[Transform]:
         """
-        Get a transform by ID
+        Get all Public Reusable Record Transforms
+        
+        Returns:
+            List of public transforms
+        """
+        return self._get("/transforms/public", model_class=List[Transform])
+        
+    def get(self, transform_id: int) -> Transform:
+        """
+        Get A Reusable Record Transform by ID
         
         Args:
             transform_id: Transform ID
-            expand: Whether to expand the resource details
             
         Returns:
             Transform object
         """
-        path = f"/transforms/{transform_id}"
-        if expand:
-            path += "?expand=1"
-            
-        return self._get(path, model_class=Transform if not expand else TransformExpanded)
+        return self._get(f"/transforms/{transform_id}", model_class=Transform)
         
-    def create(self, transform_data: Dict[str, Any]) -> Transform:
+    def create(self, transform_data: Union[Dict[str, Any], CreateTransformRequest]) -> Transform:
         """
-        Create a new transform
+        Create a Reusable Record Transform
         
         Args:
             transform_data: Transform configuration
@@ -50,11 +73,14 @@ class TransformsAPI(BaseAPI):
         Returns:
             Created Transform object
         """
+        if isinstance(transform_data, CreateTransformRequest):
+            transform_data = transform_data.dict(exclude_none=True)
+        
         return self._post("/transforms", json=transform_data, model_class=Transform)
         
-    def update(self, transform_id: str, transform_data: Dict[str, Any]) -> Transform:
+    def update(self, transform_id: int, transform_data: Union[Dict[str, Any], UpdateTransformRequest]) -> Transform:
         """
-        Update a transform
+        Update Reusable Record Transform
         
         Args:
             transform_id: Transform ID
@@ -63,95 +89,116 @@ class TransformsAPI(BaseAPI):
         Returns:
             Updated Transform object
         """
+        if isinstance(transform_data, UpdateTransformRequest):
+            transform_data = transform_data.dict(exclude_none=True)
+            
         return self._put(f"/transforms/{transform_id}", json=transform_data, model_class=Transform)
         
-    def delete(self, transform_id: str) -> Dict[str, Any]:
+    def delete(self, transform_id: int) -> DeleteTransformResponse:
         """
-        Delete a transform
+        Delete a Reusable Record Transform
         
         Args:
             transform_id: Transform ID
             
         Returns:
-            Empty dictionary on success
+            DeleteTransformResponse with status code and message
         """
-        return self._delete(f"/transforms/{transform_id}")
+        return self._delete(f"/transforms/{transform_id}", model_class=DeleteTransformResponse)
         
-    def copy(self, transform_id: str, new_name: Optional[str] = None) -> Transform:
+    def copy(self, transform_id: int) -> Transform:
         """
-        Create a copy of a transform
+        Copy a Reusable Record Transform
         
         Args:
             transform_id: Transform ID
-            new_name: Optional new name for the copied transform
             
         Returns:
             New Transform object
         """
-        params = {}
-        if new_name:
-            params["name"] = new_name
-            
-        return self._post(f"/transforms/{transform_id}/copy", params=params, model_class=Transform)
-        
-    def list_attribute_transforms(self, limit: int = 100, offset: int = 0) -> Dict[str, Any]:
+        return self._post(f"/transforms/{transform_id}/copy", model_class=Transform)
+    
+    def list_attribute_transforms(self, page: int = 1, per_page: int = 100) -> List[AttributeTransform]:
         """
-        List attribute transforms
+        Get all Attribute Transforms
         
         Args:
-            limit: Number of items to return
-            offset: Pagination offset
+            page: Page number for pagination
+            per_page: Number of items per page
             
         Returns:
-            Dictionary containing attribute transforms
+            List of attribute transforms
         """
-        return self._get("/attribute_transforms", params={"limit": limit, "offset": offset})
+        # Get raw response as a list of attribute transforms
+        response = self._get("/attribute_transforms", params={"page": page, "per_page": per_page})
         
-    def get_attribute_transform(self, transform_id: str) -> Dict[str, Any]:
+        # If response is empty, return an empty list
+        if not response:
+            return []
+            
+        # Convert the list of attribute transforms to AttributeTransform objects
+        return [AttributeTransform.model_validate(transform) for transform in response]
+    
+    def list_public_attribute_transforms(self) -> List[AttributeTransform]:
         """
-        Get an attribute transform by ID
+        Get all Public Attribute Transforms
+        
+        Returns:
+            List of public attribute transforms
+        """
+        return self._get("/attribute_transforms/public", model_class=List[AttributeTransform])
+        
+    def get_attribute_transform(self, transform_id: int) -> AttributeTransform:
+        """
+        Get Attribute Transform by ID
         
         Args:
             transform_id: Attribute transform ID
             
         Returns:
-            Attribute transform details
+            AttributeTransform object
         """
-        return self._get(f"/attribute_transforms/{transform_id}")
+        return self._get(f"/attribute_transforms/{transform_id}", model_class=AttributeTransform)
         
-    def create_attribute_transform(self, transform_data: Dict[str, Any]) -> Dict[str, Any]:
+    def create_attribute_transform(self, transform_data: Union[Dict[str, Any], CreateAttributeTransformRequest]) -> AttributeTransform:
         """
-        Create a new attribute transform
+        Create an Attribute Transform
         
         Args:
             transform_data: Attribute transform configuration
             
         Returns:
-            Created attribute transform details
+            Created AttributeTransform object
         """
-        return self._post("/attribute_transforms", json=transform_data)
+        if isinstance(transform_data, CreateAttributeTransformRequest):
+            transform_data = transform_data.dict(exclude_none=True)
+            
+        return self._post("/attribute_transforms", json=transform_data, model_class=AttributeTransform)
         
-    def update_attribute_transform(self, transform_id: str, transform_data: Dict[str, Any]) -> Dict[str, Any]:
+    def update_attribute_transform(self, transform_id: int, transform_data: Union[Dict[str, Any], CreateAttributeTransformRequest]) -> AttributeTransform:
         """
-        Update an attribute transform
+        Update Attribute Transform
         
         Args:
             transform_id: Attribute transform ID
             transform_data: Attribute transform configuration to update
             
         Returns:
-            Updated attribute transform details
+            Updated AttributeTransform object
         """
-        return self._put(f"/attribute_transforms/{transform_id}", json=transform_data)
+        if isinstance(transform_data, CreateAttributeTransformRequest):
+            transform_data = transform_data.dict(exclude_none=True)
+            
+        return self._put(f"/attribute_transforms/{transform_id}", json=transform_data, model_class=AttributeTransform)
         
-    def delete_attribute_transform(self, transform_id: str) -> Dict[str, Any]:
+    def delete_attribute_transform(self, transform_id: int) -> DeleteTransformResponse:
         """
-        Delete an attribute transform
+        Delete an Attribute Transform
         
         Args:
             transform_id: Attribute transform ID
             
         Returns:
-            Empty dictionary on success
+            DeleteTransformResponse with status code and message
         """
-        return self._delete(f"/attribute_transforms/{transform_id}") 
+        return self._delete(f"/attribute_transforms/{transform_id}", model_class=DeleteTransformResponse) 

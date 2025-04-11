@@ -10,18 +10,18 @@ from ..models.webhooks import Webhook, WebhookList
 class WebhooksAPI(BaseAPI):
     """API client for webhooks endpoints"""
     
-    def list(self, limit: int = 100, offset: int = 0) -> WebhookList:
+    def list(self, page: int = 1, per_page: int = 100) -> WebhookList:
         """
         List webhooks
         
         Args:
-            limit: Number of items to return
-            offset: Pagination offset
+            page: Page number for pagination
+            per_page: Number of items per page
             
         Returns:
             WebhookList containing webhooks
         """
-        return self._get("/webhooks", params={"limit": limit, "offset": offset}, model_class=WebhookList)
+        return self._get("/webhooks", params={"page": page, "per_page": per_page}, model_class=WebhookList)
         
     def get(self, webhook_id: str) -> Webhook:
         """

@@ -20,6 +20,10 @@ class WebhookConfig(Resource):
     org_id: Optional[str] = Field(None, description="Organization ID")
 
 
+# Alias for API compatibility
+Webhook = WebhookConfig
+
+
 class WebhookList(PaginatedList[WebhookConfig]):
     """Paginated list of webhook configurations"""
     pass

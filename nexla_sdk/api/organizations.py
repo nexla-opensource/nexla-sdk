@@ -1,103 +1,132 @@
 """
 Organizations API endpoints
 """
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
+from datetime import datetime
 
 from .base import BaseAPI
-from ..models.organizations import Organization, OrganizationList
+from ..models.organizations import (
+    Organization, OrganizationList, OrganizationMember, OrganizationMemberList,
+    UpdateOrganizationRequest, UpdateOrganizationMembersRequest, DeleteOrganizationMembersRequest,
+    DeleteResponse
+)
+from ..models.metrics import AccountMetricsResponse
 
 
 class OrganizationsAPI(BaseAPI):
     """API client for organizations endpoints"""
     
-    def list(self, limit: int = 100, offset: int = 0) -> OrganizationList:
+    def get_all(self) -> OrganizationList:
         """
-        List organizations
+        Get all organizations accessible to the authenticated user.
         
-        Args:
-            limit: Number of items to return
-            offset: Pagination offset
-            
         Returns:
-            OrganizationList containing organizations
+            List of Organization objects
         """
-        return self._get("/organizations", params={"limit": limit, "offset": offset}, model_class=OrganizationList)
+        response = self._get("/orgs", headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        return OrganizationList([Organization.parse_obj(org) for org in response])
         
-    def get(self, organization_id: str) -> Organization:
+    def get(self, org_id: int) -> Organization:
         """
         Get an organization by ID
         
         Args:
-            organization_id: Organization ID
+            org_id: Organization ID
             
         Returns:
             Organization object
         """
-        return self._get(f"/organizations/{organization_id}", model_class=Organization)
+        response = self._get(f"/orgs/{org_id}", headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        return Organization.parse_obj(response)
         
-    def get_current(self) -> Organization:
-        """
-        Get the current organization
-        
-        Returns:
-            Current Organization object
-        """
-        return self._get("/organizations/current", model_class=Organization)
-        
-    def create(self, organization_data: Dict[str, Any]) -> Organization:
-        """
-        Create a new organization
-        
-        Args:
-            organization_data: Organization configuration
-            
-        Returns:
-            Created Organization object
-        """
-        return self._post("/organizations", json=organization_data, model_class=Organization)
-        
-    def update(self, organization_id: str, organization_data: Dict[str, Any]) -> Organization:
+    def update(self, org_id: int, update_data: UpdateOrganizationRequest) -> Organization:
         """
         Update an organization
         
         Args:
-            organization_id: Organization ID
-            organization_data: Organization configuration to update
+            org_id: Organization ID
+            update_data: Organization data to update
             
         Returns:
             Updated Organization object
         """
-        return self._put(f"/organizations/{organization_id}", json=organization_data, model_class=Organization)
+        response = self._put(f"/orgs/{org_id}", json=update_data.dict(exclude_none=True))
+        return Organization.parse_obj(response)
         
-    def delete(self, organization_id: str) -> Dict[str, Any]:
+    def get_members(self, org_id: int) -> OrganizationMemberList:
         """
-        Delete an organization
-        
-        Args:
-            organization_id: Organization ID
-            
-        Returns:
-            Empty dictionary on success
-        """
-        return self._delete(f"/organizations/{organization_id}")
-        
-    def get_settings(self) -> Dict[str, Any]:
-        """
-        Get organization settings
-        
-        Returns:
-            Organization settings
-        """
-        return self._get("/organizations/settings")
-        
-    def update_settings(self, settings_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Update organization settings
+        Get all members in an organization
         
         Args:
-            settings_data: Settings data to update
+            org_id: Organization ID
             
         Returns:
-            Updated organization settings
+            List of organization members
         """
-        return self._put("/organizations/settings", json=settings_data) 
+        response = self._get(f"/orgs/{org_id}/members", 
+                           headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        return OrganizationMemberList([OrganizationMember.parse_obj(member) for member in response])
+        
+    def update_members(self, org_id: int, update_data: UpdateOrganizationMembersRequest) -> OrganizationMemberList:
+        """
+        Update organization members
+        
+        Args:
+            org_id: Organization ID
+            update_data: Members data to update
+            
+        Returns:
+            Updated list of organization members
+        """
+        response = self._put(f"/orgs/{org_id}/members", 
+                           json=update_data.dict(exclude_none=True),
+                           headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        return OrganizationMemberList([OrganizationMember.parse_obj(member) for member in response])
+    
+    def delete_members(self, org_id: int, delete_data: DeleteOrganizationMembersRequest) -> DeleteResponse:
+        """
+        Remove members from an organization
+        
+        Args:
+            org_id: Organization ID
+            delete_data: Members to remove
+            
+        Returns:
+            Deletion response
+        """
+        response = self._delete(f"/orgs/{org_id}/members", 
+                              json=delete_data.dict(exclude_none=True),
+                              headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        return DeleteResponse.parse_obj(response)
+    
+    def get_account_metrics(
+        self, 
+        org_id: int, 
+        from_date: Union[str, datetime], 
+        to_date: Optional[Union[str, datetime]] = None
+    ) -> AccountMetricsResponse:
+        """
+        Get Total Account Metrics for An Organization
+        
+        Retrieves total account utilization metrics for an organization. The result consists
+        of aggregated information about records processed within the specified date range
+        by all resources owned by users in the organization.
+        
+        Args:
+            org_id: The unique ID of the organization
+            from_date: Start date for metrics aggregation period
+            to_date: End date for metrics aggregation period (defaults to current date)
+            
+        Returns:
+            Account metrics response
+        """
+        params = {"from": from_date}
+        if to_date:
+            params["to"] = to_date
+            
+        response = self._get(
+            f"/orgs/{org_id}/flows/account_metrics",
+            params=params,
+            headers={"Accept": "application/vnd.nexla.api.v1+json"}
+        )
+        return AccountMetricsResponse.parse_obj(response) 

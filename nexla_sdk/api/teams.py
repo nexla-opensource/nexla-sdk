@@ -1,29 +1,35 @@
 """
 Teams API endpoints
 """
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 
 from .base import BaseAPI
-from ..models.teams import Team, TeamList
+from ..models.access import AccessRole
+from ..models.teams import Team, TeamList, TeamMember, TeamMemberList
 
 
 class TeamsAPI(BaseAPI):
     """API client for teams endpoints"""
     
-    def list(self, limit: int = 100, offset: int = 0) -> TeamList:
+    def list(self, page: int = 1, per_page: int = 100, access_role: Optional[AccessRole] = None) -> TeamList:
         """
         List teams
         
         Args:
-            limit: Number of items to return
-            offset: Pagination offset
+            page: Page number for pagination
+            per_page: Number of items per page
+            access_role: Filter by access role
             
         Returns:
             TeamList containing teams
         """
-        return self._get("/teams", params={"limit": limit, "offset": offset}, model_class=TeamList)
+        params = {"page": page, "per_page": per_page}
+        if access_role:
+            params["access_role"] = access_role.value
+            
+        return self._get("/teams", params=params, model_class=TeamList)
         
-    def get(self, team_id: str) -> Team:
+    def get(self, team_id: int) -> Team:
         """
         Get a team by ID
         
@@ -35,32 +41,55 @@ class TeamsAPI(BaseAPI):
         """
         return self._get(f"/teams/{team_id}", model_class=Team)
         
-    def create(self, team_data: Dict[str, Any]) -> Team:
+    def create(self, name: str, description: Optional[str] = None, 
+               members: Optional[List[Dict[str, Any]]] = None) -> Team:
         """
         Create a new team
         
         Args:
-            team_data: Team configuration
+            name: Team name
+            description: Optional team description
+            members: Optional list of team members, where each member is a dict with
+                     either 'id' (user ID) or 'email' keys, and an optional 'admin' boolean
             
         Returns:
             Created Team object
         """
+        team_data = {"name": name}
+        if description:
+            team_data["description"] = description
+        if members:
+            team_data["members"] = members
+            
         return self._post("/teams", json=team_data, model_class=Team)
         
-    def update(self, team_id: str, team_data: Dict[str, Any]) -> Team:
+    def update(self, team_id: int, name: Optional[str] = None, 
+               description: Optional[str] = None, 
+               members: Optional[List[Dict[str, Any]]] = None) -> Team:
         """
         Update a team
         
         Args:
             team_id: Team ID
-            team_data: Team configuration to update
+            name: Optional new team name
+            description: Optional new team description
+            members: Optional new list of team members, where each member is a dict with
+                    either 'id' (user ID) or 'email' keys, and an optional 'admin' boolean
             
         Returns:
             Updated Team object
         """
+        team_data = {}
+        if name:
+            team_data["name"] = name
+        if description:
+            team_data["description"] = description
+        if members:
+            team_data["members"] = members
+            
         return self._put(f"/teams/{team_id}", json=team_data, model_class=Team)
         
-    def delete(self, team_id: str) -> Dict[str, Any]:
+    def delete(self, team_id: int) -> Dict[str, Any]:
         """
         Delete a team
         
@@ -72,28 +101,60 @@ class TeamsAPI(BaseAPI):
         """
         return self._delete(f"/teams/{team_id}")
         
-    def add_user(self, team_id: str, user_id: str) -> Team:
+    def get_members(self, team_id: int) -> TeamMemberList:
         """
-        Add a user to a team
+        Get members of a team
         
         Args:
             team_id: Team ID
-            user_id: User ID to add
             
         Returns:
-            Updated Team object
+            TeamMemberList containing team members
         """
-        return self._post(f"/teams/{team_id}/users/{user_id}", model_class=Team)
-        
-    def remove_user(self, team_id: str, user_id: str) -> Team:
+        return self._get(f"/teams/{team_id}/members", model_class=TeamMemberList)
+    
+    def replace_members(self, team_id: int, members: List[Dict[str, Any]]) -> TeamMemberList:
         """
-        Remove a user from a team
+        Replace all members of a team
         
         Args:
             team_id: Team ID
-            user_id: User ID to remove
+            members: List of team members, where each member is a dict with
+                    either 'id' (user ID) or 'email' keys, and an optional 'admin' boolean
             
         Returns:
-            Updated Team object
+            TeamMemberList containing updated team members
         """
-        return self._delete(f"/teams/{team_id}/users/{user_id}", model_class=Team) 
+        return self._post(f"/teams/{team_id}/members", json={"members": members}, model_class=TeamMemberList)
+    
+    def add_members(self, team_id: int, members: List[Dict[str, Any]]) -> TeamMemberList:
+        """
+        Add members to a team
+        
+        Args:
+            team_id: Team ID
+            members: List of team members to add, where each member is a dict with
+                    either 'id' (user ID) or 'email' keys, and an optional 'admin' boolean
+            
+        Returns:
+            TeamMemberList containing updated team members
+        """
+        return self._put(f"/teams/{team_id}/members", json={"members": members}, model_class=TeamMemberList)
+    
+    def remove_members(self, team_id: int, members: Optional[List[Dict[str, Any]]] = None) -> TeamMemberList:
+        """
+        Remove members from a team
+        
+        Args:
+            team_id: Team ID
+            members: Optional list of team members to remove. If not provided, all members will be removed.
+                    Each member is a dict with either 'id' (user ID) or 'email' keys
+            
+        Returns:
+            TeamMemberList containing remaining team members
+        """
+        data = {}
+        if members:
+            data["members"] = members
+            
+        return self._delete(f"/teams/{team_id}/members", json=data if data else None, model_class=TeamMemberList) 
