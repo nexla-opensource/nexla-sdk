@@ -2,12 +2,12 @@
 Nexla API client
 """
 import logging
-from typing import Dict, Any, Optional, Type, TypeVar, Union, List
+from typing import Dict, Any, Optional, Type, TypeVar, Union, List, cast
 
 import requests
 from pydantic import BaseModel, ValidationError
 
-from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError
+from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError
 from .api.flows import FlowsAPI
 from .api.sources import SourcesAPI
 from .api.destinations import DestinationsAPI
@@ -20,6 +20,11 @@ from .api.organizations import OrganizationsAPI
 from .api.users import UsersAPI
 from .api.teams import TeamsAPI
 from .api.projects import ProjectsAPI
+from .api.metrics import MetricsAPI
+from .api.notifications import NotificationsAPI
+from .api.audit_logs import AuditLogsAPI
+from .api.access_control import AccessControlAPI
+from .api.quarantine_settings import QuarantineSettingsAPI
 
 logger = logging.getLogger(__name__)
 
@@ -35,16 +40,21 @@ class NexlaClient:
         flows = client.flows.list()
     """
     
-    def __init__(self, api_key: str, api_url: str = "https://api.nexla.io"):
+    def __init__(self, api_key: str, api_url: str = "https://dataops.nexla.com/nexla-api", api_version: str = "v1"):
         """
         Initialize the Nexla client
         
         Args:
             api_key: Nexla API key
             api_url: Nexla API URL
+            api_version: API version to use
         """
+        if not api_key:
+            raise NexlaClientError("API key is required")
+            
         self.api_key = api_key
-        self.api_url = api_url
+        self.api_url = api_url.rstrip('/')
+        self.api_version = api_version
         
         # Initialize API endpoints
         self.flows = FlowsAPI(self)
@@ -59,6 +69,11 @@ class NexlaClient:
         self.users = UsersAPI(self)
         self.teams = TeamsAPI(self)
         self.projects = ProjectsAPI(self)
+        self.metrics = MetricsAPI(self)
+        self.notifications = NotificationsAPI(self)
+        self.audit_logs = AuditLogsAPI(self)
+        self.access_control = AccessControlAPI(self)
+        self.quarantine_settings = QuarantineSettingsAPI(self)
         
     def _convert_to_model(self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]) -> Union[T, List[T]]:
         """
@@ -99,8 +114,12 @@ class NexlaClient:
             NexlaAuthError: If authentication fails
             NexlaAPIError: If the API returns an error
         """
-        url = self.api_url + path
-        headers = {"Authorization": f"Bearer {self.api_key}"}
+        url = f"{self.api_url}{path}"
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Accept": f"application/vnd.nexla.api.{self.api_version}+json",
+            "Content-Type": "application/json"
+        }
         
         # If custom headers are provided, merge them with the default headers
         if "headers" in kwargs:
@@ -122,15 +141,19 @@ class NexlaClient:
                 raise NexlaAuthError("Authentication failed. Check your API key.") from e
             
             error_msg = f"API request failed: {e}"
+            error_data = {}
+            
             if response.content:
                 try:
                     error_data = response.json()
                     if "message" in error_data:
                         error_msg = f"API error: {error_data['message']}"
+                    elif "error" in error_data:
+                        error_msg = f"API error: {error_data['error']}"
                 except ValueError:
                     error_msg = f"API error: {response.text}"
                     
-            raise NexlaAPIError(error_msg, status_code=response.status_code) from e
+            raise NexlaAPIError(error_msg, status_code=response.status_code, response=error_data) from e
             
         except requests.exceptions.RequestException as e:
             raise NexlaError(f"Request failed: {e}") from e 

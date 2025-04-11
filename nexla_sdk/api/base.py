@@ -43,8 +43,12 @@ class BaseAPI:
             NexlaAuthError: If authentication fails
             NexlaAPIError: If the API returns an error
         """
-        url = self.client.api_url + path
-        headers = {"Authorization": f"Bearer {self.client.api_key}"}
+        url = f"{self.client.api_url}{path}"
+        headers = {
+            "Authorization": f"Bearer {self.client.api_key}",
+            "Accept": f"application/vnd.nexla.api.{self.client.api_version}+json",
+            "Content-Type": "application/json"
+        }
         
         # If custom headers are provided, merge them with the default headers
         if "headers" in kwargs:
@@ -72,15 +76,19 @@ class BaseAPI:
                 raise NexlaAuthError("Authentication failed. Check your API key.") from e
             
             error_msg = f"API request failed: {e}"
+            error_data = {}
+            
             if response.content:
                 try:
                     error_data = response.json()
                     if "message" in error_data:
                         error_msg = f"API error: {error_data['message']}"
+                    elif "error" in error_data:
+                        error_msg = f"API error: {error_data['error']}"
                 except ValueError:
                     error_msg = f"API error: {response.text}"
                     
-            raise NexlaAPIError(error_msg, status_code=response.status_code) from e
+            raise NexlaAPIError(error_msg, status_code=response.status_code, response=error_data) from e
             
         except requests.exceptions.RequestException as e:
             raise NexlaError(f"Request failed: {e}") from e

@@ -1,122 +1,147 @@
-#!/usr/bin/env python
 """
-Basic usage example for the Nexla SDK
-"""
-import os
-import sys
-import json
-from pprint import pprint
+Basic usage example for the Nexla SDK.
 
-# Add the parent directory to the path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+This example demonstrates how to:
+1. Initialize the client
+2. List available flows
+3. Work with sources and destinations
+4. Manage credentials
+5. Work with transforms and nexsets
+6. Explore metrics and notifications
+7. Work with audit logs and access controls
+"""
+
+import os
+from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
 from nexla_sdk import NexlaClient
-from nexla_sdk.exceptions import NexlaAPIError, NexlaAuthError, NexlaValidationError
-from nexla_sdk.models.flows import Flow
-from nexla_sdk.models.sources import Source
-from nexla_sdk.models.destinations import Destination
+from pprint import pprint
 
+load_dotenv()
 
 def main():
-    # Replace with your actual token or set as environment variable
-    token = os.environ.get("NEXLA_TOKEN")
-    
-    if not token:
-        print("Please set the NEXLA_TOKEN environment variable.")
-        sys.exit(1)
-    
-    # Initialize the client
-    client = NexlaClient(token=token)
+    # Initialize the client with your API key
+    # You can specify a custom API endpoint if needed
+    api_url = os.getenv("NEXLA_API_URL", "https://dataops.nexla.io/nexla-api")
+    client = NexlaClient(
+        api_key=os.getenv("NEXLA_TOKEN"), 
+        api_url=api_url,
+        api_version="v1"  # Specify API version
+    )
+
+    # List Flows
+    print("\n=== Listing Flows ===")
+    flows = client.flows.list(limit=5)
+    pprint(flows)
+
+    # List Sources
+    print("\n=== Listing Sources ===")
+    sources = client.sources.list(limit=5)
+    pprint(sources)
+
+    # List Destinations
+    print("\n=== Listing Destinations ===")
+    destinations = client.destinations.list(limit=5)
+    pprint(destinations)
+
+    # List Transforms
+    print("\n=== Listing Transforms ===")
+    transforms = client.transforms.list(limit=5)
+    pprint(transforms)
+
+    # List Nexsets
+    print("\n=== Listing Nexsets ===")
+    nexsets = client.nexsets.list(limit=5)
+    pprint(nexsets)
+
+    # Example: Creating a new flow
+    flow_data = {
+        "name": "Example Flow",
+        "description": "A simple example flow",
+        # Add other required flow configuration here
+    }
     
     try:
-        # Get current user info
-        print("Getting current user...")
-        user = client.users.get_current()
-        print(f"Logged in as: {user.get('email', 'Unknown')}")
-        print("")
+        new_flow = client.flows.create(flow_data)
+        print("\n=== Created New Flow ===")
+        pprint(new_flow)
         
-        # List flows
-        print("Listing flows...")
-        flows = client.flows.list(limit=5)
-        print(f"Found {flows.total} flows.")
+        # Get metrics for the new flow
+        end_time = datetime.now()
+        start_time = end_time - timedelta(days=7)
         
-        if flows.items:
-            print("First 5 flows:")
-            for flow in flows.items:
-                print(f"  - {flow.name} (ID: {flow.id})")
-                # Access other Flow model properties
-                if flow.config.is_active:
-                    print(f"    Status: Active")
-                else:
-                    print(f"    Status: Inactive")
-        print("")
+        print("\n=== Flow Metrics ===")
+        metrics = client.metrics.get_flow_metrics(
+            flow_id=new_flow.id,
+            start_time=start_time,
+            end_time=end_time
+        )
+        pprint(metrics)
         
-        # List data sources
-        print("Listing data sources...")
-        sources = client.sources.list(limit=5)
-        print(f"Found {sources.total} data sources.")
+        # Get audit logs for the flow
+        print("\n=== Flow Audit Logs ===")
+        audit_logs = client.audit_logs.get_resource_history(
+            resource_type="flows",
+            resource_id=new_flow.id,
+            start_time=start_time,
+            end_time=end_time
+        )
+        pprint(audit_logs)
         
-        if sources.items:
-            print("First 5 data sources:")
-            for source in sources.items:
-                print(f"  - {source.name} (ID: {source.id})")
-                # Access Source model properties
-                print(f"    Connector type: {source.config.connector_type}")
-        print("")
-        
-        # List data sinks (destinations)
-        print("Listing data sinks (destinations)...")
-        sinks = client.destinations.list(limit=5)
-        print(f"Found {sinks.total} data sinks.")
-        
-        if sinks.items:
-            print("First 5 data sinks:")
-            for sink in sinks.items:
-                print(f"  - {sink.name} (ID: {sink.id})")
-                # Access Destination model properties
-                print(f"    Connector type: {sink.config.connector_type}")
-        print("")
-        
-        # Example of creating a source
-        if False:  # Set to True to run this example
-            new_source_data = {
-                "name": "Example S3 Source",
-                "description": "Created via SDK",
-                "config": {
-                    "connector_type": "s3",
-                    "credential_id": "your_credential_id",
-                    "options": {
-                        "bucket": "example-bucket",
-                        "path": "path/to/data",
-                        "file_pattern": "*.csv"
-                    },
-                    "format_options": {
-                        "format": "csv",
-                        "delimiter": ","
-                    }
-                }
-            }
-            
-            new_source = client.sources.create(new_source_data)
-            print("Created new source:")
-            print(f"ID: {new_source.id}")
-            print(f"Name: {new_source.name}")
-        
-    except NexlaAuthError:
-        print("Authentication failed. Please check your token.")
-        sys.exit(1)
-    except NexlaAPIError as e:
-        print(f"API error: {str(e)}")
-        if hasattr(e, "status_code"):
-            print(f"Status code: {e.status_code}")
-        sys.exit(1)
-    except NexlaValidationError as e:
-        print(f"Validation error: {str(e)}")
-        sys.exit(1)
     except Exception as e:
-        print(f"Unexpected error: {str(e)}")
-        sys.exit(1)
+        print(f"Error creating flow: {e}")
 
+    # Example: Working with credentials
+    print("\n=== Listing Credentials ===")
+    credentials = client.credentials.list()
+    pprint(credentials)
+    
+    # Example: Working with notifications
+    print("\n=== Listing Notifications ===")
+    try:
+        notifications = client.notifications.list(limit=5)
+        pprint(notifications)
+        
+        # Get unread count
+        unread_count = client.notifications.get_unread_count()
+        print(f"Unread notifications: {unread_count}")
+        
+        # Get notification settings
+        settings = client.notifications.get_settings()
+        pprint(settings)
+    except Exception as e:
+        print(f"Error accessing notifications: {e}")
+    
+    # Example: Working with metrics
+    print("\n=== Listing Metrics ===")
+    try:
+        end_time = datetime.now()
+        start_time = end_time - timedelta(days=7)
+        
+        metrics = client.metrics.list(
+            start_time=start_time,
+            end_time=end_time,
+            limit=5
+        )
+        pprint(metrics)
+    except Exception as e:
+        print(f"Error accessing metrics: {e}")
+    
+    # Example: Access controls
+    if len(flows.flows) > 0:
+        flow_id = flows.flows[0].id
+        print(f"\n=== Listing Access Controls for Flow {flow_id} ===")
+        try:
+            access_controls = client.access_control.list("flows", flow_id)
+            pprint(access_controls)
+            
+            # List available permissions
+            permissions = client.access_control.list_available_permissions("flows")
+            print("\n=== Available Flow Permissions ===")
+            pprint(permissions)
+        except Exception as e:
+            print(f"Error accessing access controls: {e}")
 
 if __name__ == "__main__":
-    main() 
+    main()

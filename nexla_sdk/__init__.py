@@ -1,9 +1,23 @@
 """
-Nexla SDK for Python.
+Nexla SDK for Python
 
-This SDK provides a client for interacting with the Nexla API.
+A Python SDK for interacting with the Nexla API.
+
+Example:
+    from nexla_sdk import NexlaClient
+    
+    client = NexlaClient(api_key="your-api-key")
+    flows = client.flows.list()
 """
 
-__version__ = "0.1.0"
+from .client import NexlaClient
+from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError
 
-from .client import NexlaClient 
+__version__ = "0.1.0"
+__all__ = [
+    "NexlaClient",
+    "NexlaError",
+    "NexlaAuthError",
+    "NexlaAPIError",
+    "NexlaValidationError"
+] 
