@@ -13,7 +13,8 @@ from ..models.credentials import (
     CredentialUpdate,
     ProbeResult,
     DirectoryTree,
-    DataSample
+    DataSample,
+    DeleteDataCredentialResponse
 )
 
 
@@ -66,9 +67,13 @@ class CredentialsAPI(BaseAPI):
         Returns:
             Created Credential object
         """
-        return self._post("/data_credentials", json=credential_data.dict(), model_class=Credential)
+        return self._post(
+            "/data_credentials", 
+            json=credential_data.dict(), 
+            model_class=CredentialExpanded
+        )
         
-    def update(self, credential_id: Union[str, int], credential_data: CredentialUpdate) -> Credential:
+    def update(self, credential_id: Union[str, int], credential_data: CredentialUpdate) -> CredentialExpanded:
         """
         Update a data credential
         
@@ -79,9 +84,13 @@ class CredentialsAPI(BaseAPI):
         Returns:
             Updated Credential object
         """
-        return self._put(f"/data_credentials/{credential_id}", json=credential_data.dict(), model_class=Credential)
+        return self._put(
+            f"/data_credentials/{credential_id}", 
+            json=credential_data.dict(), 
+            model_class=CredentialExpanded
+        )
         
-    def delete(self, credential_id: Union[str, int]) -> Dict[str, Any]:
+    def delete(self, credential_id: Union[str, int]) -> DeleteDataCredentialResponse:
         """
         Delete a data credential
         
@@ -89,9 +98,12 @@ class CredentialsAPI(BaseAPI):
             credential_id: Credential ID
             
         Returns:
-            Response with status code and message
+            Response model with status code and message
         """
-        return self._delete(f"/data_credentials/{credential_id}")
+        return self._delete(
+            f"/data_credentials/{credential_id}",
+            model_class=DeleteDataCredentialResponse
+        )
         
     def probe(self, credential_id: Union[str, int]) -> Dict[str, Any]:
         """

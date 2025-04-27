@@ -251,4 +251,9 @@ class DataSample(BaseModel):
     """Sample data from a data source"""
     records: List[Dict[str, Any]] = Field(..., description="Sample data records")
     schema_: Optional[Dict[str, Any]] = Field(None, alias="schema", description="Schema information")
-    metadata: Optional[Dict[str, Any]] = Field(None, description="Additional metadata") 
+    metadata: Optional[Dict[str, Any]] = Field(None, description="Additional metadata")
+
+class DeleteDataCredentialResponse(BaseModel):
+    """Response model for deleting a data credential"""
+    code: str = Field(..., description="Response status code")
+    message: str = Field(..., description="Response status text")

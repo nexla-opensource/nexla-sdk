@@ -9,51 +9,91 @@ This example demonstrates how to:
 5. Work with transforms and nexsets
 6. Explore metrics and notifications
 7. Work with audit logs and access controls
+8. Work with projects, teams, and organizations
+9. Manage webhooks and lookups
+10. Use quarantine settings
 """
 
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-
-from nexla_sdk import NexlaClient
 from pprint import pprint
 
-load_dotenv()
+from nexla_sdk import NexlaClient
+from nexla_sdk.models.access import AccessRole
+
+import logging
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+logging.getLogger("nexla_sdk").setLevel(logging.DEBUG)
+
+load_dotenv(override=True)
 
 def main():
-    # Initialize the client with your API key
-    # You can specify a custom API endpoint if needed
     api_url = os.getenv("NEXLA_API_URL", "https://dataops.nexla.io/nexla-api")
+    token = os.getenv("NEXLA_TOKEN")
+
     client = NexlaClient(
-        api_key=os.getenv("NEXLA_TOKEN"), 
+        api_key=token, 
         api_url=api_url,
         api_version="v1"  # Specify API version
     )
 
     # List Flows
     print("\n=== Listing Flows ===")
-    flows = client.flows.list(limit=5)
+    flows = client.flows.list(per_page=12, page=1, flows_only=1, access_role=AccessRole.COLLABORATOR)
     pprint(flows)
 
     # List Sources
     print("\n=== Listing Sources ===")
-    sources = client.sources.list(limit=5)
+    sources = client.sources.list(per_page=5)
     pprint(sources)
 
     # List Destinations
     print("\n=== Listing Destinations ===")
-    destinations = client.destinations.list(limit=5)
+    destinations = client.destinations.list(per_page=5)
     pprint(destinations)
 
     # List Transforms
     print("\n=== Listing Transforms ===")
-    transforms = client.transforms.list(limit=5)
+    transforms = client.transforms.list(per_page=5)
     pprint(transforms)
 
     # List Nexsets
     print("\n=== Listing Nexsets ===")
-    nexsets = client.nexsets.list(limit=5)
+    nexsets = client.nexsets.list(per_page=5)
     pprint(nexsets)
+
+    # List Projects
+    print("\n=== Listing Projects ===")
+    try:
+        projects = client.projects.list(per_page=5)
+        pprint(projects)
+    except Exception as e:
+        print(f"Error listing projects: {e}")
+
+    # List Teams
+    print("\n=== Listing Teams ===")
+    try:
+        teams = client.teams.list(per_page=5)
+        pprint(teams)
+    except Exception as e:
+        print(f"Error listing teams: {e}")
+
+    # List Organizations
+    print("\n=== Listing Organizations ===")
+    try:
+        orgs = client.organizations.get_all()
+        pprint(orgs)
+    except Exception as e:
+        print(f"Error listing organizations: {e}")
+
+    # List Users
+    print("\n=== Listing Users ===")
+    try:
+        users = client.users.list(per_page=5)
+        pprint(users)
+    except Exception as e:
+        print(f"Error listing users: {e}")
 
     # Example: Creating a new flow
     flow_data = {
@@ -89,13 +129,38 @@ def main():
         )
         pprint(audit_logs)
         
+        # Activate and pause the flow
+        print("\n=== Activating Flow ===")
+        activated_flow = client.flows.activate(flow_id=new_flow.id)
+        pprint(activated_flow)
+        
+        print("\n=== Pausing Flow ===")
+        paused_flow = client.flows.pause(flow_id=new_flow.id)
+        pprint(paused_flow)
+        
     except Exception as e:
-        print(f"Error creating flow: {e}")
+        print(f"Error working with flow: {e}")
 
     # Example: Working with credentials
     print("\n=== Listing Credentials ===")
     credentials = client.credentials.list()
     pprint(credentials)
+    
+    # Example: Working with webhooks
+    print("\n=== Listing Webhooks ===")
+    try:
+        webhooks = client.webhooks.list(per_page=5)
+        pprint(webhooks)
+    except Exception as e:
+        print(f"Error listing webhooks: {e}")
+    
+    # Example: Working with lookups
+    print("\n=== Listing Lookups ===")
+    try:
+        lookups = client.lookups.list(per_page=5)
+        pprint(lookups)
+    except Exception as e:
+        print(f"Error listing lookups: {e}")
     
     # Example: Working with notifications
     print("\n=== Listing Notifications ===")
@@ -128,8 +193,16 @@ def main():
     except Exception as e:
         print(f"Error accessing metrics: {e}")
     
+    # Example: Quarantine settings
+    print("\n=== Quarantine Settings ===")
+    try:
+        quarantine_settings = client.quarantine_settings.list()
+        pprint(quarantine_settings)
+    except Exception as e:
+        print(f"Error accessing quarantine settings: {e}")
+    
     # Example: Access controls
-    if len(flows.flows) > 0:
+    if hasattr(flows, 'flows') and len(flows.flows) > 0:
         flow_id = flows.flows[0].id
         print(f"\n=== Listing Access Controls for Flow {flow_id} ===")
         try:
