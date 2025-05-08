@@ -1,0 +1,37 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# API Modules Guide
+
+The Nexla SDK is organized into API modules, each handling a specific area of the Nexla platform.
+
+## Base API
+
+- [nexla_sdk/api/base.py](mdc:nexla_sdk/api/base.py) - Base API class with common functionality for all API modules
+
+## Resource-specific APIs
+
+- [nexla_sdk/api/flows.py](mdc:nexla_sdk/api/flows.py) - API for Nexla Flows management
+- [nexla_sdk/api/sources.py](mdc:nexla_sdk/api/sources.py) - API for managing data sources
+- [nexla_sdk/api/destinations.py](mdc:nexla_sdk/api/destinations.py) - API for managing data destinations
+- [nexla_sdk/api/transforms.py](mdc:nexla_sdk/api/transforms.py) - API for data transformations
+- [nexla_sdk/api/nexsets.py](mdc:nexla_sdk/api/nexsets.py) - API for Nexla datasets management
+- [nexla_sdk/api/credentials.py](mdc:nexla_sdk/api/credentials.py) - API for credentials management
+- [nexla_sdk/api/lookups.py](mdc:nexla_sdk/api/lookups.py) - API for Data Maps (Lookups) management
+
+## Organizational APIs
+
+- [nexla_sdk/api/projects.py](mdc:nexla_sdk/api/projects.py) - API for managing projects
+- [nexla_sdk/api/teams.py](mdc:nexla_sdk/api/teams.py) - API for teams management
+- [nexla_sdk/api/organizations.py](mdc:nexla_sdk/api/organizations.py) - API for organizations management
+- [nexla_sdk/api/users.py](mdc:nexla_sdk/api/users.py) - API for user management
+
+## Additional APIs
+
+- [nexla_sdk/api/webhooks.py](mdc:nexla_sdk/api/webhooks.py) - API for webhook integrations
+- [nexla_sdk/api/metrics.py](mdc:nexla_sdk/api/metrics.py) - API for metrics collection
+- [nexla_sdk/api/notifications.py](mdc:nexla_sdk/api/notifications.py) - API for notifications management
+- [nexla_sdk/api/audit_logs.py](mdc:nexla_sdk/api/audit_logs.py) - API for audit logging
+- [nexla_sdk/api/access.py](mdc:nexla_sdk/api/access.py) - API for access control management

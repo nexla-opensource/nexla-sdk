@@ -1,0 +1,24 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Nexla SDK Project Overview
+
+The Nexla SDK is a Python library for interacting with the Nexla API. It provides a set of tools for data engineering and management tasks.
+
+## Core Components
+
+- [nexla_sdk/client.py](mdc:nexla_sdk/client.py) - Main client class for interacting with the Nexla API
+- [nexla_sdk/__init__.py](mdc:nexla_sdk/__init__.py) - Package initialization and exports
+- [nexla_sdk/exceptions.py](mdc:nexla_sdk/exceptions.py) - Custom exception classes for error handling
+
+## Key Areas
+
+1. **API Modules** - Located in [nexla_sdk/api](mdc:nexla_sdk/api/__init__.py) directory
+2. **Data Models** - Located in [nexla_sdk/models](mdc:nexla_sdk/models/__init__.py) directory
+3. **Examples** - Located in [examples/basic_usage.py](mdc:examples/basic_usage.py)
+
+## Getting Started
+
+The best way to understand this SDK is to look at the examples and refer to the README for basic usage patterns.

@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Data Models Guide
+
+The Nexla SDK uses Pydantic models for type safety and validation. These models represent the data structures returned by the Nexla API.
+
+## Common Models
+
+- [nexla_sdk/models/common.py](mdc:nexla_sdk/models/common.py) - Common data structures used across multiple models
+- [nexla_sdk/models/__init__.py](mdc:nexla_sdk/models/__init__.py) - Model exports and shared functionality
+
+## Resource Models
+
+- [nexla_sdk/models/flows.py](mdc:nexla_sdk/models/flows.py) - Flow data structures
+- [nexla_sdk/models/sources.py](mdc:nexla_sdk/models/sources.py) - Source data structures
+- [nexla_sdk/models/destinations.py](mdc:nexla_sdk/models/destinations.py) - Destination data structures
+- [nexla_sdk/models/transforms.py](mdc:nexla_sdk/models/transforms.py) - Transform data structures
+- [nexla_sdk/models/nexsets.py](mdc:nexla_sdk/models/nexsets.py) - Nexset data structures
+- [nexla_sdk/models/credentials.py](mdc:nexla_sdk/models/credentials.py) - Credential data structures
+- [nexla_sdk/models/lookups.py](mdc:nexla_sdk/models/lookups.py) - Lookup data structures
+
+## Organization Models
+
+- [nexla_sdk/models/projects.py](mdc:nexla_sdk/models/projects.py) - Project data structures
+- [nexla_sdk/models/teams.py](mdc:nexla_sdk/models/teams.py) - Team data structures
+- [nexla_sdk/models/organizations.py](mdc:nexla_sdk/models/organizations.py) - Organization data structures
+- [nexla_sdk/models/users.py](mdc:nexla_sdk/models/users.py) - User data structures
+- [nexla_sdk/models/access.py](mdc:nexla_sdk/models/access.py) - Access control data structures
+
+## Other Models
+
+- [nexla_sdk/models/webhooks.py](mdc:nexla_sdk/models/webhooks.py) - Webhook data structures
+- [nexla_sdk/models/metrics.py](mdc:nexla_sdk/models/metrics.py) - Metrics data structures
+- [nexla_sdk/models/notifications.py](mdc:nexla_sdk/models/notifications.py) - Notification data structures
+- [nexla_sdk/models/audit_logs.py](mdc:nexla_sdk/models/audit_logs.py) - Audit log data structures
