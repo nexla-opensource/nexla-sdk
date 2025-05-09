@@ -14,17 +14,7 @@ The main example file demonstrating SDK usage is [examples/basic_usage.py](mdc:e
 ## Client Initialization
 
 ```python
-from nexla_sdk import NexlaClient
-
-# Option 1: Using a session token
-client = NexlaClient(token="your_nexla_session_token")
-
-# Option 2: Using API key and URL
-client = NexlaClient(
-    api_key="your_api_key", 
-    api_url="https://dataops.nexla.io/nexla-api",
-    api_version="v1"
-)
+from nexla_client import nexla_client as client
 ```
 
 ## Common Resource Operations
