@@ -84,21 +84,39 @@ class FlowsAPI(BaseAPI):
             Created Flow object
         """
         headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._post("/flows", json=flow_data, headers=headers, model_class=Flow)
+        try:
+            # Try to parse as new FlowResponse which contains data in a "flows" array
+            response_data = self._post("/flows", json=flow_data, headers=headers, model_class=FlowResponse)
+            if hasattr(response_data, "flows") and len(response_data.flows) > 0:
+                # Extract the first flow from the flows array
+                return response_data.flows[0]
+            else:
+                # Fall back to direct conversion if the new format isn't found
+                return self._post("/flows", json=flow_data, headers=headers, model_class=Flow)
+        except:
+            # Last resort fallback to legacy model for backward compatibility
+            return self._post("/flows", json=flow_data, model_class=Flow)
         
-    def update(self, flow_id: str, flow_data: Dict[str, Any]) -> Flow:
+    def update(self, flow_id: str, flow_data: Optional[Dict[str, Any]] = None, **kwargs) -> Flow:
         """
         Update a flow
         
         Args:
             flow_id: Flow ID
-            flow_data: Flow configuration to update
+            flow_data: Flow configuration to update as a dictionary
+            **kwargs: Flow configuration to update as keyword arguments (alternative to flow_data)
             
         Returns:
             Updated Flow object
         """
         headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._put(f"/flows/{flow_id}", json=flow_data, headers=headers, model_class=Flow)
+        
+        # Handle both dictionary and keyword arguments
+        data = flow_data or {}
+        if kwargs:
+            data.update(kwargs)
+            
+        return self._put(f"/flows/{flow_id}", json=data, headers=headers, model_class=Flow)
         
     def delete(self, flow_id: str) -> Dict[str, Any]:
         """
@@ -160,6 +178,78 @@ class FlowsAPI(BaseAPI):
         except:
             # Fall back to legacy model for backward compatibility
             return self._post(f"/flows/{flow_id}/pause", model_class=Flow)
+        
+    def add_tags(self, flow_id: str, tags: List[str]) -> Union[FlowResponse, Flow]:
+        """
+        Add tags to a flow
+        
+        Args:
+            flow_id: Flow ID
+            tags: List of tags to add
+            
+        Returns:
+            Updated FlowResponse or Flow object
+        """
+        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        data = {"tags": tags}
+        
+        # Try to parse as new FlowResponse, fall back to legacy Flow
+        try:
+            return self._post(f"/flows/{flow_id}/tags", json=data, headers=headers, model_class=FlowResponse)
+        except:
+            # Fall back to legacy model for backward compatibility
+            return self._post(f"/flows/{flow_id}/tags", json=data, model_class=Flow)
+    
+    def remove_tags(self, flow_id: str, tags: List[str]) -> Union[FlowResponse, Flow]:
+        """
+        Remove tags from a flow
+        
+        Args:
+            flow_id: Flow ID
+            tags: List of tags to remove
+            
+        Returns:
+            Updated FlowResponse or Flow object
+        """
+        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        data = {"tags": tags}
+        
+        # Try to parse as new FlowResponse, fall back to legacy Flow
+        try:
+            return self._delete(f"/flows/{flow_id}/tags", json=data, headers=headers, model_class=FlowResponse)
+        except:
+            # Fall back to legacy model for backward compatibility
+            return self._delete(f"/flows/{flow_id}/tags", json=data, model_class=Flow)
+    
+    def run(self, flow_id: str, run_params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Run a flow
+        
+        Args:
+            flow_id: Flow ID
+            run_params: Optional parameters for the run
+            
+        Returns:
+            Response containing run information
+        """
+        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        data = run_params or {}
+        
+        return self._post(f"/flows/{flow_id}/run", json=data, headers=headers)
+    
+    def get_run_status(self, flow_id: str, run_id: str) -> Dict[str, Any]:
+        """
+        Get the status of a flow run
+        
+        Args:
+            flow_id: Flow ID
+            run_id: Flow run ID
+            
+        Returns:
+            Response containing run status information
+        """
+        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        return self._get(f"/flows/{flow_id}/runs/{run_id}", headers=headers)
         
     def copy(
         self, 

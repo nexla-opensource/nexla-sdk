@@ -43,66 +43,18 @@ class BaseAPI:
             NexlaAuthError: If authentication fails
             NexlaAPIError: If the API returns an error
         """
-        url = f"{self.client.api_url}{path}"
-        headers = {
-            "Accept": f"application/vnd.nexla.api.{self.client.api_version}+json",
-            "Content-Type": "application/json"
-        }
+        # Use the client's request method which handles authentication
+        response = self.client.request(method, path, **kwargs)
         
-        # Add authorization header if we have an API key
-        if self.client.api_key:
-            headers["Authorization"] = f"Bearer {self.client.api_key}"
+        # Convert to model if specified
+        if model_class:
+            logger.debug(f"Converting response to model {model_class.__name__}")
+            result = self.client._convert_to_model(response, model_class)
+            logger.debug(f"Converted model result: {result}")
+            return result
+            
+        return response
         
-        # If custom headers are provided, merge them with the default headers
-        if "headers" in kwargs:
-            headers.update(kwargs.pop("headers"))
-            
-        try:
-            logger.debug(f"Requesting {method} {url}")
-            logger.debug(f"Headers: {headers}")
-            response = requests.request(method, url, headers=headers, **kwargs)
-            logger.debug(f"Response Status Code: {response.status_code}")
-            response.raise_for_status()
-            
-            # Return empty dict for 204 No Content
-            if response.status_code == 204:
-                return {}
-                
-            # Parse JSON response
-            data = response.json()
-            
-            # Convert to model if specified
-            if model_class:
-                return self.client._convert_to_model(data, model_class)
-                
-            return data
-            
-        except requests.exceptions.HTTPError as e:
-            logger.error(f"HTTPError encountered: {e}")
-            logger.error(f"Response Status Code: {response.status_code}")
-            logger.error(f"Response Content: {response.content}")
-            if response.status_code == 401:
-                raise NexlaAuthError("Authentication failed. Check your API key.") from e
-            
-            error_msg = f"API request failed: {e}"
-            error_data = {}
-            
-            if response.content:
-                try:
-                    error_data = response.json()
-                    if "message" in error_data:
-                        error_msg = f"API error: {error_data['message']}"
-                    elif "error" in error_data:
-                        error_msg = f"API error: {error_data['error']}"
-                except ValueError:
-                    error_msg = f"API error: {response.text}"
-                    
-            raise NexlaAPIError(error_msg, status_code=response.status_code, response=error_data) from e
-            
-        except requests.exceptions.RequestException as e:
-            logger.error(f"RequestException encountered: {e}")
-            raise NexlaError(f"Request failed: {e}") from e
-            
     def _get(self, path: str, model_class: Optional[Type[T]] = None, **kwargs) -> Union[Dict[str, Any], T]:
         """
         Send a GET request

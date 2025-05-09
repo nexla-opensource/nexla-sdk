@@ -6,7 +6,7 @@ A Python SDK for interacting with the Nexla API.
 Example:
     from nexla_sdk import NexlaClient
     
-    client = NexlaClient(api_key="your-api-key")
+    client = NexlaClient(service_key="your-service-key")
     flows = client.flows.list()
 """
 

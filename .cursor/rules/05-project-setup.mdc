@@ -19,7 +19,7 @@ The SDK uses environment variables for configuration. You can set these in a `.e
 
 ```
 NEXLA_API_URL=https://dataops.nexla.io/nexla-api
-NEXLA_TOKEN=your_nexla_session_token
+NEXLA_SERVICE_KEY=your_nexla_service_key
 ```
 
 ## Development Setup
