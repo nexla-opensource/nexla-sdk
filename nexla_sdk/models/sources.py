@@ -99,6 +99,15 @@ class IngestMethod(str, Enum):
     WEBHOOK = "webhook"
 
 
+class FileStatus(str, Enum):
+    """File ingestion status"""
+    NOT_STARTED = "NOT_STARTED"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETE = "COMPLETE"
+    ERROR = "ERROR"
+    PARTIAL = "PARTIAL"
+
+
 class Connector(BaseModel):
     """Connector information"""
     id: int = Field(..., description="Connector ID")

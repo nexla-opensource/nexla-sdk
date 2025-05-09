@@ -38,14 +38,16 @@ class NexsetSchema(BaseModel):
 class DataSource(BaseModel):
     """Data source information"""
     id: int = Field(..., description="Data source ID")
-    owner_id: int = Field(..., description="Owner ID")
-    org_id: int = Field(..., description="Organization ID")
+    owner_id: Optional[int] = Field(None, description="Owner ID")
+    org_id: Optional[int] = Field(None, description="Organization ID")
     name: str = Field(..., description="Data source name")
     description: Optional[str] = Field(None, description="Data source description")
     status: str = Field(..., description="Data source status")
     source_type: str = Field(..., description="Source type")
     connector: Optional[Dict[str, Any]] = Field(None, description="Connector information")
-    vendor_id: Optional[str] = Field(None, description="Vendor ID")
+    vendor_id: Optional[Union[str, int]] = Field(None, description="Vendor ID")
+    # Additional fields that might appear in API responses
+    origin_node_id: Optional[Union[str, int]] = Field(None, description="Origin node ID")
 
 
 class ParentDataSet(BaseModel):
@@ -55,8 +57,8 @@ class ParentDataSet(BaseModel):
     org_id: int = Field(..., description="Organization ID") 
     name: str = Field(..., description="Data set name")
     description: Optional[str] = Field(None, description="Data set description")
-    created_at: datetime = Field(..., description="Creation timestamp")
-    updated_at: datetime = Field(..., description="Last update timestamp")
+    created_at: Optional[datetime] = Field(None, description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
 
 class DataSink(BaseModel):
@@ -65,8 +67,9 @@ class DataSink(BaseModel):
     owner_id: int = Field(..., description="Owner ID")
     org_id: int = Field(..., description="Organization ID")
     name: str = Field(..., description="Data sink name")
-    status: str = Field(..., description="Data sink status")
-    sink_type: str = Field(..., description="Sink type")
+    status: Optional[str] = Field(None, description="Data sink status")
+    sink_type: Optional[str] = Field(None, description="Sink type")
+    description: Optional[str] = Field(None, description="Data sink description")
 
 
 class Nexset(Resource):

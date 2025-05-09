@@ -111,7 +111,7 @@ class BaseAPI:
         """
         return self._request("PATCH", path, model_class=model_class, **kwargs)
         
-    def _delete(self, path: str, model_class: Optional[Type[T]] = None, **kwargs) -> Union[Dict[str, Any], T]:
+    def _delete(self, path: str, model_class: Optional[Type[T]] = None, **kwargs) -> Union[Dict[str, Any], T, None]:
         """
         Send a DELETE request
         
@@ -121,6 +121,18 @@ class BaseAPI:
             **kwargs: Additional arguments to pass to requests
             
         Returns:
-            Response data
+            Response data or None for empty responses
+            
+        Note:
+            DELETE operations often return empty responses with a 204 or 200 status code
+            We handle this case by treating empty responses as successful
         """
-        return self._request("DELETE", path, model_class=model_class, **kwargs) 
+        # For delete operations, we don't try to convert empty responses
+        try:
+            return self._request("DELETE", path, model_class=None, **kwargs)
+        except NexlaError as e:
+            # If the error is because of an empty response with 200 status, consider it success
+            if "Expecting value: line 1 column 1 (char 0)" in str(e):
+                logger.debug("Delete operation returned empty response with 200 status, treating as success")
+                # Return an empty dict instead of raising an exception
+                return {} 
