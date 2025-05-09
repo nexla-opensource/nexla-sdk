@@ -23,15 +23,7 @@ import uuid
 from typing import Dict, Any, List
 
 from nexla_sdk.models.access import AccessRole
-
-# Handle different import scenarios
-try:
-    # When running from examples/api directory directly
-    from nexla_client import nexla_client
-except ImportError:
-    # When running as a module (python -m examples.api.nexsets)
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-    from api.nexla_client import nexla_client
+from examples.api.client import nexla_client
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

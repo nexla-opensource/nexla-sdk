@@ -32,6 +32,7 @@ from .webhooks import WebhooksAPI
 from .access import AccessControlAPI
 from .quarantine_settings import QuarantineSettingsAPI
 from .session import SessionAPI
+from .schemas import SchemasAPI
 
 # Import NotFoundError from exceptions
 from ..exceptions import NexlaNotFoundError
@@ -42,5 +43,6 @@ __all__ = [
     "SourcesAPI", "NexsetsAPI", "DestinationsAPI", "LookupsAPI",
     "TransformsAPI", "FlowsAPI", "CredentialsAPI", "CodeContainersAPI",
     "TeamsAPI", "ProjectsAPI", "UsersAPI", "OrganizationsAPI", 
-    "WebhooksAPI", "AccessControlAPI", "QuarantineSettingsAPI", "SessionAPI"
+    "WebhooksAPI", "AccessControlAPI", "QuarantineSettingsAPI", "SessionAPI",
+    "SchemasAPI"
 ] 

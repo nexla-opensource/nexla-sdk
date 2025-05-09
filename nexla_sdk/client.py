@@ -28,6 +28,7 @@ from .api.audit_logs import AuditLogsAPI
 from .api.session import SessionAPI
 from .api.access import AccessControlAPI
 from .api.quarantine_settings import QuarantineSettingsAPI
+from .api.schemas import SchemasAPI
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,7 @@ class NexlaClient:
         self.session = SessionAPI(self)
         self.access_control = AccessControlAPI(self)
         self.quarantine_settings = QuarantineSettingsAPI(self)
+        self.schemas = SchemasAPI(self)
         
         # Obtain session token
         self.obtain_session_token()
