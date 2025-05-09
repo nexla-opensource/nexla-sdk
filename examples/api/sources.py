@@ -20,7 +20,7 @@ from typing import Dict, Any, Optional
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import NexlaAPIError
 from nexla_sdk.models.sources import SourceType, FileStatus
-from nexla_client import nexla_client
+from examples.api.client import nexla_client
 
 
 # Configure logging

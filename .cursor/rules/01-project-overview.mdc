@@ -5,13 +5,42 @@ alwaysApply: false
 ---
 # Nexla SDK Project Overview
 
-The Nexla SDK is a Python library for interacting with the Nexla API. It provides a set of tools for data engineering and management tasks.
+The Nexla SDK is a Python client library for interacting with the Nexla API, a platform for data operations and integration.
 
-## Core Components
+## Key Components
 
-- [nexla_sdk/client.py](mdc:nexla_sdk/client.py) - Main client class for interacting with the Nexla API
-- [nexla_sdk/__init__.py](mdc:nexla_sdk/__init__.py) - Package initialization and exports
-- [nexla_sdk/exceptions.py](mdc:nexla_sdk/exceptions.py) - Custom exception classes for error handling
+The SDK is structured around these core components:
+
+1. **Client**: [nexla_sdk/client.py](mdc:nexla_sdk/client.py) contains the main `NexlaClient` class which initializes all API endpoints and handles authentication.
+
+2. **API Resources**: Each Nexla resource has its own API class in the [nexla_sdk/api/](mdc:nexla_sdk/api) directory, inheriting from [BaseAPI](mdc:nexla_sdk/api/base.py).
+
+3. **Models**: Type-safe Pydantic models in [nexla_sdk/models/](mdc:nexla_sdk/models) represent API responses with proper typing.
+
+4. **Exceptions**: Custom exception classes in [nexla_sdk/exceptions.py](mdc:nexla_sdk/exceptions.py) provide specific error handling.
+
+## API Organization
+
+The client exposes various resources as properties:
+
+```python
+client = NexlaClient(service_key="your-nexla-service-key")
+
+# Access different API resources
+client.flows        # Flow management
+client.sources      # Data sources
+client.destinations # Data destinations 
+client.nexsets      # Data sets
+client.credentials  # Credentials management
+client.transforms   # Data transformations
+client.webhooks     # Webhook integrations
+client.organizations # Organization management
+client.users        # User management
+client.teams        # Team management
+client.projects     # Project management
+```
+
+Each resource provides methods following a consistent pattern for CRUD operations and resource-specific actions.
 
 ## Key Areas
 

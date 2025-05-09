@@ -1,0 +1,69 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Nexla SDK API Resources
+
+The Nexla SDK provides access to various API resources through a consistent pattern.
+
+## Available Resources
+
+The `NexlaClient` exposes these main resources:
+
+| Resource | Description | Main Class |
+|----------|-------------|------------|
+| flows | Flow management | [FlowsAPI](mdc:nexla_sdk/api/flows.py) |
+| sources | Data source management | [SourcesAPI](mdc:nexla_sdk/api/sources.py) |
+| destinations | Data destination management | [DestinationsAPI](mdc:nexla_sdk/api/destinations.py) |
+| credentials | Credential management | [CredentialsAPI](mdc:nexla_sdk/api/credentials.py) |
+| lookups | Data map management | [LookupsAPI](mdc:nexla_sdk/api/lookups.py) |
+| transforms | Transformation management | [TransformsAPI](mdc:nexla_sdk/api/transforms.py) |
+| nexsets | Data set management | [NexsetsAPI](mdc:nexla_sdk/api/nexsets.py) |
+| webhooks | Webhook management | [WebhooksAPI](mdc:nexla_sdk/api/webhooks.py) |
+| organizations | Organization management | [OrganizationsAPI](mdc:nexla_sdk/api/organizations.py) |
+| users | User management | [UsersAPI](mdc:nexla_sdk/api/users.py) |
+| teams | Team management | [TeamsAPI](mdc:nexla_sdk/api/teams.py) |
+| projects | Project management | [ProjectsAPI](mdc:nexla_sdk/api/projects.py) |
+
+## Common API Patterns
+
+Most resources follow this consistent pattern:
+
+1. **List** resources:
+   ```python
+   items = client.<resource>.list()
+   ```
+
+2. **Get** a specific resource:
+   ```python
+   item = client.<resource>.get("<item_id>")
+   ```
+
+3. **Create** a new resource:
+   ```python
+   item_data = {"name": "New Item", ...}
+   new_item = client.<resource>.create(item_data)
+   ```
+
+4. **Update** an existing resource:
+   ```python
+   updated_item = client.<resource>.update("<item_id>", {"name": "Updated Name"})
+   ```
+
+5. **Delete** a resource:
+   ```python
+   client.<resource>.delete("<item_id>")
+   ```
+
+## Resource-Specific Operations
+
+Resources may have additional specialized operations like:
+
+- `client.flows.activate("<flow_id>")` - Activate a flow
+- `client.flows.pause("<flow_id>")` - Pause a flow
+- `client.sources.probe("<source_id>")` - Test connection to a data source
+
+## Base Implementation
+
+All APIs inherit from [BaseAPI](mdc:nexla_sdk/api/base.py), which provides common HTTP methods.

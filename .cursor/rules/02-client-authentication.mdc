@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Nexla SDK Authentication
+
+The Nexla SDK uses a service key for authentication, which is used to obtain and refresh session tokens automatically.
+
+## Authentication Flow
+
+1. The client is initialized with a service key:
+   ```python
+   from nexla_sdk import NexlaClient
+   client = NexlaClient(service_key="your-nexla-service-key")
+   ```
+
+2. The service key is used to obtain a session token from `/token` endpoint.
+
+3. The token is refreshed automatically before expiration.
+
+## Implementation Details
+
+- [nexla_sdk/client.py](mdc:nexla_sdk/client.py) implements the token management in:
+  - `obtain_session_token()` - Gets initial token using service key
+  - `refresh_session_token()` - Refreshes token before expiration
+  - `_ensure_valid_token()` - Called before each API request
+
+## Error Handling
+
+Authentication errors are handled through:
+- `NexlaAuthError` - For authentication failures
+- `NexlaAPIError` - For general API errors including auth problems
+
+## Environment Variables
+
+Service keys should be stored securely, for example in environment variables:
+
+```python
+import os
+from nexla_sdk import NexlaClient
+
+client = NexlaClient(service_key=os.environ["NEXLA_SERVICE_KEY"])
+```

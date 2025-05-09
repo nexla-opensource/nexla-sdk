@@ -16,7 +16,7 @@ import logging
 from typing import Dict, Any
 
 from nexla_sdk.models.access import AccessRole
-from nexla_client import nexla_client
+from examples.api.client import nexla_client
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

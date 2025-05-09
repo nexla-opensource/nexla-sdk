@@ -1,0 +1,58 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Nexla SDK Error Handling
+
+The Nexla SDK provides custom exception classes to handle different error types.
+
+## Exception Hierarchy
+
+All exceptions defined in [nexla_sdk/exceptions.py](mdc:nexla_sdk/exceptions.py):
+
+- `NexlaError` - Base exception class
+  - `NexlaAuthError` - Authentication failures
+  - `NexlaAPIError` - API errors with status code and response data
+    - `NexlaNotFoundError` - Resource not found (404) errors
+  - `NexlaValidationError` - Data validation errors
+  - `NexlaClientError` - Client configuration errors
+
+## Usage Pattern
+
+```python
+from nexla_sdk import NexlaClient
+from nexla_sdk.exceptions import NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaNotFoundError
+
+client = NexlaClient(service_key="your_nexla_service_key")
+
+try:
+    flow = client.flows.get("non_existent_id")
+except NexlaNotFoundError as e:
+    print(f"Flow not found: {e.resource_id}")
+except NexlaAuthError:
+    print("Authentication failed. Check your service key.")
+except NexlaAPIError as e:
+    print(f"API error: {str(e)}, Status code: {e.status_code}")
+except NexlaValidationError as e:
+    print(f"Validation error: {str(e)}")
+```
+
+## Error Properties
+
+The `NexlaAPIError` class includes:
+- `status_code` - HTTP status code
+- `response` - Raw response data
+
+The `NexlaNotFoundError` adds:
+- `resource_type` - Type of resource that wasn't found
+- `resource_id` - ID of the resource that wasn't found
+
+## Error Handling in the Client
+
+Errors are handled and categorized in the client's `request` method in [client.py](mdc:nexla_sdk/client.py). The client:
+
+1. Detects HTTP errors
+2. Parses error response data
+3. Raises the appropriate exception type
+4. Includes detailed error information
