@@ -20,7 +20,7 @@ def test_client_initialization_with_service_key():
 def test_client_initialization_defaults():
     client = NexlaClient(service_key="test_service_key")
     assert client.service_key == "test_service_key"
-    assert client.api_url == "https://dataops.nexla.com/nexla-api"  # Default URL
+    assert client.api_url == "https://dataops.nexla.io/nexla-api"  # Default URL
     assert client.api_version == "v1"  # Default version
 
 

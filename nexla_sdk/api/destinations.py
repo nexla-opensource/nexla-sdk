@@ -8,7 +8,9 @@ from ..models.access import AccessRole
 from ..models.destinations import (
     DataSink, DataSinkList, CreateDataSinkRequest, UpdateDataSinkRequest,
     CopyDataSinkRequest, DeleteDataSinkResponse, Destination, DestinationList,
-    SinkType, SinkStatus
+    SinkType, SinkStatus, LifetimeMetricsResponse, DailyMetricsResponse,
+    RunSummaryMetricsResponse, FileStatsResponse, FileMetricsResponse,
+    RawFileMetricsResponse, ConfigValidationResponse, FileStatus
 )
 from ..models.credentials import Credential
 
@@ -150,4 +152,187 @@ class DestinationsAPI(BaseAPI):
             request = request.dict(exclude_none=True)
             
         json_data = request if request else {}
-        return self._post(f"/data_sinks/{sink_id}/copy", json=json_data, model_class=DataSink) 
+        return self._post(f"/data_sinks/{sink_id}/copy", json=json_data, model_class=DataSink)
+    
+    def validate_config(self, sink_id: str, config: Optional[Dict[str, Any]] = None) -> ConfigValidationResponse:
+        """
+        Validate destination configuration
+        
+        Args:
+            sink_id: Data sink ID
+            config: Optional configuration to validate (uses stored config if None)
+            
+        Returns:
+            Configuration validation response
+        """
+        json_data = config if config else {}
+        return self._post(f"/data_sinks/{sink_id}/config/validate", json=json_data, model_class=ConfigValidationResponse)
+    
+    def get_metrics(self, sink_id: str) -> LifetimeMetricsResponse:
+        """
+        Get lifetime write metrics for a destination
+        
+        Args:
+            sink_id: Data sink ID
+            
+        Returns:
+            Lifetime metrics response
+        """
+        return self._get(f"/data_sinks/{sink_id}/metrics", model_class=LifetimeMetricsResponse)
+    
+    def get_daily_metrics(
+        self,
+        sink_id: str,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+        page: int = 1,
+        size: int = 100
+    ) -> DailyMetricsResponse:
+        """
+        Get daily write metrics for a destination
+        
+        Args:
+            sink_id: Data sink ID
+            from_date: Start date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            to_date: End date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            page: Page number for pagination
+            size: Number of entries per page
+            
+        Returns:
+            Daily metrics response
+        """
+        params = {"aggregate": 1, "page": page, "size": size}
+        if from_date:
+            params["from"] = from_date
+        if to_date:
+            params["to"] = to_date
+            
+        return self._get(f"/data_sinks/{sink_id}/metrics", params=params, model_class=DailyMetricsResponse)
+    
+    def get_run_summary_metrics(
+        self,
+        sink_id: str,
+        run_id: Optional[str] = None,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+        page: int = 1,
+        size: int = 100
+    ) -> RunSummaryMetricsResponse:
+        """
+        Get metrics aggregated by ingestion frequency
+        
+        Args:
+            sink_id: Data sink ID
+            run_id: Optional run ID to filter by
+            from_date: Start date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            to_date: End date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            page: Page number for pagination
+            size: Number of entries per page
+            
+        Returns:
+            Run summary metrics response
+        """
+        params = {"page": page, "size": size}
+        if run_id:
+            params["runId"] = run_id
+        if from_date:
+            params["from"] = from_date
+        if to_date:
+            params["to"] = to_date
+            
+        return self._get(f"/data_sinks/{sink_id}/metrics/run_summary", params=params, model_class=RunSummaryMetricsResponse)
+    
+    def get_files_stats_metrics(
+        self,
+        sink_id: str,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+        status: Optional[FileStatus] = None
+    ) -> FileStatsResponse:
+        """
+        Get file status metrics for a destination
+        
+        Args:
+            sink_id: Data sink ID
+            from_date: Start date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            to_date: End date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            status: Optional status filter
+            
+        Returns:
+            File stats response
+        """
+        params = {}
+        if from_date:
+            params["from"] = from_date
+        if to_date:
+            params["to"] = to_date
+        if status:
+            params["status"] = status.value
+            
+        return self._get(f"/data_sinks/{sink_id}/metrics/files_stats", params=params, model_class=FileStatsResponse)
+    
+    def get_files_metrics(
+        self,
+        sink_id: str,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+        status: Optional[FileStatus] = None,
+        page: int = 1,
+        size: int = 100
+    ) -> FileMetricsResponse:
+        """
+        Get write history per file
+        
+        Args:
+            sink_id: Data sink ID
+            from_date: Start date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            to_date: End date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            status: Optional status filter
+            page: Page number for pagination
+            size: Number of entries per page
+            
+        Returns:
+            File metrics response
+        """
+        params = {"page": page, "size": size}
+        if from_date:
+            params["from"] = from_date
+        if to_date:
+            params["to"] = to_date
+        if status:
+            params["status"] = status.value
+            
+        return self._get(f"/data_sinks/{sink_id}/metrics/files", params=params, model_class=FileMetricsResponse)
+    
+    def get_files_raw_metrics(
+        self,
+        sink_id: str,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
+        status: Optional[FileStatus] = None,
+        page: int = 1,
+        size: int = 100
+    ) -> RawFileMetricsResponse:
+        """
+        Get raw file write status metrics
+        
+        Args:
+            sink_id: Data sink ID
+            from_date: Start date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            to_date: End date in ISO format (YYYY-MM-DDTHH:MM:SS)
+            status: Optional status filter
+            page: Page number for pagination
+            size: Number of entries per page
+            
+        Returns:
+            Raw file metrics response
+        """
+        params = {"page": page, "size": size}
+        if from_date:
+            params["from"] = from_date
+        if to_date:
+            params["to"] = to_date
+        if status:
+            params["status"] = status.value
+            
+        return self._get(f"/data_sinks/{sink_id}/metrics/files_raw", params=params, model_class=RawFileMetricsResponse) 

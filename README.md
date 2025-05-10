@@ -10,20 +10,20 @@ pip install nexla-sdk
 
 ## Authentication
 
-The Nexla SDK requires a Session Token for authentication. You can get this token from the Nexla UI:
+The Nexla SDK requires a Service Key for authentication. You can create a service key from the Nexla UI:
 
 1. Go to your Nexla UI instance (e.g., `https://dataops.nexla.io`)
-2. Navigate to `/token` path in your browser (e.g., `https://dataops.nexla.io/token`)
-3. Log in if prompted
-4. Copy the access token provided
+2. Navigate to the **Authentication** screen in the **Settings** section
+3. Click the **Create Service Key** button
+4. Store the service key securely - it should be treated as highly sensitive since it is equivalent to your account password
 
 ## Quick Start
 
 ```python
 from nexla_sdk import NexlaClient
 
-# Initialize the client with your token
-client = NexlaClient(token="your_nexla_session_token")
+# Initialize the client with your service key
+client = NexlaClient(service_key="your_nexla_service_key")
 
 # List flows - returns a FlowList object with typed items
 flows = client.flows.list()
@@ -181,12 +181,12 @@ The SDK provides specific error classes for different error types:
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import NexlaAPIError, NexlaAuthError, NexlaValidationError
 
-client = NexlaClient(token="your_token")
+client = NexlaClient(service_key="your_nexla_service_key")
 
 try:
     flows = client.flows.list()
 except NexlaAuthError:
-    print("Authentication failed. Please check your token.")
+    print("Authentication failed. Please check your service key.")
 except NexlaAPIError as e:
     print(f"API error: {str(e)}, Status code: {e.status_code}")
 except NexlaValidationError as e:
@@ -196,3 +196,40 @@ except NexlaValidationError as e:
 ## License
 
 This project is licensed under the terms of the MIT license. 
+
+## Development
+
+### Running Integration Tests
+
+The SDK includes a comprehensive suite of integration tests that verify the functionality against a real Nexla API instance. These tests create temporary test resources, perform operations on them, and then clean up.
+
+To run the integration tests:
+
+1. Set up your environment variables:
+   ```bash
+   export NEXLA_TEST_API_URL="https://your-nexla-api-url"
+   export NEXLA_TEST_SERVICE_KEY="your-nexla-service-key"
+   export NEXLA_TEST_API_VERSION="v1"  # Optional, defaults to v1
+   export NEXLA_TEST_LOG_LEVEL="INFO"  # Optional, defaults to INFO
+   ```
+
+   Alternatively, create a `.env` file in the project root or tests directory with these variables.
+
+2. Run the tests using the provided script:
+   ```bash
+   ./run_integration_tests.py
+   ```
+
+   Or use pytest directly:
+   ```bash
+   pytest -v -m integration tests/api/
+   ```
+
+The integration tests cover:
+- Flows API (create, get, update, delete, list, activate/pause, tags)
+- Sources API (create, get, update, delete, list, activate/pause)
+- Nexsets API (Data Sets) (create, get, update, delete, list, schema, samples)
+- Projects API (create, get, update, delete, list, add/remove flows)
+- Users API (get current user, preferences, list users, metrics)
+
+*Note: These tests require API credentials with appropriate permissions to create and manage resources.* 

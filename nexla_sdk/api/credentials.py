@@ -14,7 +14,8 @@ from ..models.credentials import (
     ProbeResult,
     DirectoryTree,
     DataSample,
-    DeleteDataCredentialResponse
+    DeleteDataCredentialResponse,
+    FileProbeContent
 )
 
 
@@ -116,6 +117,29 @@ class CredentialsAPI(BaseAPI):
             Probe results
         """
         return self._get(f"/data_credentials/{credential_id}/probe")
+        
+    def probe_files(self, credential_id: Union[str, int], path: str, file: str) -> FileProbeContent:
+        """
+        Inspect file type credential content
+        
+        Args:
+            credential_id: Data credential ID
+            path: Path to the base directory
+            file: Path to the file relative to base path
+            
+        Returns:
+            File probe results with content details
+        """
+        payload = {
+            "path": path,
+            "file": file
+        }
+        
+        return self._post(
+            f"/data_credentials/{credential_id}/probe/files",
+            json=payload,
+            model_class=FileProbeContent
+        )
         
     def probe_tree(
         self, 

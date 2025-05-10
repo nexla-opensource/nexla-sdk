@@ -49,7 +49,7 @@ class NexlaClient:
     
     def __init__(self, 
                  service_key: str, 
-                 api_url: str = "https://dataops.nexla.com/nexla-api", 
+                 api_url: str = "https://dataops.nexla.io/nexla-api", 
                  api_version: str = "v1",
                  token_refresh_margin: int = 300):
         """

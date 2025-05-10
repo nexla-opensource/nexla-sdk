@@ -81,6 +81,20 @@ class VerifiedStatus(str, Enum):
     VERIFIED = "verified"
     UNVERIFIED = "unverified"
     FAILED = "failed"
+    SUCCESS = "200 Ok"     # Additional status returned by API
+    OK = "OK"
+    ERROR = "ERROR"
+    
+    # For backward compatibility, allow any string
+    def __new__(cls, *values):
+        obj = str.__new__(cls, values[0])
+        obj._value_ = values[0]
+        return obj
+    
+    @classmethod
+    def _missing_(cls, value):
+        # Handle unexpected values gracefully, allowing any string
+        return cls(value)
 
 
 class Owner(BaseModel):
@@ -228,6 +242,14 @@ class ProbeResult(BaseModel):
     output: Union[ProbeOutputFile, ProbeOutputDatabase, ProbeOutputNoSql, ProbeOutputAPI] = Field(
         ..., description="Probe output"
     )
+
+
+class FileProbeContent(BaseModel):
+    """File probe content result from the probe/files endpoint"""
+    status: int = Field(..., description="Response status code")
+    message: str = Field(..., description="Status message")
+    connection_type: str = Field(..., description="Connection type")
+    output: Dict[str, Any] = Field(..., description="Output with file format and content sample")
 
 
 class DirectoryItem(BaseModel):
