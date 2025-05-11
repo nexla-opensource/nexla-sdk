@@ -1,12 +1,10 @@
 """
 Example usage of the Notifications API
 """
-import os
 from datetime import datetime, timedelta
 import time
 from pprint import pprint
 
-from nexla_sdk import NexlaClient
 from nexla_sdk.models import (
     NotificationLevel, NotificationResourceType, NotificationEventType,
     CreateNotificationChannelSettingRequest, NotificationChannel,
@@ -14,16 +12,11 @@ from nexla_sdk.models import (
     NotificationSettingStatus
 )
 
-# Get client from environment
-def get_client():
-    service_key = os.environ.get("NEXLA_SERVICE_KEY")
-    if not service_key:
-        raise ValueError("NEXLA_SERVICE_KEY environment variable not set")
-    return NexlaClient(service_key=service_key)
+from examples.api.client import nexla_client
 
 def run_notification_examples():
     """Run through examples of using the Notifications API"""
-    client = get_client()
+    client = nexla_client
     
     print("\n=== Listing all notifications ===")
     # List all notifications

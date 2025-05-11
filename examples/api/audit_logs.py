@@ -1,21 +1,11 @@
 """
 Example usage of the Audit Logs API
 """
-import os
-from pprint import pprint
-
-from nexla_sdk import NexlaClient
-
-# Get client from environment
-def get_client():
-    service_key = os.environ.get("NEXLA_SERVICE_KEY")
-    if not service_key:
-        raise ValueError("NEXLA_SERVICE_KEY environment variable not set")
-    return NexlaClient(service_key=service_key)
+from examples.api.client import nexla_client
 
 def run_audit_logs_examples():
     """Run through examples of using the Audit Logs API"""
-    client = get_client()
+    client = nexla_client
     
     # First, get a resource ID to use for audit logs
     print("\n=== Getting a source to check audit logs ===")

@@ -1,11 +1,9 @@
 """
 Examples of using the Nexla Users API
 """
-import os
 import logging
 from datetime import datetime, timedelta
 
-from nexla_sdk import NexlaClient
 from nexla_sdk.models.users import CreateUserRequest, UpdateUserRequest, UserStatus
 from nexla_sdk.models.common import ResourceType
 
@@ -13,15 +11,13 @@ from nexla_sdk.models.common import ResourceType
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize client with service key
-service_key = os.environ.get("NEXLA_SERVICE_KEY", "your-service-key")
-client = NexlaClient(service_key=service_key)
+from examples.api.client import nexla_client
 
 
 def get_current_user():
     """Example: Get current user information"""
     logger.info("Getting current user information")
-    current_user = client.users.get_current()
+    current_user = nexla_client.users.get_current()
     
     logger.info(f"Current user: {current_user.full_name} ({current_user.email})")
     logger.info(f"User ID: {current_user.id}")
@@ -37,7 +33,7 @@ def get_user_preferences():
     """Example: Get user preferences"""
     logger.info("Getting user preferences")
     try:
-        preferences = client.users.get_preferences()
+        preferences = nexla_client.users.get_preferences()
         logger.info(f"User preferences: {preferences.preferences}")
         return preferences
     except Exception as e:
@@ -55,7 +51,7 @@ def list_users(access_role=None):
     
     # Note: This operation is only available for organization admins
     try:
-        users = client.users.list()
+        users = nexla_client.users.list()
         logger.info(f"Found {len(users)} users")
         
         for i, user in enumerate(users[:5], 1):  # Show first 5 users
@@ -84,12 +80,12 @@ def get_user_details(user_id=None):
     
     try:
         # First try non-expanded mode
-        user = client.users.get(user_id)
+        user = nexla_client.users.get(user_id)
         logger.info(f"Found user: {user.full_name} ({user.email})")
         
         # Then try expanded mode if you need account summary
         try:
-            expanded_user = client.users.get(user_id, expand=True)
+            expanded_user = nexla_client.users.get(user_id, expand=True)
             if hasattr(expanded_user, 'account_summary'):
                 sources = expanded_user.account_summary.data_sources.counts
                 sinks = expanded_user.account_summary.data_sinks.counts
@@ -129,7 +125,7 @@ def create_user(org_id, email, full_name, is_admin=False):
             status=UserStatus.ACTIVE
         )
         
-        new_user = client.users.create(user_request)
+        new_user = nexla_client.users.create(user_request)
         logger.info(f"Successfully created user: {new_user.full_name} (ID: {new_user.id})")
         return new_user
     except Exception as e:
@@ -163,7 +159,7 @@ def update_user(user_id, new_full_name=None, new_status=None):
         update_request = UpdateUserRequest(**update_data)
         
         # Update the user
-        updated_user = client.users.update(user_id, update_request)
+        updated_user = nexla_client.users.update(user_id, update_request)
         logger.info(f"Successfully updated user {updated_user.id}: {updated_user.full_name}")
         return updated_user
     except Exception as e:
@@ -191,7 +187,7 @@ def get_user_metrics(user_id=None):
     
     # Get account metrics
     try:
-        account_metrics = client.users.get_account_metrics(
+        account_metrics = nexla_client.users.get_account_metrics(
             user_id=user_id,
             from_date=from_date,
             to_date=to_date
@@ -203,7 +199,7 @@ def get_user_metrics(user_id=None):
     
     # Get source metrics
     try:
-        source_metrics = client.users.get_daily_metrics(
+        source_metrics = nexla_client.users.get_daily_metrics(
             user_id=user_id,
             resource_type=ResourceType.DATA_SOURCE,
             from_date=from_date,
@@ -216,7 +212,7 @@ def get_user_metrics(user_id=None):
     
     # Get flow stats
     try:
-        flow_stats = client.users.get_flow_stats(user_id=user_id)
+        flow_stats = nexla_client.users.get_flow_stats(user_id=user_id)
         logger.info(f"Flow stats retrieved successfully")
         results["flow_stats"] = flow_stats
     except Exception as e:

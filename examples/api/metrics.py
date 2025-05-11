@@ -1,23 +1,16 @@
 """
 Example usage of the Metrics API
 """
-import os
 from datetime import datetime, timedelta
 from pprint import pprint
 
-from nexla_sdk import NexlaClient
 from nexla_sdk.models import ResourceType
 
-# Get client from environment
-def get_client():
-    service_key = os.environ.get("NEXLA_SERVICE_KEY")
-    if not service_key:
-        raise ValueError("NEXLA_SERVICE_KEY environment variable not set")
-    return NexlaClient(service_key=service_key)
+from examples.api.client import nexla_client
 
 def run_metrics_examples():
     """Run through examples of using the Metrics API"""
-    client = get_client()
+    client = nexla_client
     
     # Get organization for metrics
     print("\n=== Getting organization for metrics ===")

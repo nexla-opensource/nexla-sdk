@@ -4,16 +4,13 @@ Examples of using the Nexla Teams API
 import os
 import logging
 
-from nexla_sdk import NexlaClient
 from nexla_sdk.models.access import AccessRole
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize client with service key
-service_key = os.environ.get("NEXLA_SERVICE_KEY", "your-service-key")
-client = NexlaClient(service_key=service_key)
+from examples.api.client import nexla_client
 
 
 def list_owned_teams():
@@ -21,7 +18,7 @@ def list_owned_teams():
     logger.info("Listing teams you own")
     
     try:
-        teams = client.teams.list()
+        teams = nexla_client.teams.list()
         logger.info(f"Found {len(teams.items)} teams")
         
         for i, team in enumerate(teams.items[:5], 1):  # Show first 5 teams
@@ -44,7 +41,7 @@ def list_member_teams():
     
     try:
         # Use string value 'member' instead of enum
-        member_teams = client.teams.list(access_role="member")
+        member_teams = nexla_client.teams.list(access_role="member")
         logger.info(f"Found {len(member_teams.items)} teams where you're a member")
         
         for i, team in enumerate(member_teams.items, 1):
@@ -67,7 +64,7 @@ def get_team_details(team_id):
     logger.info(f"Getting details for team ID {team_id}")
     
     try:
-        team = client.teams.get(team_id)
+        team = nexla_client.teams.get(team_id)
         logger.info(f"Team: {team.name} (ID: {team.id})")
         
         if team.description:
@@ -106,7 +103,7 @@ def create_team(name, description=None, members=None):
     logger.info(f"Creating new team: {name}")
     
     try:
-        team = client.teams.create(
+        team = nexla_client.teams.create(
             name=name,
             description=description,
             members=members
@@ -138,7 +135,7 @@ def update_team(team_id, name=None, description=None, members=None):
     logger.info(f"Updating team {team_id}")
     
     try:
-        updated_team = client.teams.update(
+        updated_team = nexla_client.teams.update(
             team_id=team_id,
             name=name,
             description=description,
@@ -168,7 +165,7 @@ def get_team_members(team_id):
     logger.info(f"Getting members for team {team_id}")
     
     try:
-        members = client.teams.get_members(team_id)
+        members = nexla_client.teams.get_members(team_id)
         
         logger.info(f"Team has {len(members.members)} members:")
         for i, member in enumerate(members.members, 1):
@@ -192,7 +189,7 @@ def add_team_members(team_id, new_members):
     logger.info(f"Adding members to team {team_id}")
     
     try:
-        updated_members = client.teams.add_members(team_id, new_members)
+        updated_members = nexla_client.teams.add_members(team_id, new_members)
         
         logger.info(f"Successfully updated team members. Team now has {len(updated_members.members)} members:")
         for i, member in enumerate(updated_members.members, 1):
@@ -216,7 +213,7 @@ def replace_team_members(team_id, members):
     logger.info(f"Replacing all members of team {team_id}")
     
     try:
-        updated_members = client.teams.replace_members(team_id, members)
+        updated_members = nexla_client.teams.replace_members(team_id, members)
         
         logger.info(f"Successfully replaced team members. Team now has {len(updated_members.members)} members:")
         for i, member in enumerate(updated_members.members, 1):
@@ -241,7 +238,7 @@ def remove_team_members(team_id, members_to_remove=None):
     logger.info(f"Removing {action} from team {team_id}")
     
     try:
-        remaining_members = client.teams.remove_members(team_id, members_to_remove)
+        remaining_members = nexla_client.teams.remove_members(team_id, members_to_remove)
         
         if len(remaining_members.members) == 0:
             logger.info("Successfully removed all members. Team now has no members.")
@@ -268,7 +265,7 @@ def delete_team(team_id, force=False):
     
     try:
         params = {"force": 1} if force else {}
-        result = client.teams.delete(team_id)
+        result = nexla_client.teams.delete(team_id)
         logger.info(f"Successfully deleted team {team_id}")
         return True
     except Exception as e:

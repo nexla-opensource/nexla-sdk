@@ -4,23 +4,17 @@ Example usage of the Quarantine Settings API
 import os
 from pprint import pprint
 
-from nexla_sdk import NexlaClient
 from nexla_sdk.models import (
     CreateQuarantineSettingsRequest, UpdateQuarantineSettingsRequest,
     QuarantineConfig, QuarantineResourceType
 )
 from nexla_sdk.api.quarantine_settings import ResourceTypeEnum
 
-# Get client from environment
-def get_client():
-    service_key = os.environ.get("NEXLA_SERVICE_KEY")
-    if not service_key:
-        raise ValueError("NEXLA_SERVICE_KEY environment variable not set")
-    return NexlaClient(service_key=service_key)
+from examples.api.client import nexla_client
 
 def run_quarantine_settings_examples():
     """Run through examples of using the Quarantine Settings API"""
-    client = get_client()
+    client = nexla_client
     
     # First, get your user ID and a credential ID to use
     print("\n=== Getting user information ===")
