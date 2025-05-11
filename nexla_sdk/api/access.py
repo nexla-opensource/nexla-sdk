@@ -13,6 +13,48 @@ from ..models.access import Accessor, AccessorsRequest
 class AccessControlAPI(BaseAPI):
     """API client for access control operations"""
 
+    def _manage_accessors(
+        self,
+        resource_name_plural: str,  # e.g., "data_sources", "data_sets"
+        resource_id: Union[int, str],
+        http_method: str,  # "GET", "POST", "PUT", "DELETE"
+        accessors_payload: Optional[AccessorsRequest] = None
+    ) -> List[Accessor]:
+        """
+        Helper method to manage accessors for any resource type.
+        
+        Args:
+            resource_name_plural: Plural name of the resource type (e.g., "data_sources")
+            resource_id: The ID of the resource
+            http_method: HTTP method to use ("GET", "POST", "PUT", "DELETE")
+            accessors_payload: Optional payload for accessors
+
+        Returns:
+            List[Accessor]: The list of accessors for the resource
+
+        Raises:
+            NexlaAPIError: If the request fails
+            NexlaNotFoundError: If the resource is not found
+            ValueError: If an unsupported HTTP method is provided
+        """
+        url = f"/{resource_name_plural}/{resource_id}/accessors"
+        kwargs = {}
+        if accessors_payload and http_method in ["POST", "PUT", "DELETE"]:
+            kwargs['json'] = accessors_payload.dict(exclude_none=True)
+
+        if http_method == "GET":
+            return self._get(url, response_model=List[Accessor], **kwargs)
+        elif http_method == "POST":
+            return self._post(url, response_model=List[Accessor], **kwargs)
+        elif http_method == "PUT":
+            return self._put(url, response_model=List[Accessor], **kwargs)
+        elif http_method == "DELETE":
+            return self._delete(url, response_model=List[Accessor], **kwargs)
+        else:
+            raise ValueError(f"Unsupported HTTP method: {http_method}")
+
+    # Data Source access control methods
+
     def get_data_source_accessors(self, data_source_id: int) -> List[Accessor]:
         """
         Get Access Rules on Data Source
@@ -29,8 +71,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data source is not found
         """
-        url = f"/data_sources/{data_source_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("data_sources", data_source_id, "GET")
 
     def replace_data_source_accessors(
         self, data_source_id: int, accessors: AccessorsRequest
@@ -52,8 +93,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data source is not found
         """
-        url = f"/data_sources/{data_source_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_sources", data_source_id, "POST", accessors_payload=accessors)
 
     def add_data_source_accessors(
         self, data_source_id: int, accessors: AccessorsRequest
@@ -75,8 +115,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data source is not found
         """
-        url = f"/data_sources/{data_source_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_sources", data_source_id, "PUT", accessors_payload=accessors)
 
     def delete_data_source_accessors(
         self, data_source_id: int, accessors: Optional[AccessorsRequest] = None
@@ -98,10 +137,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data source is not found
         """
-        url = f"/data_sources/{data_source_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("data_sources", data_source_id, "DELETE", accessors_payload=accessors)
 
     # Nexset (Data Set) access control methods
 
@@ -121,8 +157,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the Nexset is not found
         """
-        url = f"/data_sets/{data_set_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("data_sets", data_set_id, "GET")
 
     def replace_nexset_accessors(
         self, data_set_id: int, accessors: AccessorsRequest
@@ -145,8 +180,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the Nexset is not found
         """
-        url = f"/data_sets/{data_set_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_sets", data_set_id, "POST", accessors_payload=accessors)
 
     def add_nexset_accessors(
         self, data_set_id: int, accessors: AccessorsRequest
@@ -167,8 +201,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the Nexset is not found
         """
-        url = f"/data_sets/{data_set_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_sets", data_set_id, "PUT", accessors_payload=accessors)
 
     def delete_nexset_accessors(
         self, data_set_id: int, accessors: Optional[AccessorsRequest] = None
@@ -190,10 +223,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the Nexset is not found
         """
-        url = f"/data_sets/{data_set_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("data_sets", data_set_id, "DELETE", accessors_payload=accessors)
 
     # Data Sink access control methods
 
@@ -213,8 +243,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data sink is not found
         """
-        url = f"/data_sinks/{data_sink_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("data_sinks", data_sink_id, "GET")
 
     def replace_data_sink_accessors(
         self, data_sink_id: int, accessors: AccessorsRequest
@@ -237,8 +266,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data sink is not found
         """
-        url = f"/data_sinks/{data_sink_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_sinks", data_sink_id, "POST", accessors_payload=accessors)
 
     def add_data_sink_accessors(
         self, data_sink_id: int, accessors: AccessorsRequest
@@ -259,8 +287,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data sink is not found
         """
-        url = f"/data_sinks/{data_sink_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_sinks", data_sink_id, "PUT", accessors_payload=accessors)
 
     def delete_data_sink_accessors(
         self, data_sink_id: int, accessors: Optional[AccessorsRequest] = None
@@ -282,10 +309,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data sink is not found
         """
-        url = f"/data_sinks/{data_sink_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("data_sinks", data_sink_id, "DELETE", accessors_payload=accessors)
 
     # Data Map access control methods
 
@@ -305,8 +329,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data map is not found
         """
-        url = f"/data_maps/{data_map_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("data_maps", data_map_id, "GET")
 
     def replace_data_map_accessors(
         self, data_map_id: int, accessors: AccessorsRequest
@@ -329,8 +352,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data map is not found
         """
-        url = f"/data_maps/{data_map_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_maps", data_map_id, "POST", accessors_payload=accessors)
 
     def add_data_map_accessors(
         self, data_map_id: int, accessors: AccessorsRequest
@@ -351,8 +373,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data map is not found
         """
-        url = f"/data_maps/{data_map_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_maps", data_map_id, "PUT", accessors_payload=accessors)
 
     def delete_data_map_accessors(
         self, data_map_id: int, accessors: Optional[AccessorsRequest] = None
@@ -374,10 +395,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the data map is not found
         """
-        url = f"/data_maps/{data_map_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("data_maps", data_map_id, "DELETE", accessors_payload=accessors)
 
     # Credential access control methods
 
@@ -397,8 +415,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the credential is not found
         """
-        url = f"/data_credentials/{credential_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("data_credentials", credential_id, "GET")
 
     def replace_credential_accessors(
         self, credential_id: int, accessors: AccessorsRequest
@@ -421,8 +438,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the credential is not found
         """
-        url = f"/data_credentials/{credential_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_credentials", credential_id, "POST", accessors_payload=accessors)
 
     def add_credential_accessors(
         self, credential_id: int, accessors: AccessorsRequest
@@ -443,8 +459,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the credential is not found
         """
-        url = f"/data_credentials/{credential_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("data_credentials", credential_id, "PUT", accessors_payload=accessors)
 
     def delete_credential_accessors(
         self, credential_id: int, accessors: Optional[AccessorsRequest] = None
@@ -466,10 +481,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the credential is not found
         """
-        url = f"/data_credentials/{credential_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("data_credentials", credential_id, "DELETE", accessors_payload=accessors)
 
     # Project access control methods
 
@@ -489,8 +501,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the project is not found
         """
-        url = f"/projects/{project_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("projects", project_id, "GET")
 
     def replace_project_accessors(
         self, project_id: int, accessors: AccessorsRequest
@@ -513,8 +524,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the project is not found
         """
-        url = f"/projects/{project_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("projects", project_id, "POST", accessors_payload=accessors)
 
     def add_project_accessors(
         self, project_id: int, accessors: AccessorsRequest
@@ -535,8 +545,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the project is not found
         """
-        url = f"/projects/{project_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("projects", project_id, "PUT", accessors_payload=accessors)
 
     def delete_project_accessors(
         self, project_id: int, accessors: Optional[AccessorsRequest] = None
@@ -558,10 +567,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the project is not found
         """
-        url = f"/projects/{project_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("projects", project_id, "DELETE", accessors_payload=accessors)
 
     # Flow access control methods
 
@@ -581,8 +587,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the flow is not found
         """
-        url = f"/flows/{flow_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("flows", flow_id, "GET")
 
     def replace_flow_accessors(
         self, flow_id: str, accessors: AccessorsRequest
@@ -605,8 +610,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the flow is not found
         """
-        url = f"/flows/{flow_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("flows", flow_id, "POST", accessors_payload=accessors)
 
     def add_flow_accessors(
         self, flow_id: str, accessors: AccessorsRequest
@@ -627,8 +631,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the flow is not found
         """
-        url = f"/flows/{flow_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("flows", flow_id, "PUT", accessors_payload=accessors)
 
     def delete_flow_accessors(
         self, flow_id: str, accessors: Optional[AccessorsRequest] = None
@@ -650,10 +653,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the flow is not found
         """
-        url = f"/flows/{flow_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor])
+        return self._manage_accessors("flows", flow_id, "DELETE", accessors_payload=accessors)
 
     # Team access control methods
 
@@ -673,8 +673,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the team is not found
         """
-        url = f"/teams/{team_id}/accessors"
-        return self._get(url, response_model=List[Accessor])
+        return self._manage_accessors("teams", team_id, "GET")
 
     def replace_team_accessors(
         self, team_id: int, accessors: AccessorsRequest
@@ -697,8 +696,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the team is not found
         """
-        url = f"/teams/{team_id}/accessors"
-        return self._post(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("teams", team_id, "POST", accessors_payload=accessors)
 
     def add_team_accessors(
         self, team_id: int, accessors: AccessorsRequest
@@ -719,8 +717,7 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the team is not found
         """
-        url = f"/teams/{team_id}/accessors"
-        return self._put(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
+        return self._manage_accessors("teams", team_id, "PUT", accessors_payload=accessors)
 
     def delete_team_accessors(
         self, team_id: int, accessors: Optional[AccessorsRequest] = None
@@ -742,7 +739,4 @@ class AccessControlAPI(BaseAPI):
             NexlaAPIError: If the request fails
             NexlaNotFoundError: If the team is not found
         """
-        url = f"/teams/{team_id}/accessors"
-        if accessors:
-            return self._delete(url, json=accessors.dict(exclude_none=True), response_model=List[Accessor])
-        return self._delete(url, response_model=List[Accessor]) 
+        return self._manage_accessors("teams", team_id, "DELETE", accessors_payload=accessors) 

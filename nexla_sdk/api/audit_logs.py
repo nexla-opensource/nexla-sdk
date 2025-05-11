@@ -10,6 +10,23 @@ from ..models.audit_logs import AuditLogEntry
 class AuditLogsAPI(BaseAPI):
     """API client for audit log endpoints"""
 
+    def _get_resource_audit_log(self, resource_path_segment: str, resource_id: int) -> List[AuditLogEntry]:
+        """
+        Private helper method to get audit logs for any resource type
+        
+        Args:
+            resource_path_segment: The API path segment for the resource type
+            resource_id: The unique ID of the resource
+            
+        Returns:
+            List of audit log entries
+        """
+        return self._get(
+            f"/{resource_path_segment}/{resource_id}/audit_log",
+            headers={"Accept": "application/vnd.nexla.api.v1+json"},
+            model_class=List[AuditLogEntry]
+        )
+
     def get_data_source_audit_log(self, source_id: int) -> List[AuditLogEntry]:
         """
         Get Audit Log for a Data Source
@@ -22,11 +39,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/data_sources/{source_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("data_sources", source_id)
         
     def get_data_sink_audit_log(self, sink_id: int) -> List[AuditLogEntry]:
         """
@@ -40,11 +53,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/data_sinks/{sink_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("data_sinks", sink_id)
         
     def get_nexset_audit_log(self, set_id: int) -> List[AuditLogEntry]:
         """
@@ -58,11 +67,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/data_sets/{set_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("data_sets", set_id)
         
     def get_data_credential_audit_log(self, credential_id: int) -> List[AuditLogEntry]:
         """
@@ -76,11 +81,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/data_credentials/{credential_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("data_credentials", credential_id)
         
     def get_data_map_audit_log(self, data_map_id: int) -> List[AuditLogEntry]:
         """
@@ -94,11 +95,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/data_maps/{data_map_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("data_maps", data_map_id)
         
     def get_data_schema_audit_log(self, schema_id: int) -> List[AuditLogEntry]:
         """
@@ -112,11 +109,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/data_schemas/{schema_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("data_schemas", schema_id)
         
     def get_code_container_audit_log(self, code_container_id: int) -> List[AuditLogEntry]:
         """
@@ -131,11 +124,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/code_containers/{code_container_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("code_containers", code_container_id)
         
     def get_project_audit_log(self, project_id: int) -> List[AuditLogEntry]:
         """
@@ -149,11 +138,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/projects/{project_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("projects", project_id)
         
     def get_doc_container_audit_log(self, doc_container_id: int) -> List[AuditLogEntry]:
         """
@@ -167,11 +152,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/doc_containers/{doc_container_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("doc_containers", doc_container_id)
         
     def get_user_audit_log(self, user_id: int) -> List[AuditLogEntry]:
         """
@@ -185,11 +166,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/users/{user_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("users", user_id)
         
     def get_org_audit_log(self, org_id: int) -> List[AuditLogEntry]:
         """
@@ -203,11 +180,7 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/orgs/{org_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        )
+        return self._get_resource_audit_log("orgs", org_id)
         
     def get_team_audit_log(self, team_id: int) -> List[AuditLogEntry]:
         """
@@ -221,8 +194,4 @@ class AuditLogsAPI(BaseAPI):
         Returns:
             List of audit log entries
         """
-        return self._get(
-            f"/teams/{team_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
-            model_class=List[AuditLogEntry]
-        ) 
+        return self._get_resource_audit_log("teams", team_id) 
