@@ -6,11 +6,11 @@ import time
 from typing import Dict, Any, Optional, Type, TypeVar, Union, List, cast
 import base64
 
-import requests
 from pydantic import BaseModel, ValidationError
 
 from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError, NexlaNotFoundError
 from .auth import TokenAuthHandler
+from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
 from .api.flows import FlowsAPI
 from .api.sources import SourcesAPI
 from .api.destinations import DestinationsAPI
@@ -52,7 +52,8 @@ class NexlaClient:
                  service_key: str, 
                  api_url: str = "https://dataops.nexla.io/nexla-api", 
                  api_version: str = "v1",
-                 token_refresh_margin: int = 300):
+                 token_refresh_margin: int = 300,
+                 http_client: Optional[HttpClientInterface] = None):
         """
         Initialize the Nexla client
         
@@ -61,16 +62,19 @@ class NexlaClient:
             api_url: Nexla API URL
             api_version: API version to use
             token_refresh_margin: Seconds before token expiry to trigger refresh (default: 5 minutes)
+            http_client: HTTP client implementation (defaults to RequestsHttpClient)
         """
         self.api_url = api_url.rstrip('/')
         self.api_version = api_version
+        self.http_client = http_client or RequestsHttpClient()
         
         # Initialize authentication handler
         self.auth_handler = TokenAuthHandler(
             service_key=service_key,
             api_url=api_url,
             api_version=api_version,
-            token_refresh_margin=token_refresh_margin
+            token_refresh_margin=token_refresh_margin,
+            http_client=self.http_client
         )
         
         # Initialize API endpoints
@@ -135,7 +139,7 @@ class NexlaClient:
         Args:
             method: HTTP method
             path: API path
-            **kwargs: Additional arguments to pass to requests
+            **kwargs: Additional arguments to pass to HTTP client
             
         Returns:
             API response as a dictionary
@@ -161,18 +165,10 @@ class NexlaClient:
             headers.update(kwargs.pop("headers"))
             
         try:
-            response = requests.request(method, url, headers=headers, **kwargs)
-            response.raise_for_status()
+            return self.http_client.request(method, url, headers=headers, **kwargs)
             
-            # Return empty dict for 204 No Content
-            if response.status_code == 204:
-                return {}
-                
-            # Parse JSON response
-            return response.json()
-            
-        except requests.exceptions.HTTPError as e:
-            if response.status_code == 401:
+        except HttpClientError as e:
+            if getattr(e, 'status_code', None) == 401:
                 # If authentication failed, try refreshing the token
                 logger.warning("Request failed with 401, refreshing session token and retrying")
                 self.auth_handler.obtain_session_token()  # Get a new token
@@ -182,37 +178,29 @@ class NexlaClient:
                 
                 # Retry the request with the new token
                 try:
-                    response = requests.request(method, url, headers=headers, **kwargs)
-                    response.raise_for_status()
-                    
-                    # Return empty dict for 204 No Content
-                    if response.status_code == 204:
-                        return {}
-                    
-                    # Parse JSON response
-                    return response.json()
-                except requests.exceptions.HTTPError:
+                    return self.http_client.request(method, url, headers=headers, **kwargs)
+                except HttpClientError as retry_error:
                     # If retry also fails, fall through to error handling
-                    pass
+                    e = retry_error
             
             # Handle error response
-            if response.status_code == 401:
+            if getattr(e, 'status_code', None) == 401:
                 raise NexlaAuthError("Authentication failed. Check your service key.") from e
             
             error_msg = f"API request failed: {e}"
-            error_data = {}
+            error_data = getattr(e, 'response', {})
             
-            if response.content:
-                try:
-                    error_data = response.json()
-                    if "message" in error_data:
-                        error_msg = f"API error: {error_data['message']}"
-                    elif "error" in error_data:
-                        error_msg = f"API error: {error_data['error']}"
-                except ValueError:
-                    error_msg = f"API error: {response.text}"
+            if error_data:
+                if "message" in error_data:
+                    error_msg = f"API error: {error_data['message']}"
+                elif "error" in error_data:
+                    error_msg = f"API error: {error_data['error']}"
                     
-            raise NexlaAPIError(error_msg, status_code=response.status_code, response=error_data) from e
+            raise NexlaAPIError(
+                error_msg, 
+                status_code=getattr(e, 'status_code', None), 
+                response=error_data
+            ) from e
             
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             raise NexlaError(f"Request failed: {e}") from e 

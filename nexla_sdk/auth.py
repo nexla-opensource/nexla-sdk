@@ -5,9 +5,8 @@ import logging
 import time
 from typing import Dict, Any, Optional
 
-import requests
-
 from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError
+from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +25,8 @@ class TokenAuthHandler:
                  service_key: str,
                  api_url: str,
                  api_version: str,
-                 token_refresh_margin: int = 300):
+                 token_refresh_margin: int = 300,
+                 http_client: Optional[HttpClientInterface] = None):
         """
         Initialize the token authentication handler
         
@@ -35,11 +35,13 @@ class TokenAuthHandler:
             api_url: Nexla API URL
             api_version: API version to use
             token_refresh_margin: Seconds before token expiry to trigger refresh (default: 5 minutes)
+            http_client: HTTP client implementation (defaults to RequestsHttpClient)
         """
         self.service_key = service_key
         self.api_url = api_url.rstrip('/')
         self.api_version = api_version
         self.token_refresh_margin = token_refresh_margin
+        self.http_client = http_client or RequestsHttpClient()
         
         # Session token management
         self._access_token = None
@@ -74,10 +76,7 @@ class TokenAuthHandler:
         }
         
         try:
-            response = requests.post(url, headers=headers)
-            response.raise_for_status()
-            
-            token_data = response.json()
+            token_data = self.http_client.request("POST", url, headers=headers)
             self._access_token = token_data.get("access_token")
             # Calculate expiry time (current time + expires_in seconds)
             expires_in = token_data.get("expires_in", 3600)
@@ -85,26 +84,26 @@ class TokenAuthHandler:
             
             logger.debug("Session token obtained successfully")
             
-        except requests.exceptions.HTTPError as e:
-            if response.status_code == 401:
+        except HttpClientError as e:
+            if getattr(e, 'status_code', None) == 401:
                 raise NexlaAuthError("Authentication failed. Check your service key.") from e
             
             error_msg = f"Failed to obtain session token: {e}"
-            error_data = {}
+            error_data = getattr(e, 'response', {})
             
-            if response.content:
-                try:
-                    error_data = response.json()
-                    if "message" in error_data:
-                        error_msg = f"Authentication error: {error_data['message']}"
-                    elif "error" in error_data:
-                        error_msg = f"Authentication error: {error_data['error']}"
-                except ValueError:
-                    error_msg = f"Authentication error: {response.text}"
+            if error_data:
+                if "message" in error_data:
+                    error_msg = f"Authentication error: {error_data['message']}"
+                elif "error" in error_data:
+                    error_msg = f"Authentication error: {error_data['error']}"
                     
-            raise NexlaAPIError(error_msg, status_code=response.status_code, response=error_data) from e
+            raise NexlaAPIError(
+                error_msg, 
+                status_code=getattr(e, 'status_code', None), 
+                response=error_data
+            ) from e
             
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             raise NexlaError(f"Failed to obtain session token: {e}") from e
 
     def refresh_session_token(self) -> None:
@@ -126,10 +125,7 @@ class TokenAuthHandler:
         }
         
         try:
-            response = requests.post(url, headers=headers)
-            response.raise_for_status()
-            
-            token_data = response.json()
+            token_data = self.http_client.request("POST", url, headers=headers)
             self._access_token = token_data.get("access_token")
             # Calculate expiry time (current time + expires_in seconds)
             expires_in = token_data.get("expires_in", 3600)
@@ -137,29 +133,29 @@ class TokenAuthHandler:
             
             logger.debug("Session token refreshed successfully")
             
-        except requests.exceptions.HTTPError as e:
-            if response.status_code == 401:
+        except HttpClientError as e:
+            if getattr(e, 'status_code', None) == 401:
                 # If refresh fails with 401, try obtaining a new token
                 logger.warning("Token refresh failed with 401, obtaining new session token")
                 self.obtain_session_token()
                 return
                 
             error_msg = f"Failed to refresh session token: {e}"
-            error_data = {}
+            error_data = getattr(e, 'response', {})
             
-            if response.content:
-                try:
-                    error_data = response.json()
-                    if "message" in error_data:
-                        error_msg = f"Token refresh error: {error_data['message']}"
-                    elif "error" in error_data:
-                        error_msg = f"Token refresh error: {error_data['error']}"
-                except ValueError:
-                    error_msg = f"Token refresh error: {response.text}"
+            if error_data:
+                if "message" in error_data:
+                    error_msg = f"Token refresh error: {error_data['message']}"
+                elif "error" in error_data:
+                    error_msg = f"Token refresh error: {error_data['error']}"
                     
-            raise NexlaAPIError(error_msg, status_code=response.status_code, response=error_data) from e
+            raise NexlaAPIError(
+                error_msg, 
+                status_code=getattr(e, 'status_code', None), 
+                response=error_data
+            ) from e
             
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             raise NexlaError(f"Failed to refresh session token: {e}") from e
     
     def ensure_valid_token(self) -> str:

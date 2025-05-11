@@ -12,6 +12,7 @@ Example:
 
 from .client import NexlaClient
 from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError, NexlaNotFoundError
+from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
 
 __version__ = "0.1.0"
 __all__ = [
@@ -21,5 +22,8 @@ __all__ = [
     "NexlaAPIError",
     "NexlaValidationError",
     "NexlaClientError",
-    "NexlaNotFoundError"
+    "NexlaNotFoundError",
+    "HttpClientInterface",
+    "RequestsHttpClient",
+    "HttpClientError"
 ] 
