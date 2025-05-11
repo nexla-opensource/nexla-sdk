@@ -1,0 +1,84 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Coding Principles
+
+The Nexla SDK follows these core principles of good code:
+
+## 🔷 Object-Oriented Design Principles (SOLID)
+
+1. **S – Single Responsibility Principle (SRP)**
+   A class should have only one reason to change (i.e., one responsibility).
+
+2. **O – Open/Closed Principle (OCP)**
+   Software entities should be open for extension but closed for modification.
+
+3. **L – Liskov Substitution Principle (LSP)**
+   Subtypes must be substitutable for their base types without altering the correctness of the program.
+
+4. **I – Interface Segregation Principle (ISP)**
+   Clients should not be forced to depend on interfaces they do not use.
+
+5. **D – Dependency Inversion Principle (DIP)**
+   High-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+## 🔶 General Programming Principles
+
+1. **DRY – Don't Repeat Yourself**
+   Avoid code duplication; encapsulate repeating logic in functions or classes.
+
+2. **KISS – Keep It Simple, Stupid**
+   Design should be as simple as possible but no simpler.
+
+3. **YAGNI – You Ain't Gonna Need It**
+   Don't implement something until it is necessary.
+
+4. **Separation of Concerns (SoC)**
+   Divide a program into distinct sections, each addressing a separate concern.
+
+5. **High Cohesion, Low Coupling**
+   Related functionality should be grouped together (cohesion), and different modules should have minimal dependencies (coupling).
+
+## 🟢 Clean Code Principles
+
+1. **Meaningful names**
+   Use descriptive variable, function, and class names.
+
+2. **Small functions**
+   Functions should do one thing and do it well.
+
+3. **Avoid side effects**
+   Functions should avoid modifying external state unless explicitly intended.
+
+4. **Code should read like prose**
+   Code should be easily readable by humans.
+
+5. **Error handling is not business logic**
+   Keep business logic and error handling separate.
+
+## 🔵 Design Principles (Software Architecture)
+
+1. **Principle of Least Astonishment**
+   The code should behave in a way users expect.
+
+2. **Law of Demeter (LoD)**
+   "Talk to friends, not to strangers" – limit how much a module knows about others.
+
+3. **Composition over Inheritance**
+   Favor composition for code reuse over deep inheritance hierarchies.
+
+4. **Encapsulation**
+   Hide internal implementation details; expose only what's necessary.
+
+## ⚙️ Testing and Quality Principles
+
+1. **Testability**
+   Code should be written in a way that makes it easy to test.
+
+2. **Fail Fast**
+   Errors should surface early and clearly.
+
+3. **Code should be self-documenting**
+   Code should convey its intent without needing comments.
