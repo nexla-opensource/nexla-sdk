@@ -20,7 +20,7 @@ from typing import Dict, Any, Optional, List
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import NexlaAPIError, NexlaNotFoundError
 from nexla_sdk.models.lookups import Lookup, DataType, SampleEntriesResponse
-from examples.api.client import nexla_client
+from client import nexla_client
 
 
 # Configure logging

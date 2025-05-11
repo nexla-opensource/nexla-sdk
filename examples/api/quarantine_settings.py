@@ -10,7 +10,7 @@ from nexla_sdk.models import (
 )
 from nexla_sdk.api.quarantine_settings import ResourceTypeEnum
 
-from examples.api.client import nexla_client
+from client import nexla_client
 
 def run_quarantine_settings_examples():
     """Run through examples of using the Quarantine Settings API"""

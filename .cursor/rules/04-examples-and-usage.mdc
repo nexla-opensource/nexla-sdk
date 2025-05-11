@@ -10,7 +10,7 @@ The Nexla SDK provides a consistent pattern for interacting with the Nexla API. 
 ## Client 
 
 ```python
-from examples.api.client import nexla_client
+from client import nexla_client
 ```
 
 ## Common Resource Operations

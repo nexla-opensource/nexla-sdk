@@ -11,7 +11,7 @@ from nexla_sdk.models.common import ResourceType
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from examples.api.client import nexla_client
+from client import nexla_client
 
 
 def get_current_user():

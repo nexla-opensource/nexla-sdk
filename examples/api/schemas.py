@@ -8,7 +8,7 @@ import os
 import json
 from typing import Dict, Any, List, Optional
 
-from examples.api.client import nexla_client
+from client import nexla_client
 from nexla_sdk.models.schemas import DataSchema, SchemaProperty
 
 # Configure logging

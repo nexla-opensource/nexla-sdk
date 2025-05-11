@@ -12,7 +12,7 @@ from nexla_sdk.models import (
     NotificationSettingStatus
 )
 
-from examples.api.client import nexla_client
+from client import nexla_client
 
 def run_notification_examples():
     """Run through examples of using the Notifications API"""

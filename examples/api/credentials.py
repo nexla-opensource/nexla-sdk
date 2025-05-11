@@ -10,7 +10,7 @@ from pprint import pprint
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.credentials import CredentialCreate, CredentialUpdate
 from nexla_sdk.exceptions import NexlaNotFoundError, NexlaAPIError
-from examples.api.client import nexla_client
+from client import nexla_client
 
 
 def list_credentials():

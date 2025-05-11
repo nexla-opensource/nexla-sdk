@@ -27,7 +27,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from examples.api.client import nexla_client
+from client import nexla_client
 from nexla_sdk.models.transforms import (
     Transform, TransformList, AttributeTransform, 
     CreateTransformRequest, UpdateTransformRequest, 

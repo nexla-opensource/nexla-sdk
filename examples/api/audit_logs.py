@@ -1,7 +1,7 @@
 """
 Example usage of the Audit Logs API
 """
-from examples.api.client import nexla_client
+from client import nexla_client
 
 def run_audit_logs_examples():
     """Run through examples of using the Audit Logs API"""

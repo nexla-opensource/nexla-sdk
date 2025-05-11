@@ -23,7 +23,7 @@ import uuid
 from typing import Dict, Any, List
 
 from nexla_sdk.models.access import AccessRole
-from examples.api.client import nexla_client
+from client import nexla_client
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
