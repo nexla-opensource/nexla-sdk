@@ -4,7 +4,7 @@ User models for the Nexla SDK
 from typing import List, Dict, Any, Optional, Union
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, model_validator
 
 from .common import Resource, PaginatedList
 from .metrics import MetricsStatus
@@ -66,8 +66,21 @@ class AccountSummary(BaseModel):
     """User account summary information"""
     data_sources: ResourceSummary = Field(..., description="Data sources summary")
     data_sets: ResourceSummary = Field(..., description="Data sets summary")
-    data_sinks: ResourceSummary = Field(..., description="Data sinks summary")
-    data_maps: ResourceSummary = Field(..., description="Data maps summary")
+    data_sinks: Optional[ResourceSummary] = Field(None, description="Data sinks summary")
+    data_maps: Optional[ResourceSummary] = Field(None, description="Data maps summary")
+    
+    @model_validator(mode='before')
+    @classmethod
+    def ensure_all_fields(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Ensure all required fields are present with defaults if missing"""
+        if isinstance(data, dict):
+            # Ensure data_sinks exists
+            if "data_sinks" not in data:
+                data["data_sinks"] = {"counts": {"total": 0, "owner": 0, "collaborator": 0}}
+            # Ensure data_maps exists
+            if "data_maps" not in data:
+                data["data_maps"] = {"counts": {"total": 0, "owner": 0, "collaborator": 0}}
+        return data
 
 
 class UserDetail(BaseModel):
@@ -95,7 +108,13 @@ class UserDetailExpanded(UserDetail):
 
 class User(UserDetail):
     """User model"""
-    pass
+    @model_validator(mode='before')
+    @classmethod
+    def extract_user_data(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract user data from response if it's nested in a 'user' field"""
+        if isinstance(data, dict) and "user" in data and isinstance(data["user"], dict):
+            return data["user"]
+        return data
 
 
 class UserList(PaginatedList[User]):

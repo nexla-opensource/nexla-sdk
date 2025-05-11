@@ -2,6 +2,7 @@
 Nexsets API endpoints (Data Sets)
 """
 from typing import Dict, Any, Optional, List, Union
+from datetime import datetime
 
 from .base import BaseAPI
 from ..models.nexsets import Nexset, NexsetList, NexsetSchema, NexsetSample, NexsetCharacteristics, NexsetSampleWithMetadata
@@ -241,4 +242,46 @@ class NexsetsAPI(BaseAPI):
             params=params,
             json=payload if payload else None,
             model_class=Nexset
+        )
+
+    def get_quarantine_samples(
+        self, 
+        set_id: int, 
+        page: int = 1, 
+        per_page: int = 10,
+        start_time: Optional[Union[int, str, datetime]] = None,
+        end_time: Optional[Union[int, str, datetime]] = None
+    ) -> Dict[str, Any]:
+        """
+        Get quarantine samples (error records) for a Nexset
+        
+        Args:
+            set_id: ID of the Nexset
+            page: Page number for pagination
+            per_page: Items per page for pagination
+            start_time: Start time for the sample query (timestamp in milliseconds or datetime)
+            end_time: End time for the sample query (timestamp in milliseconds or datetime)
+            
+        Returns:
+            Dictionary containing quarantine samples
+        """
+        data = {
+            "page": page,
+            "per_page": per_page
+        }
+        
+        if start_time is not None:
+            if isinstance(start_time, datetime):
+                start_time = int(start_time.timestamp() * 1000)
+            data["start_time"] = start_time
+            
+        if end_time is not None:
+            if isinstance(end_time, datetime):
+                end_time = int(end_time.timestamp() * 1000)
+            data["end_time"] = end_time
+            
+        return self._post(
+            f"/data_sets/{set_id}/probe/quarantine/sample",
+            json=data,
+            headers={"Accept": "application/vnd.nexla.api.v1+json"}
         ) 

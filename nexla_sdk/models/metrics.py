@@ -4,7 +4,7 @@ Metrics models for the Nexla SDK
 from typing import Dict, List, Optional, Union, Any
 from datetime import datetime, date
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class AccessRole(str, Enum):
@@ -26,6 +26,7 @@ class AccountMetricData(BaseModel):
     """Data for account metrics"""
     records: int = Field(..., description="Total number of records processed")
     size: int = Field(..., description="Total volume of records processed in bytes")
+    pipeline_count: Optional[int] = Field(None, description="Count of pipelines")
 
 
 class AccountMetric(BaseModel):
@@ -38,7 +39,23 @@ class AccountMetric(BaseModel):
 class AccountMetricsResponse(BaseModel):
     """Response for account metrics"""
     status: int = Field(..., description="Status of the report request")
-    metrics: List[AccountMetric] = Field(..., description="Account metrics")
+    metrics: Union[List[AccountMetric], AccountMetric] = Field(..., description="Account metrics")
+    
+    @model_validator(mode='before')
+    @classmethod
+    def handle_single_metric(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle both list and single metric responses"""
+        if isinstance(data, dict) and "metrics" in data:
+            metrics = data["metrics"]
+            # If metrics is a dict with start_time/end_time, wrap it in a list
+            if isinstance(metrics, dict) and "start_time" in metrics and "end_time" in metrics:
+                # It's a direct metric object, not a list
+                return data
+            elif isinstance(metrics, dict) and "data" in metrics:
+                # New format where metrics has data inside it
+                return data
+                
+        return data
 
 
 class ResourceMetric(BaseModel):
@@ -51,9 +68,9 @@ class ResourceMetric(BaseModel):
 
 class DashboardMetrics(BaseModel):
     """Dashboard metrics for all resources"""
-    sources: Dict[str, ResourceMetric] = Field(default_factory=dict, description="Source metrics by ID")
-    sinks: Dict[str, ResourceMetric] = Field(default_factory=dict, description="Sink metrics by ID")
-    datasets: Dict[str, ResourceMetric] = Field(default_factory=dict, description="Dataset metrics by ID")
+    sources: Optional[Dict[str, ResourceMetric]] = Field(default_factory=dict, description="Source metrics by ID")
+    sinks: Optional[Dict[str, ResourceMetric]] = Field(default_factory=dict, description="Sink metrics by ID")
+    datasets: Optional[Dict[str, ResourceMetric]] = Field(default_factory=dict, description="Dataset metrics by ID")
     start_time: datetime = Field(..., description="Start time of metrics period")
     end_time: datetime = Field(..., description="End time of metrics period")
 

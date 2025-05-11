@@ -11,23 +11,37 @@ from ..models.teams import Team, TeamList, TeamMember, TeamMemberList
 class TeamsAPI(BaseAPI):
     """API client for teams endpoints"""
     
-    def list(self, page: int = 1, per_page: int = 100, access_role: Optional[AccessRole] = None) -> TeamList:
+    def list(self, page: int = 1, per_page: int = 100, access_role: Optional[Union[AccessRole, str]] = None) -> TeamList:
         """
         List teams
         
         Args:
             page: Page number for pagination
             per_page: Number of items per page
-            access_role: Filter by access role
+            access_role: Filter by access role (can be an AccessRole enum or string like "member")
             
         Returns:
             TeamList containing teams
         """
         params = {"page": page, "per_page": per_page}
         if access_role:
-            params["access_role"] = access_role.value
+            # Handle both enum and string values
+            if isinstance(access_role, AccessRole):
+                params["access_role"] = access_role.value
+            else:
+                params["access_role"] = access_role
             
-        return self._get("/teams", params=params, model_class=TeamList)
+        response = self._get("/teams", params=params)
+        
+        # Create and populate a TeamList object
+        team_list = TeamList(items=[], total=0, page=page, per_page=per_page)
+        
+        if isinstance(response, list):
+            # Convert each team item
+            team_list.items = [Team.model_validate(item) for item in response]
+            team_list.total = len(team_list.items)
+            
+        return team_list
         
     def get(self, team_id: int) -> Team:
         """
@@ -111,6 +125,12 @@ class TeamsAPI(BaseAPI):
         Returns:
             TeamMemberList containing team members
         """
+        response = self._get(f"/teams/{team_id}/members")
+        
+        # API returns a list of members, but our model expects an object with members property
+        if isinstance(response, list):
+            return TeamMemberList(members=[TeamMember.model_validate(member) for member in response])
+        
         return self._get(f"/teams/{team_id}/members", model_class=TeamMemberList)
     
     def replace_members(self, team_id: int, members: List[Dict[str, Any]]) -> TeamMemberList:
@@ -125,6 +145,12 @@ class TeamsAPI(BaseAPI):
         Returns:
             TeamMemberList containing updated team members
         """
+        response = self._post(f"/teams/{team_id}/members", json={"members": members})
+        
+        # API returns a list of members, but our model expects an object with members property
+        if isinstance(response, list):
+            return TeamMemberList(members=[TeamMember.model_validate(member) for member in response])
+            
         return self._post(f"/teams/{team_id}/members", json={"members": members}, model_class=TeamMemberList)
     
     def add_members(self, team_id: int, members: List[Dict[str, Any]]) -> TeamMemberList:
@@ -139,6 +165,12 @@ class TeamsAPI(BaseAPI):
         Returns:
             TeamMemberList containing updated team members
         """
+        response = self._put(f"/teams/{team_id}/members", json={"members": members})
+        
+        # API returns a list of members, but our model expects an object with members property
+        if isinstance(response, list):
+            return TeamMemberList(members=[TeamMember.model_validate(member) for member in response])
+            
         return self._put(f"/teams/{team_id}/members", json={"members": members}, model_class=TeamMemberList)
     
     def remove_members(self, team_id: int, members: Optional[List[Dict[str, Any]]] = None) -> TeamMemberList:
@@ -156,5 +188,11 @@ class TeamsAPI(BaseAPI):
         data = {}
         if members:
             data["members"] = members
+            
+        response = self._delete(f"/teams/{team_id}/members", json=data if data else None)
+        
+        # API returns a list of members, but our model expects an object with members property
+        if isinstance(response, list):
+            return TeamMemberList(members=[TeamMember.model_validate(member) for member in response])
             
         return self._delete(f"/teams/{team_id}/members", json=data if data else None, model_class=TeamMemberList) 

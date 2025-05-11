@@ -31,7 +31,7 @@ class TeamOrganization(BaseModel):
     id: int = Field(..., description="Organization ID")
     name: str = Field(..., description="Organization name")
     email_domain: str = Field(..., description="Organization email domain")
-    email: str = Field(..., description="Organization email")
+    email: Optional[str] = Field(None, description="Organization email")
     client_identifier: Optional[str] = Field(None, description="Client identifier")
     org_webhook_host: Optional[str] = Field(None, description="Organization webhook host")
 
@@ -50,9 +50,12 @@ class Team(Resource):
     tags: Optional[List[str]] = Field(None, description="Team tags")
 
 
-class TeamList(PaginatedList[Team]):
+class TeamList(BaseModel):
     """Paginated list of teams"""
-    pass
+    items: List[Team] = Field(default_factory=list, description="List of teams")
+    total: int = Field(default=0, description="Total number of teams")
+    page: Optional[int] = Field(None, description="Current page number")
+    per_page: Optional[int] = Field(None, description="Number of items per page")
 
 
 class TeamMemberList(BaseModel):

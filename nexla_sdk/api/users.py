@@ -18,7 +18,7 @@ from ..models.metrics import (
 class UsersAPI(BaseAPI):
     """API client for users endpoints"""
     
-    def list(self, page: int = 1, per_page: int = 100, expand: bool = False) -> Union[List[User], List[UserDetailExpanded]]:
+    def list(self, page: int = 1, per_page: int = 100, expand: bool = False, access_role: Optional[str] = None) -> List[Union[User, UserDetailExpanded]]:
         """
         List users
         
@@ -26,6 +26,7 @@ class UsersAPI(BaseAPI):
             page: Page number for pagination
             per_page: Number of items per page
             expand: Whether to expand user details
+            access_role: Optional access role filter (e.g., "all" for admins to see all users)
             
         Returns:
             List of User objects or expanded user details
@@ -33,8 +34,17 @@ class UsersAPI(BaseAPI):
         params = {"page": page, "per_page": per_page}
         if expand:
             params["expand"] = 1
+        if access_role:
+            params["access_role"] = access_role
             
-        return self._get("/users", params=params, model_class=List[UserDetailExpanded] if expand else List[User])
+        response = self._get("/users", params=params)
+        
+        # Handle response as a raw list and convert each item individually
+        if isinstance(response, list):
+            model_class = UserDetailExpanded if expand else User
+            return [model_class.model_validate(item) for item in response]
+        
+        return []
         
     def get(self, user_id: Union[str, int], expand: bool = False) -> Union[User, UserDetailExpanded]:
         """
