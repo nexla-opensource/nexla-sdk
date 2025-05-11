@@ -206,13 +206,14 @@ class LookupsAPI(BaseAPI):
         # The download endpoint returns raw CSV data, not JSON
         # Use the client's request method with raw_response=True to get the text content
         url = f"{self.client.api_url}/data_maps/{lookup_id}/download_map"
+        
+        # Get access token from auth handler and ensure it's valid
+        access_token = self.client.auth_handler.ensure_valid_token()
+        
         headers = {
             "Accept": f"application/vnd.nexla.api.{self.client.api_version}+json",
-            "Authorization": f"Bearer {self.client._access_token}"
+            "Authorization": f"Bearer {access_token}"
         }
-        
-        # Ensure token is valid
-        self.client._ensure_valid_token()
         
         response = requests.get(url, headers=headers)
         response.raise_for_status()
