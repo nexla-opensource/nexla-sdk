@@ -16,7 +16,7 @@ from client import nexla_client
 def list_credentials():
     """List all credentials"""
     print("\n=== Listing credentials ===")
-    credentials = nexla_nexla_client.credentials.list()
+    credentials = nexla_client.credentials.list()
     print(f"Found {len(credentials)} credentials:")
     for cred in credentials:
         print(f"- {cred.id}: {cred.name} ({cred.credentials_type})")
@@ -26,7 +26,7 @@ def get_credential(credential_id):
     """Get a credential by ID"""
     print(f"\n=== Getting credential {credential_id} ===")
     try:
-        credential = nexla_nexla_client.credentials.get(credential_id, expand=True)
+        credential = nexla_client.credentials.get(credential_id, expand=True)
         print(f"Found credential: {credential.name}")
         print(f"Description: {credential.description}")
         print(f"Type: {credential.credentials_type}")
@@ -52,7 +52,7 @@ def create_s3_credential():
     )
     
     try:
-        credential = nexla_nexla_client.credentials.create(credential_data)
+        credential = nexla_client.credentials.create(credential_data)
         print(f"Created credential with ID: {credential.id}")
         return credential
     except NexlaAPIError as e:

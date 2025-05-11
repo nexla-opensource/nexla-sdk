@@ -132,7 +132,7 @@ class NexlaClient:
             logger.error(f"Validation error converting to {model_class.__name__}: {e}")
             raise NexlaValidationError(f"Failed to convert API response to {model_class.__name__}: {e}")
             
-    def request(self, method: str, path: str, **kwargs) -> Dict[str, Any]:
+    def request(self, method: str, path: str, **kwargs) -> Union[Dict[str, Any], None]:
         """
         Send a request to the Nexla API
         
@@ -142,65 +142,73 @@ class NexlaClient:
             **kwargs: Additional arguments to pass to HTTP client
             
         Returns:
-            API response as a dictionary
+            API response as a dictionary or None for 204 No Content responses
             
         Raises:
             NexlaAuthError: If authentication fails
             NexlaAPIError: If the API returns an error
         """
-        # Ensure we have a valid token and get it
-        access_token = self.auth_handler.ensure_valid_token()
-            
         url = f"{self.api_url}{path}"
         headers = {
             "Accept": f"application/vnd.nexla.api.{self.api_version}+json",
             "Content-Type": "application/json"
         }
         
-        # Add authorization header
-        headers["Authorization"] = f"Bearer {access_token}"
-        
         # If custom headers are provided, merge them with the default headers
         if "headers" in kwargs:
             headers.update(kwargs.pop("headers"))
             
         try:
-            return self.http_client.request(method, url, headers=headers, **kwargs)
-            
+            # Let auth handler manage getting a valid token and handling auth retries
+            return self.auth_handler.execute_authenticated_request(
+                method=method,
+                url=url,
+                headers=headers,
+                **kwargs
+            )
         except HttpClientError as e:
-            if getattr(e, 'status_code', None) == 401:
-                # If authentication failed, try refreshing the token
-                logger.warning("Request failed with 401, refreshing session token and retrying")
-                self.auth_handler.obtain_session_token()  # Get a new token
-                
-                # Update headers with new token
-                headers["Authorization"] = f"Bearer {self.auth_handler.get_access_token()}"
-                
-                # Retry the request with the new token
-                try:
-                    return self.http_client.request(method, url, headers=headers, **kwargs)
-                except HttpClientError as retry_error:
-                    # If retry also fails, fall through to error handling
-                    e = retry_error
-            
-            # Handle error response
-            if getattr(e, 'status_code', None) == 401:
-                raise NexlaAuthError("Authentication failed. Check your service key.") from e
-            
-            error_msg = f"API request failed: {e}"
-            error_data = getattr(e, 'response', {})
-            
-            if error_data:
-                if "message" in error_data:
-                    error_msg = f"API error: {error_data['message']}"
-                elif "error" in error_data:
-                    error_msg = f"API error: {error_data['error']}"
-                    
-            raise NexlaAPIError(
-                error_msg, 
-                status_code=getattr(e, 'status_code', None), 
-                response=error_data
-            ) from e
-            
+            # Map HTTP client errors to appropriate Nexla exceptions
+            self._handle_http_error(e)
         except Exception as e:
-            raise NexlaError(f"Request failed: {e}") from e 
+            raise NexlaError(f"Request failed: {e}") from e
+
+    def _handle_http_error(self, error: HttpClientError):
+        """
+        Handle HTTP client errors by mapping them to appropriate Nexla exceptions
+        
+        Args:
+            error: The HTTP client error
+            
+        Raises:
+            NexlaAuthError: If authentication fails (401)
+            NexlaNotFoundError: If resource not found (404)
+            NexlaAPIError: For other API errors
+        """
+        status_code = getattr(error, 'status_code', None)
+        error_data = getattr(error, 'response', {})
+        
+        error_msg = f"API request failed: {error}"
+        
+        if error_data:
+            if "message" in error_data:
+                error_msg = f"API error: {error_data['message']}"
+            elif "error" in error_data:
+                error_msg = f"API error: {error_data['error']}"
+        
+        # Map status codes to specific exceptions
+        if status_code == 401:
+            raise NexlaAuthError("Authentication failed. Check your service key.") from error
+        elif status_code == 404:
+            resource_type = error_data.get("resource_type", "")
+            resource_id = error_data.get("resource_id", "")
+            raise NexlaNotFoundError(
+                f"Resource not found: {resource_type}/{resource_id}",
+                resource_type=resource_type,
+                resource_id=resource_id
+            ) from error
+        else:
+            raise NexlaAPIError(
+                error_msg,
+                status_code=status_code,
+                response=error_data
+            ) from error 

@@ -124,15 +124,18 @@ class BaseAPI:
             Response data or None for empty responses
             
         Note:
-            DELETE operations often return empty responses with a 204 or 200 status code
-            We handle this case by treating empty responses as successful
+            DELETE operations often return empty responses with a 204 status code
+            We handle this case by checking for None response (204 status code)
         """
-        # For delete operations, we don't try to convert empty responses
-        try:
-            return self._request("DELETE", path, model_class=None, **kwargs)
-        except NexlaError as e:
-            # If the error is because of an empty response with 200 status, consider it success
-            if "Expecting value: line 1 column 1 (char 0)" in str(e):
-                logger.debug("Delete operation returned empty response with 200 status, treating as success")
-                # Return an empty dict instead of raising an exception
-                return {} 
+        # Make the DELETE request without model_class initially
+        response_data = self.client.request("DELETE", path, **kwargs)
+        
+        # If we received None (204 status code), return None
+        if response_data is None:
+            return None
+        
+        # For non-empty responses, apply model conversion if needed
+        if model_class:
+            return self.client._convert_to_model(response_data, model_class)
+        
+        return response_data 

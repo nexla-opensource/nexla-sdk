@@ -3,7 +3,7 @@ Authentication utilities for the Nexla SDK
 """
 import logging
 import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union
 
 from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError
 from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
@@ -176,4 +176,45 @@ class TokenAuthHandler:
                 # Obtain new token
                 self.obtain_session_token()
                 
-        return self._access_token 
+        return self._access_token
+        
+    def execute_authenticated_request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
+        """
+        Execute a request with authentication handling
+        
+        Args:
+            method: HTTP method
+            url: Full URL to call
+            headers: HTTP headers
+            **kwargs: Additional arguments to pass to the HTTP client
+            
+        Returns:
+            API response as a dictionary or None for 204 No Content responses
+            
+        Raises:
+            NexlaAuthError: If authentication fails
+            NexlaAPIError: If the API returns an error
+        """
+        # Get a valid token
+        access_token = self.ensure_valid_token()
+        
+        # Add authorization header
+        headers["Authorization"] = f"Bearer {access_token}"
+        
+        try:
+            return self.http_client.request(method, url, headers=headers, **kwargs)
+            
+        except HttpClientError as e:
+            if getattr(e, 'status_code', None) == 401:
+                # If authentication failed, try refreshing the token
+                logger.warning("Request failed with 401, refreshing session token and retrying")
+                self.obtain_session_token()  # Get a new token
+                
+                # Update headers with new token
+                headers["Authorization"] = f"Bearer {self.get_access_token()}"
+                
+                # Retry the request with the new token
+                return self.http_client.request(method, url, headers=headers, **kwargs)
+            
+            # For other errors, let the caller handle them
+            raise 

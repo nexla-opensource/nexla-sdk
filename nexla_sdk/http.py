@@ -14,7 +14,7 @@ class HttpClientInterface(ABC):
     """
     
     @abstractmethod
-    def request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Dict[str, Any]:
+    def request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
         """
         Send an HTTP request
         
@@ -25,7 +25,7 @@ class HttpClientInterface(ABC):
             **kwargs: Additional arguments for the request
             
         Returns:
-            Response data as dictionary
+            Response data as dictionary or None for 204 No Content responses
             
         Raises:
             HttpClientError: If the request fails
@@ -46,7 +46,7 @@ class RequestsHttpClient(HttpClientInterface):
     HTTP client implementation using the requests library
     """
     
-    def request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Dict[str, Any]:
+    def request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
         """
         Send an HTTP request using the requests library
         
@@ -57,7 +57,7 @@ class RequestsHttpClient(HttpClientInterface):
             **kwargs: Additional arguments to pass to requests
             
         Returns:
-            Response data as dictionary
+            Response data as dictionary or None for 204 No Content responses
             
         Raises:
             HttpClientError: If the request fails
@@ -66,9 +66,9 @@ class RequestsHttpClient(HttpClientInterface):
             response = requests.request(method, url, headers=headers, **kwargs)
             response.raise_for_status()
             
-            # Return empty dict for 204 No Content
+            # Return None for 204 No Content
             if response.status_code == 204:
-                return {}
+                return None
                 
             # Parse JSON response
             return response.json()
