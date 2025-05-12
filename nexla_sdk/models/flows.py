@@ -34,33 +34,57 @@ class FlowConfig(BaseModel):
     options: Optional[Dict[str, Any]] = Field(None, description="Additional flow options")
 
 
+class Sharer(BaseModel):
+    """Sharer model for flow nodes"""
+    id: Optional[Union[str, int]] = Field(None, description="Sharer ID")
+    # Additional fields as needed
+
+
+class SharerInfo(BaseModel):
+    """Sharer information for flow nodes"""
+    sharers: List[Sharer] = Field(default_factory=list, description="List of sharers")
+    external_sharers: List[Sharer] = Field(default_factory=list, description="List of external sharers")
+
+
 class FlowNode(BaseModel):
     """Flow node model representing a node in the flow chain"""
-    id: Optional[int] = Field(None, description="Flow node ID")
-    parent_node_id: Optional[int] = Field(
+    id: Optional[Union[str, int]] = Field(None, description="Flow node ID")
+    parent_node_id: Optional[Union[str, int]] = Field(
         None,
-        description="Flow id of the parent flow node if this node is not the root node in the flow chain. This will usually be `null` as most flow definitions will originate in the node for `data_source`."
+        description="Flow id of the parent flow node if this node is not the root node in the flow chain."
     )
-    origin_node_id: Optional[int] = Field(
+    parent_data_set_id: Optional[Union[str, int]] = Field(
+        None, description="ID of the parent dataset in the flow"
+    )
+    origin_node_id: Optional[Union[str, int]] = Field(
         None, description="Flow id of the root node in the flow chain."
     )
-    data_source_id: Optional[int] = Field(
+    data_source_id: Optional[Union[str, int]] = Field(
         None,
         description="The ID of the data source this flow node is linked to if this is a flow node for a data source."
     )
-    data_set_id: Optional[int] = Field(
+    data_source: Optional[Dict[str, Any]] = Field(
+        None, description="Information about the data source associated with this node"
+    )
+    data_set_id: Optional[Union[str, int]] = Field(
         None,
         description="The ID of the Nexset this flow node is linked to if this is flow node for a Nexset."
     )
-    data_sink_id: Optional[int] = Field(
+    data_sink_id: Optional[Union[str, int]] = Field(
         None,
         description="The ID of the data sink this flow node is linked to if this is a flow node for a data sink."
     )
-    shared_origin_node_id: Optional[int] = Field(None, description="Shared origin node ID")
+    data_sinks: Optional[List[Union[int, str, Dict[str, Any]]]] = Field(
+        default_factory=list, description="Data sinks associated with this node"
+    )
+    sharers: Optional[SharerInfo] = Field(
+        None, description="Information about sharers for this node"
+    )
+    shared_origin_node_id: Optional[Union[str, int]] = Field(None, description="Shared origin node ID")
     runtime_status: Optional[str] = Field(None, description="Runtime status of the flow node")
     node_type: Optional[str] = Field(None, description="Type of the node")
     status: Optional[str] = Field(None, description="Status of the flow node")
-    project_id: Optional[int] = Field(None, description="Project ID associated with this flow")
+    project_id: Optional[Union[str, int]] = Field(None, description="Project ID associated with this flow")
     flow_type: Optional[str] = Field(None, description="Type of the flow")
     ingestion_mode: Optional[str] = Field(None, description="Ingestion mode of the flow")
     managed: Optional[bool] = Field(None, description="Whether the flow is managed")
@@ -71,20 +95,31 @@ class FlowNode(BaseModel):
         None,
         description="Each element of this array is a flow node that is directly linked to this flow node."
     )
+    
+    # Support additional fields without validation errors
+    class Config:
+        extra = "ignore"
 
 
 class FlowResponse(BaseModel):
     """Flow response model containing the flow and related resources"""
     flows: List[FlowNode] = Field(..., description="List of flow nodes")
-    code_containers: Optional[List[CodeContainer]] = Field(None, description="Code containers linked to flow nodes")
-    data_sources: Optional[List[Source]] = Field(None, description="Data sources linked to flow nodes")
-    data_sets: Optional[List[DataSet]] = Field(None, description="Data sets linked to flow nodes")
-    data_sinks: Optional[List[DataSink]] = Field(None, description="Data sinks linked to flow nodes")
-    data_credentials: Optional[List[Credential]] = Field(None, description="Credentials referenced by flow nodes")
-    shared_data_sets: Optional[List[Any]] = Field(None, description="Shared data sets metadata")
-    orgs: Optional[List[Organization]] = Field(None, description="Organizations")
-    users: Optional[List[User]] = Field(None, description="Users")
-    projects: Optional[List[Project]] = Field(None, description="Projects linked to flows")
+    code_containers: Optional[List[Dict[str, Any]]] = Field(None, description="Code containers linked to flow nodes")
+    data_sources: Optional[List[Dict[str, Any]]] = Field(None, description="Data sources linked to flow nodes")
+    data_sets: Optional[List[Dict[str, Any]]] = Field(None, description="Data sets linked to flow nodes")
+    data_sinks: Optional[List[Dict[str, Any]]] = Field(None, description="Data sinks linked to flow nodes")
+    data_credentials: Optional[List[Dict[str, Any]]] = Field(None, description="Credentials referenced by flow nodes")
+    shared_data_sets: Optional[List[Any]] = Field(default_factory=list, description="Shared data sets metadata")
+    orgs: Optional[List[Dict[str, Any]]] = Field(None, description="Organizations")
+    users: Optional[List[Dict[str, Any]]] = Field(None, description="Users")
+    projects: Optional[List[Dict[str, Any]]] = Field(None, description="Projects linked to flows")
+    triggered_flows: Optional[List[Any]] = Field(default_factory=list, description="Triggered flows")
+    triggering_flows: Optional[List[Any]] = Field(default_factory=list, description="Triggering flows")
+    linked_flows: Optional[List[Any]] = Field(default_factory=list, description="Linked flows")
+    
+    # Support additional fields without validation errors
+    class Config:
+        extra = "ignore"
 
 
 class Flow(Resource):
@@ -102,9 +137,13 @@ class Flow(Resource):
 class FlowList(BaseModel):
     """Updated model for flow list API response"""
     flows: List[FlowNode] = Field(..., description="List of flow nodes")
-    triggered_flows: Optional[List[Any]] = Field([], description="Triggered flows")
-    triggering_flows: Optional[List[Any]] = Field([], description="Triggering flows") 
-    linked_flows: Optional[List[Any]] = Field([], description="Linked flows")
+    triggered_flows: Optional[List[Any]] = Field(default_factory=list, description="Triggered flows")
+    triggering_flows: Optional[List[Any]] = Field(default_factory=list, description="Triggering flows") 
+    linked_flows: Optional[List[Any]] = Field(default_factory=list, description="Linked flows")
+    
+    # Support additional fields without validation errors
+    class Config:
+        extra = "ignore"
 
 
 class FlowCondensed(BaseModel):

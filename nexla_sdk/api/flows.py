@@ -39,15 +39,13 @@ class FlowsAPI(BaseAPI):
             params["flows_only"] = flows_only
         if access_role is not None:
             params["access_role"] = access_role.value
-            
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         
         # Try to parse as new FlowResponse, fall back to legacy FlowList
         try:
-            return self._get("/flows", params=params, headers=headers, model_class=FlowResponse)
+            return self._get("/data_flows", params=params, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
-            return self._get("/flows", params=params, model_class=FlowList)
+            return self._get("/data_flows", params=params, model_class=FlowList)
         
     def get(self, flow_id: str, flows_only: Optional[int] = None) -> Union[FlowResponse, Flow]:
         """
@@ -63,15 +61,13 @@ class FlowsAPI(BaseAPI):
         params = {}
         if flows_only is not None:
             params["flows_only"] = flows_only
-            
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._get(f"/flows/{flow_id}", params=params, headers=headers, model_class=FlowResponse)
+            return self._get(f"/data_flows/{flow_id}", params=params, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
-            return self._get(f"/flows/{flow_id}", model_class=Flow)
+            return self._get(f"/data_flows/{flow_id}", model_class=Flow)
         
     def create(self, flow_data: Dict[str, Any]) -> Flow:
         """
@@ -83,19 +79,25 @@ class FlowsAPI(BaseAPI):
         Returns:
             Created Flow object
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         try:
-            # Try to parse as new FlowResponse which contains data in a "flows" array
-            response_data = self._post("/flows", json=flow_data, headers=headers, model_class=FlowResponse)
-            if hasattr(response_data, "flows") and len(response_data.flows) > 0:
-                # Extract the first flow from the flows array
-                return response_data.flows[0]
-            else:
-                # Fall back to direct conversion if the new format isn't found
-                return self._post("/flows", json=flow_data, headers=headers, model_class=Flow)
+            # Try to use the /flows endpoint instead of /data_flows for creation
+            # since some API endpoints might still use the older path format
+            response_data = self._post("/flows", json=flow_data, model_class=Flow)
+            return response_data
         except:
-            # Last resort fallback to legacy model for backward compatibility
-            return self._post("/flows", json=flow_data, model_class=Flow)
+            # Fall back to the newer endpoint
+            try:
+                # Try to parse as new FlowResponse which contains data in a "flows" array
+                response_data = self._post("/data_flows", json=flow_data, model_class=FlowResponse)
+                if hasattr(response_data, "flows") and len(response_data.flows) > 0:
+                    # Extract the first flow from the flows array
+                    return response_data.flows[0]
+                else:
+                    # Fall back to direct conversion if the new format isn't found
+                    return self._post("/data_flows", json=flow_data, model_class=Flow)
+            except:
+                # Last resort fallback to legacy model for backward compatibility
+                return self._post("/data_flows", json=flow_data, model_class=Flow)
         
     def update(self, flow_id: str, flow_data: Optional[Dict[str, Any]] = None, **kwargs) -> Flow:
         """
@@ -109,27 +111,37 @@ class FlowsAPI(BaseAPI):
         Returns:
             Updated Flow object
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        
         # Handle both dictionary and keyword arguments
         data = flow_data or {}
         if kwargs:
             data.update(kwargs)
-            
-        return self._put(f"/flows/{flow_id}", json=data, headers=headers, model_class=Flow)
         
-    def delete(self, flow_id: str) -> Dict[str, Any]:
+        # Try with the /flows endpoint first, fall back to /data_flows if needed
+        try:
+            return self._put(f"/flows/{flow_id}", json=data, model_class=Flow)
+        except:
+            return self._put(f"/data_flows/{flow_id}", json=data, model_class=Flow)
+        
+    def delete(self, flow_id: str, all: Optional[int] = None) -> Dict[str, Any]:
         """
         Delete a flow
         
         Args:
             flow_id: Flow ID
+            all: Set to 1 to delete the entire flow, including upstream resources
             
         Returns:
             Response containing status code and message
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._delete(f"/flows/{flow_id}", headers=headers)
+        params = {}
+        if all is not None:
+            params["all"] = all
+        
+        # Try with the /flows endpoint first, fall back to /data_flows if needed
+        try:
+            return self._delete(f"/flows/{flow_id}", params=params)
+        except:
+            return self._delete(f"/data_flows/{flow_id}", params=params)
         
     def activate(self, flow_id: str, all: Optional[int] = None) -> Union[FlowResponse, Flow]:
         """
@@ -145,15 +157,17 @@ class FlowsAPI(BaseAPI):
         params = {}
         if all is not None:
             params["all"] = all
-            
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         
-        # Try to parse as new FlowResponse, fall back to legacy Flow
+        # Try to parse as new FlowResponse, fall back to legacy Flow and endpoint
         try:
-            return self._put(f"/flows/{flow_id}/activate", params=params, headers=headers, model_class=FlowResponse)
+            return self._put(f"/data_flows/{flow_id}/activate", params=params, model_class=FlowResponse)
         except:
-            # Fall back to legacy model for backward compatibility
-            return self._post(f"/flows/{flow_id}/activate", model_class=Flow)
+            try:
+                # Try the old endpoint with PUT
+                return self._put(f"/flows/{flow_id}/activate", params=params, model_class=Flow)
+            except:
+                # Fall back to legacy method with POST
+                return self._post(f"/flows/{flow_id}/activate", model_class=Flow)
         
     def pause(self, flow_id: str, all: Optional[int] = None) -> Union[FlowResponse, Flow]:
         """
@@ -169,15 +183,17 @@ class FlowsAPI(BaseAPI):
         params = {}
         if all is not None:
             params["all"] = all
-            
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         
-        # Try to parse as new FlowResponse, fall back to legacy Flow
+        # Try to parse as new FlowResponse, fall back to legacy Flow and endpoint
         try:
-            return self._put(f"/flows/{flow_id}/pause", params=params, headers=headers, model_class=FlowResponse)
+            return self._put(f"/data_flows/{flow_id}/pause", params=params, model_class=FlowResponse)
         except:
-            # Fall back to legacy model for backward compatibility
-            return self._post(f"/flows/{flow_id}/pause", model_class=Flow)
+            try:
+                # Try the old endpoint with PUT
+                return self._put(f"/flows/{flow_id}/pause", params=params, model_class=Flow)
+            except:
+                # Fall back to legacy method with POST
+                return self._post(f"/flows/{flow_id}/pause", model_class=Flow)
         
     def add_tags(self, flow_id: str, tags: List[str]) -> Union[FlowResponse, Flow]:
         """
@@ -190,12 +206,11 @@ class FlowsAPI(BaseAPI):
         Returns:
             Updated FlowResponse or Flow object
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         data = {"tags": tags}
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._post(f"/flows/{flow_id}/tags", json=data, headers=headers, model_class=FlowResponse)
+            return self._post(f"/flows/{flow_id}/tags", json=data, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
             return self._post(f"/flows/{flow_id}/tags", json=data, model_class=Flow)
@@ -211,12 +226,11 @@ class FlowsAPI(BaseAPI):
         Returns:
             Updated FlowResponse or Flow object
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         data = {"tags": tags}
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._delete(f"/flows/{flow_id}/tags", json=data, headers=headers, model_class=FlowResponse)
+            return self._delete(f"/flows/{flow_id}/tags", json=data, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
             return self._delete(f"/flows/{flow_id}/tags", json=data, model_class=Flow)
@@ -232,25 +246,10 @@ class FlowsAPI(BaseAPI):
         Returns:
             Response containing run information
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         data = run_params or {}
         
-        return self._post(f"/flows/{flow_id}/run", json=data, headers=headers)
+        return self._post(f"/flows/{flow_id}/run", json=data)
     
-    def get_run_status(self, flow_id: str, run_id: str) -> Dict[str, Any]:
-        """
-        Get the status of a flow run
-        
-        Args:
-            flow_id: Flow ID
-            run_id: Flow run ID
-            
-        Returns:
-            Response containing run status information
-        """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._get(f"/flows/{flow_id}/runs/{run_id}", headers=headers)
-        
     def copy(
         self, 
         flow_id: str, 
@@ -262,54 +261,55 @@ class FlowsAPI(BaseAPI):
         new_name: Optional[str] = None
     ) -> Union[FlowResponse, Flow]:
         """
-        Create a copy of a flow
+        Copy a flow
         
         Args:
-            flow_id: Flow ID
-            reuse_data_credentials: Whether to reuse credentials instead of cloning them
-            copy_access_controls: Whether to copy access controls to the new flow
-            copy_dependent_data_flows: Whether to clone flows that originate from sources that are children of destinations
-            owner_id: ID of the user who should own the new flow
-            org_id: ID of the organization where the new flow should be created
-            new_name: Optional new name for the copied flow
+            flow_id: Flow ID to copy
+            reuse_data_credentials: Whether to reuse data credentials
+            copy_access_controls: Whether to copy access controls
+            copy_dependent_data_flows: Whether to copy dependent data flows
+            owner_id: Owner ID for the new flow
+            org_id: Organization ID for the new flow
+            new_name: New name for the copied flow
             
         Returns:
-            Created FlowResponse or Flow object
+            Copied flow
         """
         params = {}
-        if new_name:
-            params["name"] = new_name
-            
-        data = {}
+        
         if reuse_data_credentials is not None:
-            data["reuse_data_credentials"] = reuse_data_credentials
-        if copy_access_controls is not None:
-            data["copy_access_controls"] = copy_access_controls
-        if copy_dependent_data_flows is not None:
-            data["copy_dependent_data_flows"] = copy_dependent_data_flows
-        if owner_id is not None:
-            data["owner_id"] = owner_id
-        if org_id is not None:
-            data["org_id"] = org_id
+            params["reuse_data_credentials"] = int(reuse_data_credentials)
             
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        if copy_access_controls is not None:
+            params["copy_access_controls"] = int(copy_access_controls)
+            
+        if copy_dependent_data_flows is not None:
+            params["copy_dependent_data_flows"] = int(copy_dependent_data_flows)
+            
+        if owner_id is not None:
+            params["owner_id"] = owner_id
+            
+        if org_id is not None:
+            params["org_id"] = org_id
+            
+        if new_name is not None:
+            params["new_name"] = new_name
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._post(f"/flows/{flow_id}/copy", params=params, json=data, headers=headers, model_class=FlowResponse)
+            return self._post(f"/flows/{flow_id}/copy", params=params, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
             return self._post(f"/flows/{flow_id}/copy", params=params, model_class=Flow)
-        
+            
     def list_condensed(self) -> Dict[str, Any]:
         """
-        List all flows in condensed format
+        List condensed flows
         
         Returns:
-            Dictionary containing condensed flows
+            Response containing condensed flow information
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._get("/flows/all/condensed", headers=headers)
+        return self._get("/flows/condensed")
         
     def get_by_resource(
         self, 
@@ -318,55 +318,70 @@ class FlowsAPI(BaseAPI):
         flows_only: Optional[int] = None
     ) -> Union[FlowResponse, Flow]:
         """
-        Get a flow by resource ID
-        
-        This is a variant of flow endpoints where the flow node can be referenced
-        not by its own ID, but by the ID of the unique resource that is linked to
-        that flow node.
+        Get flows by resource
         
         Args:
-            resource_type: Resource type ("data_sources", "data_sinks", "data_sets")
+            resource_type: Resource type (data_sources, data_sinks, or data_sets)
             resource_id: Resource ID
             flows_only: Set to 1 to return only flow chains without resource details
             
         Returns:
-            FlowResponse or Flow object
+            Flow response or Flow object
         """
         params = {}
         if flows_only is not None:
             params["flows_only"] = flows_only
             
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        # Use the appropriate path based on resource type
+        if resource_type == "data_sources":
+            path = f"/data_flows/data_source/{resource_id}"
+        elif resource_type == "data_sinks":
+            path = f"/data_flows/data_sink/{resource_id}"
+        elif resource_type == "data_sets":
+            path = f"/data_flows/{resource_id}"
+        else:
+            raise ValueError(f"Unsupported resource type: {resource_type}")
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._get(f"/{resource_type}/{resource_id}/flow", params=params, headers=headers, model_class=FlowResponse)
+            return self._get(path, params=params, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
-            return self._get(f"/{resource_type}/{resource_id}/flow", model_class=Flow)
-    
+            return self._get(path, model_class=Flow)
+            
     def delete_by_resource(
         self, 
         resource_type: Literal["data_sources", "data_sinks", "data_sets"], 
-        resource_id: str
+        resource_id: str,
+        all: Optional[int] = None
     ) -> Dict[str, Any]:
         """
-        Delete a flow by resource ID
-        
-        This is a variant of flow endpoints where the flow node can be referenced
-        not by its own ID, but by the ID of the unique resource that is linked to
-        that flow node.
+        Delete flows by resource
         
         Args:
-            resource_type: Resource type ("data_sources", "data_sinks", "data_sets")
+            resource_type: Resource type (data_sources, data_sinks, or data_sets)
             resource_id: Resource ID
+            all: Set to 1 to delete the entire flow, including upstream resources
             
         Returns:
             Response containing status code and message
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._delete(f"/{resource_type}/{resource_id}/flow", headers=headers)
+        params = {}
+        if all is not None:
+            params["all"] = all
+            
+        # Use the appropriate path based on resource type
+        if resource_type == "data_sources":
+            path = f"/data_flows/data_source/{resource_id}"
+        elif resource_type == "data_sinks":
+            path = f"/data_flows/data_sink/{resource_id}"
+        elif resource_type == "data_sets":
+            path = f"/data_flows/{resource_id}"
+        else:
+            raise ValueError(f"Unsupported resource type: {resource_type}")
         
+        return self._delete(path, params=params)
+            
     def activate_by_resource(
         self, 
         resource_type: Literal["data_sources", "data_sinks", "data_sets"], 
@@ -374,33 +389,37 @@ class FlowsAPI(BaseAPI):
         all: Optional[int] = None
     ) -> Union[FlowResponse, Flow]:
         """
-        Activate a flow by resource ID
-        
-        This is a variant of flow endpoints where the flow node can be referenced
-        not by its own ID, but by the ID of the unique resource that is linked to
-        that flow node.
+        Activate flows by resource
         
         Args:
-            resource_type: Resource type ("data_sources", "data_sinks", "data_sets")
+            resource_type: Resource type (data_sources, data_sinks, or data_sets)
             resource_id: Resource ID
-            all: Set to 1 to activate full flow chain if the resource is not an origin node
+            all: Set to 1 to activate full flow chain
             
         Returns:
-            FlowResponse or Flow object
+            Flow response or Flow object
         """
         params = {}
         if all is not None:
             params["all"] = all
             
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        # Use the appropriate path based on resource type
+        if resource_type == "data_sources":
+            path = f"/data_flows/data_source/{resource_id}/activate"
+        elif resource_type == "data_sinks":
+            path = f"/data_flows/data_sink/{resource_id}/activate"
+        elif resource_type == "data_sets":
+            path = f"/data_flows/{resource_id}/activate"
+        else:
+            raise ValueError(f"Unsupported resource type: {resource_type}")
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._put(f"/{resource_type}/{resource_id}/activate", params=params, headers=headers, model_class=FlowResponse)
+            return self._put(path, params=params, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
-            return self._post(f"/{resource_type}/{resource_id}/activate", model_class=Flow)
-        
+            return self._post(path, model_class=Flow)
+            
     def pause_by_resource(
         self, 
         resource_type: Literal["data_sources", "data_sinks", "data_sets"], 
@@ -408,29 +427,33 @@ class FlowsAPI(BaseAPI):
         all: Optional[int] = None
     ) -> Union[FlowResponse, Flow]:
         """
-        Pause a flow by resource ID
-        
-        This is a variant of flow endpoints where the flow node can be referenced
-        not by its own ID, but by the ID of the unique resource that is linked to
-        that flow node.
+        Pause flows by resource
         
         Args:
-            resource_type: Resource type ("data_sources", "data_sinks", "data_sets")
+            resource_type: Resource type (data_sources, data_sinks, or data_sets)
             resource_id: Resource ID
-            all: Set to 1 to pause full flow chain if the resource is not an origin node
+            all: Set to 1 to pause full flow chain
             
         Returns:
-            FlowResponse or Flow object
+            Flow response or Flow object
         """
         params = {}
         if all is not None:
             params["all"] = all
             
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
+        # Use the appropriate path based on resource type
+        if resource_type == "data_sources":
+            path = f"/data_flows/data_source/{resource_id}/pause"
+        elif resource_type == "data_sinks":
+            path = f"/data_flows/data_sink/{resource_id}/pause"
+        elif resource_type == "data_sets":
+            path = f"/data_flows/{resource_id}/pause"
+        else:
+            raise ValueError(f"Unsupported resource type: {resource_type}")
         
         # Try to parse as new FlowResponse, fall back to legacy Flow
         try:
-            return self._put(f"/{resource_type}/{resource_id}/pause", params=params, headers=headers, model_class=FlowResponse)
+            return self._put(path, params=params, model_class=FlowResponse)
         except:
             # Fall back to legacy model for backward compatibility
-            return self._post(f"/{resource_type}/{resource_id}/pause", model_class=Flow) 
+            return self._post(path, model_class=Flow) 

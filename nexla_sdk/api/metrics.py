@@ -42,7 +42,6 @@ class MetricsAPI(BaseAPI):
         return self._get(
             f"/orgs/{org_id}/flows/account_metrics",
             params=params,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
             model_class=AccountMetricsResponse
         )
         
@@ -81,7 +80,6 @@ class MetricsAPI(BaseAPI):
         return self._get(
             f"/{resource_type}/{resource_id}/metrics",
             params=params,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
             model_class=DailyMetricsResponse
         )
         
@@ -131,7 +129,6 @@ class MetricsAPI(BaseAPI):
         return self._get(
             url,
             params=params,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
             model_class=RunMetricsResponse
         )
         
@@ -187,7 +184,6 @@ class MetricsAPI(BaseAPI):
         return self._get(
             url,
             params=params,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
             model_class=FlowMetricsResponse
         )
 
@@ -236,6 +232,5 @@ class MetricsAPI(BaseAPI):
         return self._get(
             f"/data_flows/{resource_type}/{resource_id}/logs",
             params=params,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
             model_class=FlowLogsResponse
         ) 

@@ -377,5 +377,5 @@ class DestinationsAPI(BaseAPI):
         return self._post(
             f"/data_sinks/{sink_id}/probe/quarantine/sample",
             json=data,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"}
+
         ) 

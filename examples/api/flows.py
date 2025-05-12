@@ -4,13 +4,10 @@ Example usage of the Nexla Flows API
 This example demonstrates various operations on flows using the Nexla SDK:
 1. List flows
 2. Get a specific flow
-3. Create a new flow
-4. Update a flow
-5. Add/remove tags
-6. Activate/pause flows
-7. Copy a flow
-8. Delete a flow
-9. Working with flows by resource IDs
+3. Get flows for a data source
+4. Get flows for a data sink
+5. Activate/pause flows
+6. Delete flows
 """
 import logging
 from typing import Dict, Any
@@ -54,7 +51,9 @@ def get_flow(flow_id: str):
     # Print flow details
     if hasattr(flow, "flows") and len(flow.flows) > 0:
         # This is a FlowResponse
-        logger.info(f"Flow name: {flow.flows[0].name}")
+        logger.info(f"Flow ID: {flow.flows[0].id}")
+        if hasattr(flow.flows[0], "name") and flow.flows[0].name:
+            logger.info(f"Flow name: {flow.flows[0].name}")
     elif hasattr(flow, "name"):
         # This is a Flow
         logger.info(f"Flow name: {flow.name}")
@@ -62,201 +61,103 @@ def get_flow(flow_id: str):
     return flow
 
 
-def create_flow():
-    """Create a new flow"""
-    logger.info("Creating a new flow...")
+def get_flow_by_source(source_id: str):
+    """Get flows for a specific data source"""
+    logger.info(f"Getting flows for source with ID: {source_id}")
     
-    # Define flow data
-    flow_data = {
-        "name": "Example Flow",
-        "description": "Created by the Nexla SDK example",
-        "flow_type": "auto"
-    }
+    flows = nexla_client.flows.get_by_resource("data_sources", source_id)
     
-    # Create the flow
-    new_flow = nexla_client.flows.create(flow_data)
-    logger.info(f"Created flow with ID: {new_flow.id}")
+    # Print flow details
+    if hasattr(flows, "flows") and len(flows.flows) > 0:
+        logger.info(f"Found {len(flows.flows)} flows for source {source_id}")
+        for flow in flows.flows:
+            logger.info(f"Flow ID: {flow.id}")
+    else:
+        logger.info(f"No flows found for source {source_id}")
     
-    return new_flow
+    return flows
 
 
-def update_flow(flow_id: str):
-    """Update an existing flow"""
-    logger.info(f"Updating flow with ID: {flow_id}")
+def get_flow_by_sink(sink_id: str):
+    """Get flows for a specific data sink"""
+    logger.info(f"Getting flows for sink with ID: {sink_id}")
     
-    # Update with dictionary
-    flow_data = {
-        "name": "Updated Flow Name",
-        "description": "Updated by the Nexla SDK example"
-    }
-    updated_flow = nexla_client.flows.update(flow_id, flow_data)
-    logger.info(f"Updated flow with dictionary: {updated_flow.name}")
+    flows = nexla_client.flows.get_by_resource("data_sinks", sink_id)
     
-    # Update with keyword arguments
-    updated_flow = nexla_client.flows.update(
-        flow_id,
-        name="Flow with Keyword Args",
-        description="Updated using keyword arguments"
-    )
-    logger.info(f"Updated flow with kwargs: {updated_flow.name}")
+    # Print flow details
+    if hasattr(flows, "flows") and len(flows.flows) > 0:
+        logger.info(f"Found {len(flows.flows)} flows for sink {sink_id}")
+        for flow in flows.flows:
+            logger.info(f"Flow ID: {flow.id}")
+    else:
+        logger.info(f"No flows found for sink {sink_id}")
     
-    return updated_flow
+    return flows
 
 
-def work_with_tags(flow_id: str):
-    """Add and remove tags from a flow"""
-    logger.info(f"Working with tags for flow with ID: {flow_id}")
+def get_flow_by_dataset(dataset_id: str):
+    """Get flows for a specific dataset"""
+    logger.info(f"Getting flows for dataset with ID: {dataset_id}")
     
-    # Add tags
-    tags = ["example", "sdk", "test"]
-    tagged_flow = nexla_client.flows.add_tags(flow_id, tags)
-    logger.info(f"Added tags: {tags}")
+    flows = nexla_client.flows.get_by_resource("data_sets", dataset_id)
     
-    # Get flow to verify tags were added
-    flow = nexla_client.flows.get(flow_id)
-    if hasattr(flow, "tags"):
-        logger.info(f"Flow tags after adding: {flow.tags}")
+    # Print flow details
+    if hasattr(flows, "flows") and len(flows.flows) > 0:
+        logger.info(f"Found {len(flows.flows)} flows for dataset {dataset_id}")
+        for flow in flows.flows:
+            logger.info(f"Flow ID: {flow.id}")
+    else:
+        logger.info(f"No flows found for dataset {dataset_id}")
     
-    # Remove some tags
-    tags_to_remove = ["example"]
-    untagged_flow = nexla_client.flows.remove_tags(flow_id, tags_to_remove)
-    logger.info(f"Removed tags: {tags_to_remove}")
-    
-    # Get flow to verify tags were removed
-    flow = nexla_client.flows.get(flow_id)
-    if hasattr(flow, "tags"):
-        logger.info(f"Flow tags after removing: {flow.tags}")
-    
-    return flow
+    return flows
 
 
-def activate_and_pause_flow(flow_id: str):
-    """Activate and pause a flow"""
-    logger.info(f"Activating flow with ID: {flow_id}")
-    activated_flow = nexla_client.flows.activate(flow_id)
+def activate_flow_by_source(source_id: str):
+    """Activate a flow by source ID"""
+    logger.info(f"Activating flow for source with ID: {source_id}")
+    
+    activated_flow = nexla_client.flows.activate_by_resource("data_sources", source_id)
     
     # Check status
     if hasattr(activated_flow, "flows") and len(activated_flow.flows) > 0:
-        logger.info(f"Flow status after activation: {activated_flow.flows[0].runtime_status}")
-    elif hasattr(activated_flow, "status"):
-        logger.info(f"Flow status after activation: {activated_flow.status}")
-    
-    # Pause the flow
-    logger.info(f"Pausing flow with ID: {flow_id}")
-    paused_flow = nexla_client.flows.pause(flow_id)
-    
-    # Check status
-    if hasattr(paused_flow, "flows") and len(paused_flow.flows) > 0:
-        logger.info(f"Flow status after pausing: {paused_flow.flows[0].runtime_status}")
-    elif hasattr(paused_flow, "status"):
-        logger.info(f"Flow status after pausing: {paused_flow.status}")
-    
-    return paused_flow
-
-
-def copy_flow(flow_id: str):
-    """Create a copy of a flow"""
-    logger.info(f"Copying flow with ID: {flow_id}")
-    
-    # Copy with basic options
-    copied_flow = nexla_client.flows.copy(
-        flow_id,
-        new_name="Copy of Example Flow",
-        reuse_data_credentials=True
-    )
-    
-    if hasattr(copied_flow, "flows") and len(copied_flow.flows) > 0:
-        logger.info(f"Copied flow ID: {copied_flow.flows[0].id}")
-    elif hasattr(copied_flow, "id"):
-        logger.info(f"Copied flow ID: {copied_flow.id}")
-    
-    return copied_flow
-
-
-def run_flow(flow_id: str):
-    """Run a flow and check its status"""
-    logger.info(f"Running flow with ID: {flow_id}")
-    
-    try:
-        # Run the flow
-        run_response = nexla_client.flows.run(flow_id)
-        logger.info(f"Flow run initiated: {run_response}")
+        logger.info(f"Flow status after activation: {activated_flow.flows[0].status}")
         
-        # If run_id is available, check status
-        if "run_id" in run_response:
-            run_id = run_response["run_id"]
-            status = nexla_client.flows.get_run_status(flow_id, run_id)
-            logger.info(f"Flow run status: {status}")
-        
-        return run_response
-    except Exception as e:
-        logger.warning(f"Flow run not supported or failed: {e}")
-        return None
-
-
-def get_flow_by_resource(resource_type: str, resource_id: str):
-    """Get a flow by resource ID"""
-    logger.info(f"Getting flow for {resource_type} with ID: {resource_id}")
-    
-    flow = nexla_client.flows.get_by_resource(resource_type, resource_id)
-    
-    if hasattr(flow, "flows") and len(flow.flows) > 0:
-        logger.info(f"Flow ID: {flow.flows[0].id}")
-    elif hasattr(flow, "id"):
-        logger.info(f"Flow ID: {flow.id}")
-    
-    return flow
-
-
-def activate_flow_by_resource(resource_type: str, resource_id: str):
-    """Activate a flow by resource ID"""
-    logger.info(f"Activating flow for {resource_type} with ID: {resource_id}")
-    
-    activated_flow = nexla_client.flows.activate_by_resource(resource_type, resource_id)
-    
-    if hasattr(activated_flow, "flows") and len(activated_flow.flows) > 0:
-        logger.info(f"Flow status after activation: {activated_flow.flows[0].runtime_status}")
-    elif hasattr(activated_flow, "status"):
-        logger.info(f"Flow status after activation: {activated_flow.status}")
+        # Check if data_sources were included in the response
+        if hasattr(activated_flow, "data_sources") and activated_flow.data_sources:
+            logger.info(f"Data source status: {activated_flow.data_sources[0].status}")
     
     return activated_flow
 
 
-def pause_flow_by_resource(resource_type: str, resource_id: str):
-    """Pause a flow by resource ID"""
-    logger.info(f"Pausing flow for {resource_type} with ID: {resource_id}")
+def pause_flow_by_source(source_id: str):
+    """Pause a flow by source ID"""
+    logger.info(f"Pausing flow for source with ID: {source_id}")
     
-    paused_flow = nexla_client.flows.pause_by_resource(resource_type, resource_id)
+    paused_flow = nexla_client.flows.pause_by_resource("data_sources", source_id)
     
+    # Check status
     if hasattr(paused_flow, "flows") and len(paused_flow.flows) > 0:
-        logger.info(f"Flow status after pausing: {paused_flow.flows[0].runtime_status}")
-    elif hasattr(paused_flow, "status"):
-        logger.info(f"Flow status after pausing: {paused_flow.status}")
+        logger.info(f"Flow status after pausing: {paused_flow.flows[0].status}")
+        
+        # Check if data_sources were included in the response
+        if hasattr(paused_flow, "data_sources") and paused_flow.data_sources:
+            logger.info(f"Data source status: {paused_flow.data_sources[0].status}")
     
     return paused_flow
 
 
-def list_condensed_flows():
-    """List flows in condensed format"""
-    logger.info("Listing flows in condensed format...")
+def delete_flow_by_source(source_id: str):
+    """Delete a flow by source ID"""
+    logger.info(f"Deleting flow by source with ID: {source_id}")
     
-    condensed_flows = nexla_client.flows.list_condensed()
-    
-    if "items" in condensed_flows:
-        logger.info(f"Found {len(condensed_flows['items'])} condensed flows")
-    
-    return condensed_flows
-
-
-def delete_flow(flow_id: str):
-    """Delete a flow"""
-    logger.info(f"Deleting flow with ID: {flow_id}")
+    # First check if the flow exists
+    flow = nexla_client.flows.get_by_resource("data_sources", source_id)
     
     # Make sure the flow is paused first
-    nexla_client.flows.pause(flow_id)
+    paused_flow = nexla_client.flows.pause_by_resource("data_sources", source_id)
     
     # Delete the flow
-    delete_response = nexla_client.flows.delete(flow_id)
+    delete_response = nexla_client.flows.delete_by_resource("data_sources", source_id)
     logger.info(f"Flow deletion response: {delete_response}")
     
     return delete_response
@@ -265,43 +166,39 @@ def delete_flow(flow_id: str):
 if __name__ == "__main__":
     # Run a complete flow lifecycle example
     try:
-         # List flows
-        list_flows()
-        
-        # Create a flow
-        new_flow = create_flow()
-        flow_id = new_flow.id
-        
-        # Get the flow
-        get_flow(flow_id)
-        
-        # Update the flow
-        update_flow(flow_id)
-        
-        # Work with tags
-        work_with_tags(flow_id)
-        
-        # Activate and pause
-        activate_and_pause_flow(flow_id)
-        
-        # Run the flow
-        run_flow(flow_id)
-        
-        # Copy the flow
-        copied_flow = copy_flow(flow_id)
-        copied_flow_id = copied_flow.id if hasattr(copied_flow, "id") else None
-        
         # List flows
-        list_flows()
+        flows = list_flows()
         
-        # List condensed flows
-        list_condensed_flows()
+        if len(flows.flows) > 0:
+            # Take the first flow as an example
+            example_flow = flows.flows[0]
+            
+            # Get the flow by ID
+            flow_id = example_flow.id
+            get_flow(flow_id)
+            
+            # If the flow has a source, get flows by source
+            if hasattr(example_flow, "data_source") and example_flow.data_source:
+                source_id = example_flow.data_source.get("id")
+                if source_id:
+                    get_flow_by_source(source_id)
+            
+            # If the flow has sinks, get flows by sink
+            if hasattr(example_flow, "data_sinks") and example_flow.data_sinks:
+                sink_id = example_flow.data_sinks[0]
+                get_flow_by_sink(sink_id)
         
-        # Clean up
-        if copied_flow_id:
-            delete_flow(copied_flow_id)
-        delete_flow(flow_id)
+        # For demonstration purposes, you might need actual IDs:
+        # Note: Replace these IDs with actual IDs from your Nexla account
+        # source_id = "your_source_id"
+        # sink_id = "your_sink_id"
+        # dataset_id = "your_dataset_id"
         
-        logger.info("Flow lifecycle example completed successfully!")
+        # Activate, pause, and delete operations require actual IDs and should be used carefully
+        # activate_flow_by_source(source_id)
+        # pause_flow_by_source(source_id)
+        # delete_flow_by_source(source_id)
+        
+        logger.info("Flow example completed successfully!")
     except Exception as e:
-        logger.error(f"Error in flow lifecycle example: {e}") 
+        logger.error(f"Error in flow example: {e}") 

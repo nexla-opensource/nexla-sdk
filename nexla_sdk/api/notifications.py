@@ -1,7 +1,7 @@
 """
 Notifications API for the Nexla SDK
 """
-from typing import List, Optional, Union, Dict, Any
+from typing import List, Optional, Union, Dict, Any, Literal
 from datetime import datetime
 
 # Import the types without creating a circular import
@@ -51,8 +51,7 @@ class NotificationsApi(BaseAPI):
         if to_timestamp is not None:
             params["to"] = to_timestamp
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        response = self._get("/notifications", params=params, headers=headers)
+        response = self._get("/notifications", params=params)
         return [Notification(**item) for item in response]
 
     def get_notification(self, notification_id: int) -> Notification:
@@ -65,8 +64,7 @@ class NotificationsApi(BaseAPI):
         Returns:
             Notification object.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._get(f"/notifications/{notification_id}", headers=headers, model_class=Notification)
+        return self._get(f"/notifications/{notification_id}", model_class=Notification)
 
     def delete_notification(self, notification_id: int) -> Dict[str, Any]:
         """
@@ -78,8 +76,7 @@ class NotificationsApi(BaseAPI):
         Returns:
             Response indicating success.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._delete(f"/notifications/{notification_id}", headers=headers)
+        return self._delete(f"/notifications/{notification_id}")
 
     def delete_all_notifications(self) -> Dict[str, Any]:
         """
@@ -88,8 +85,7 @@ class NotificationsApi(BaseAPI):
         Returns:
             Response indicating success.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._delete("/notifications/all", headers=headers)
+        return self._delete("/notifications/all")
 
     def get_notification_count(self, read: Optional[int] = None) -> NotificationCount:
         """
@@ -105,8 +101,7 @@ class NotificationsApi(BaseAPI):
         if read is not None:
             params["read"] = read
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._get("/notifications/count", params=params, headers=headers, model_class=NotificationCount)
+        return self._get("/notifications/count", params=params, model_class=NotificationCount)
 
     def mark_notifications_read(
         self,
@@ -130,8 +125,7 @@ class NotificationsApi(BaseAPI):
         else:
             data = notification_ids
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._put("/notifications/mark_read", params=params, json=data, headers=headers)
+        return self._put("/notifications/mark_read", params=params, json=data)
 
     def mark_notifications_unread(
         self,
@@ -155,8 +149,7 @@ class NotificationsApi(BaseAPI):
         else:
             data = notification_ids
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._put("/notifications/mark_unread", params=params, json=data, headers=headers)
+        return self._put("/notifications/mark_unread", params=params, json=data)
 
     def get_notification_types(self, status: Optional[str] = None) -> List[NotificationType]:
         """
@@ -172,8 +165,7 @@ class NotificationsApi(BaseAPI):
         if status is not None:
             params["status"] = status
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        response = self._get("/notification_types", params=params, headers=headers)
+        response = self._get("/notification_types", params=params)
         return [NotificationType(**item) for item in response]
 
     def get_notification_type(
@@ -196,8 +188,7 @@ class NotificationsApi(BaseAPI):
             "resource_type": resource_type.value
         }
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._get("/notification_types/list", params=params, headers=headers, model_class=NotificationType)
+        return self._get("/notification_types/list", params=params, model_class=NotificationType)
 
     def list_notification_channel_settings(self) -> List[NotificationChannelSetting]:
         """
@@ -206,8 +197,7 @@ class NotificationsApi(BaseAPI):
         Returns:
             List of notification channel setting objects.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        response = self._get("/notification_channel_settings", headers=headers)
+        response = self._get("/notification_channel_settings")
         return [NotificationChannelSetting(**item) for item in response]
 
     def create_notification_channel_setting(
@@ -223,11 +213,10 @@ class NotificationsApi(BaseAPI):
         Returns:
             Newly created notification channel setting.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         return self._post(
             "/notification_channel_settings", 
             json=request.dict(exclude_none=True), 
-            headers=headers, 
+            
             model_class=NotificationChannelSetting
         )
 
@@ -244,10 +233,9 @@ class NotificationsApi(BaseAPI):
         Returns:
             Notification channel setting object.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         return self._get(
             f"/notification_channel_settings/{notification_channel_setting_id}", 
-            headers=headers, 
+            
             model_class=NotificationChannelSetting
         )
 
@@ -266,11 +254,10 @@ class NotificationsApi(BaseAPI):
         Returns:
             Updated notification channel setting.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         return self._put(
             f"/notification_channel_settings/{notification_channel_setting_id}",
             json=request.dict(exclude_none=True),
-            headers=headers,
+           
             model_class=NotificationChannelSetting
         )
 
@@ -287,8 +274,7 @@ class NotificationsApi(BaseAPI):
         Returns:
             Response indicating success.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._delete(f"/notification_channel_settings/{notification_channel_setting_id}", headers=headers)
+        return self._delete(f"/notification_channel_settings/{notification_channel_setting_id}")
 
     def list_notification_settings(
         self,
@@ -315,8 +301,7 @@ class NotificationsApi(BaseAPI):
         if status is not None:
             params["status"] = status
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        response = self._get("/notification_settings", params=params, headers=headers)
+        response = self._get("/notification_settings", params=params)
         return [NotificationSetting(**item) for item in response]
 
     def create_notification_setting(
@@ -332,11 +317,10 @@ class NotificationsApi(BaseAPI):
         Returns:
             Newly created notification setting.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         return self._post(
             "/notification_settings", 
             json=request.dict(exclude_none=True), 
-            headers=headers, 
+            
             model_class=NotificationSetting
         )
 
@@ -353,10 +337,9 @@ class NotificationsApi(BaseAPI):
         Returns:
             Notification setting object.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         return self._get(
             f"/notification_settings/{notification_setting_id}", 
-            headers=headers, 
+            
             model_class=NotificationSetting
         )
 
@@ -375,11 +358,10 @@ class NotificationsApi(BaseAPI):
         Returns:
             Updated notification setting.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         return self._put(
             f"/notification_settings/{notification_setting_id}",
             json=request.dict(exclude_none=True),
-            headers=headers,
+           
             model_class=NotificationSetting
         )
 
@@ -396,8 +378,7 @@ class NotificationsApi(BaseAPI):
         Returns:
             Response indicating success.
         """
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
-        return self._delete(f"/notification_settings/{notification_setting_id}", headers=headers)
+        return self._delete(f"/notification_settings/{notification_setting_id}")
 
     def list_notification_settings_by_type(
         self,
@@ -418,11 +399,10 @@ class NotificationsApi(BaseAPI):
         if expand is not None:
             params["expand"] = expand
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         response = self._get(
             f"/notification_settings/notification_types/{notification_type_id}",
             params=params,
-            headers=headers
+           
         )
         return [NotificationSettingExpanded(**item) for item in response]
 
@@ -455,10 +435,9 @@ class NotificationsApi(BaseAPI):
         if notification_type_id is not None:
             params["notification_type_id"] = notification_type_id
 
-        headers = {"Accept": "application/vnd.nexla.api.v1+json"}
         response = self._get(
             f"/notification_settings/{resource_type.value}/{resource_id}",
             params=params,
-            headers=headers
+           
         )
         return [NotificationSetting(**item) for item in response] 

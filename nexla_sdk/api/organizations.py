@@ -23,7 +23,7 @@ class OrganizationsAPI(BaseAPI):
         Returns:
             List of Organization objects
         """
-        response = self._get("/orgs", headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        response = self._get("/orgs")
         return OrganizationList([Organization.parse_obj(org) for org in response])
         
     def get(self, org_id: int) -> Organization:
@@ -36,7 +36,7 @@ class OrganizationsAPI(BaseAPI):
         Returns:
             Organization object
         """
-        response = self._get(f"/orgs/{org_id}", headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        response = self._get(f"/orgs/{org_id}")
         return Organization.parse_obj(response)
         
     def update(self, org_id: int, update_data: UpdateOrganizationRequest) -> Organization:
@@ -63,8 +63,7 @@ class OrganizationsAPI(BaseAPI):
         Returns:
             List of organization members
         """
-        response = self._get(f"/orgs/{org_id}/members", 
-                           headers={"Accept": "application/vnd.nexla.api.v1+json"})
+        response = self._get(f"/orgs/{org_id}/members")
         return OrganizationMemberList([OrganizationMember.parse_obj(member) for member in response])
         
     def update_members(self, org_id: int, update_data: UpdateOrganizationMembersRequest) -> OrganizationMemberList:
@@ -79,8 +78,7 @@ class OrganizationsAPI(BaseAPI):
             Updated list of organization members
         """
         response = self._put(f"/orgs/{org_id}/members", 
-                           json=update_data.dict(exclude_none=True),
-                           headers={"Accept": "application/vnd.nexla.api.v1+json"})
+                           json=update_data.dict(exclude_none=True))
         return OrganizationMemberList([OrganizationMember.parse_obj(member) for member in response])
     
     def delete_members(self, org_id: int, delete_data: DeleteOrganizationMembersRequest) -> DeleteResponse:
@@ -95,8 +93,7 @@ class OrganizationsAPI(BaseAPI):
             Deletion response
         """
         response = self._delete(f"/orgs/{org_id}/members", 
-                              json=delete_data.dict(exclude_none=True),
-                              headers={"Accept": "application/vnd.nexla.api.v1+json"})
+                              json=delete_data.dict(exclude_none=True))
         return DeleteResponse.parse_obj(response)
     
     def get_account_metrics(
@@ -126,7 +123,6 @@ class OrganizationsAPI(BaseAPI):
             
         response = self._get(
             f"/orgs/{org_id}/flows/account_metrics",
-            params=params,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"}
+            params=params
         )
         return AccountMetricsResponse.parse_obj(response) 

@@ -622,5 +622,4 @@ class SourcesAPI(BaseAPI):
         return self._post(
             f"/data_sources/{source_id}/probe/quarantine/sample",
             json=data,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"}
         ) 

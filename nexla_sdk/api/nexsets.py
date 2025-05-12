@@ -283,5 +283,5 @@ class NexsetsAPI(BaseAPI):
         return self._post(
             f"/data_sets/{set_id}/probe/quarantine/sample",
             json=data,
-            headers={"Accept": "application/vnd.nexla.api.v1+json"}
+
         ) 

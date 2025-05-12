@@ -23,7 +23,6 @@ class AuditLogsAPI(BaseAPI):
         """
         return self._get(
             f"/{resource_path_segment}/{resource_id}/audit_log",
-            headers={"Accept": "application/vnd.nexla.api.v1+json"},
             model_class=List[AuditLogEntry]
         )
 
