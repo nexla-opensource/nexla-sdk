@@ -131,7 +131,7 @@ class DataSetBasic(BaseModel):
     owner_id: int = Field(..., description="Owner ID")
     org_id: int = Field(..., description="Organization ID")
     name: str = Field(..., description="DataSet name")
-    description: str = Field(..., description="DataSet description")
+    description: Optional[str] = Field(None, description="DataSet description")
     updated_at: datetime = Field(..., description="Last update timestamp")
     created_at: datetime = Field(..., description="Creation timestamp")
 

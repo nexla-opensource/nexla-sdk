@@ -115,7 +115,7 @@ class DataSet(Nexset):
     flow_node_id: Union[str, int] = Field(..., description="Flow node ID")
     origin_node_id: Union[str, int] = Field(..., description="Origin node ID")
     name: str = Field(..., description="Data set name")
-    description: str = Field(..., description="Data set description")
+    description: Optional[str] = Field(None, description="Data set description")
     status: Union[Status, str] = Field(..., description="Status of the data set")
     data_source_id: Optional[Union[str, int]] = Field(None, description="Data source ID")
     parent_data_set_id: Optional[Union[str, int]] = Field(None, description="Parent data set ID")
