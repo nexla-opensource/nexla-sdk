@@ -15,6 +15,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        # Fetch full history for setuptools_scm to work properly
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -28,23 +31,9 @@ jobs:
         pip install -r requirements.txt
         pip install -e .[dev]
 
-    - name: Extract version from release tag
-      id: get_version
+    - name: Verify version from setuptools_scm
       run: |
-        # Remove 'v' prefix if it exists and store version
-        VERSION=${GITHUB_REF_NAME#v}
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Release version: $VERSION"
-
-    - name: Update version in pyproject.toml
-      run: |
-        sed -i 's/version = "[^"]*"/version = "${{ steps.get_version.outputs.version }}"/' pyproject.toml
-        echo "Updated pyproject.toml version to ${{ steps.get_version.outputs.version }}"
-
-    - name: Verify version updates
-      run: |
-        echo "=== pyproject.toml version ==="
-        grep 'version = ' pyproject.toml
+        python -c "import setuptools_scm; print(f'Version: {setuptools_scm.get_version()}')"
 
     # - name: Run tests
     #   run: |
@@ -71,9 +60,10 @@ jobs:
 
     - name: Create deployment summary
       run: |
+        VERSION=$(python -c "import setuptools_scm; print(setuptools_scm.get_version())")
         echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
-        echo "- **Version**: ${{ steps.get_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: $VERSION" >> $GITHUB_STEP_SUMMARY
         echo "- **Tag**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Published to**: PyPI" >> $GITHUB_STEP_SUMMARY
-        echo "- **Package**: nexla-sdk==${{ steps.get_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY 
+        echo "- **Package**: nexla-sdk==$VERSION" >> $GITHUB_STEP_SUMMARY 
