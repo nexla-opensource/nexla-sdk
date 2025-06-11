@@ -69,6 +69,11 @@ The SDK provides access to the following Nexla API features:
 * User management
 * Teams management
 * Projects management
+* Audit Logs
+* Metrics
+* Notifications
+* Schemas
+* Quarantine Settings
 
 ## Type-Safe Models
 
@@ -94,7 +99,39 @@ for source in sources.items:
 
 ## Examples
 
-### Working with Flows
+The Nexla SDK comes with a comprehensive set of examples in the `examples/api/` directory:
+
+### Example Structure
+
+- `examples/api/client.py` - Base client configuration used by all examples
+- Resource-specific examples:
+  - `examples/api/flows.py` - Flow operations (listing, retrieval, activation/pause)
+  - `examples/api/sources.py` - Data source operations (listing, creation, updating, inspection)
+  - `examples/api/destinations.py` - Data destination operations 
+  - `examples/api/nexsets.py` - Nexset (dataset) operations
+  - `examples/api/credentials.py` - Credential management
+  - `examples/api/transforms.py` - Data transformation operations
+  - `examples/api/lookups.py` - Data Maps (Lookups) examples
+  - `examples/api/teams.py` - Team management examples
+  - `examples/api/users.py` - User management examples
+  - And more resource-specific examples (audit_logs, metrics, notifications, etc.)
+
+### Running the Examples
+
+To run these examples:
+
+1. Clone the repository
+2. Create a `.env` file with your Nexla credentials:
+   ```
+   NEXLA_SERVICE_KEY=your_service_key
+   NEXLA_API_URL=your_api_url  # Optional, defaults to standard Nexla API URL
+   ```
+3. Run any example script, for instance:
+   ```bash
+   python examples/api/flows.py
+   ```
+
+### Example: Working with Flows
 
 ```python
 # List all flows - returns a FlowList
@@ -116,7 +153,7 @@ new_flow = client.flows.copy("flow_id", new_name="Copy of my flow")
 print(f"New flow created: {new_flow.id}, name: {new_flow.name}")
 ```
 
-### Working with Data Sources
+### Example: Working with Data Sources
 
 ```python
 # List all data sources - returns a SourceList
@@ -141,7 +178,7 @@ print(f"New source ID: {new_source.id}")
 activated_source = client.sources.activate("source_id")
 ```
 
-### Working with Credentials
+### Example: Working with Credentials
 
 ```python
 # List all credentials - returns a CredentialList
@@ -172,6 +209,19 @@ tree = client.credentials.probe_tree("credential_id", path="/some/path")
 for item in tree.items:
     print(f"{item.name} ({item.type}): {item.path}")
 ```
+
+## Additional Example Features
+
+The SDK examples cover advanced operations such as:
+
+- Audit logging and compliance tracking
+- User and team permissions management
+- Data transformation and schema handling
+- Metrics collection and monitoring
+- Notification systems integration
+- Quarantine settings for data validation
+
+See the `examples/api/` directory for detailed examples of these operations.
 
 ## Error Handling
 

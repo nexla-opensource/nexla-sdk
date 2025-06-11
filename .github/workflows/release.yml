@@ -1,0 +1,79 @@
+name: Release to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      id-token: write  # Required for trusted publishing to PyPI
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+        pip install -r requirements.txt
+        pip install -e .[dev]
+
+    - name: Extract version from release tag
+      id: get_version
+      run: |
+        # Remove 'v' prefix if it exists and store version
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Release version: $VERSION"
+
+    - name: Update version in pyproject.toml
+      run: |
+        sed -i 's/version = "[^"]*"/version = "${{ steps.get_version.outputs.version }}"/' pyproject.toml
+        echo "Updated pyproject.toml version to ${{ steps.get_version.outputs.version }}"
+
+    - name: Verify version updates
+      run: |
+        echo "=== pyproject.toml version ==="
+        grep 'version = ' pyproject.toml
+
+    # - name: Run tests
+    #   run: |
+    #     python -m pytest tests/ -v --tb=short
+    #   env:
+    #     # Skip integration tests in release workflow
+    #     PYTEST_ADDOPTS: "-m 'not integration'"
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Verify build contents
+      run: |
+        echo "=== Built packages ==="
+        ls -la dist/
+        echo "=== Checking wheel contents ==="
+        python -m zipfile -l dist/*.whl | head -20
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        verbose: true
+
+    - name: Create deployment summary
+      run: |
+        echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: ${{ steps.get_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Tag**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Published to**: PyPI" >> $GITHUB_STEP_SUMMARY
+        echo "- **Package**: nexla-sdk==${{ steps.get_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY 
