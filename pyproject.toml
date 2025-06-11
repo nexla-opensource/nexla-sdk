@@ -4,11 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nexla-sdk"
-version = "0.1.0"
+version = "0.1.2"
 description = "A Python SDK for the Nexla API"
 readme = "README.md"
 authors = [
-    {name = "Nexla", email = "support@nexla.com"}
+    {name = "Amey Desai", email = "amey.desai@nexla.com"},
+    {name = "Saksham Mittal", email = "saksham.mittal@nexla.com"}
 ]
 license = {text = "MIT"}
 classifiers = [
