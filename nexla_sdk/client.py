@@ -40,16 +40,37 @@ class NexlaClient:
     """
     Client for the Nexla API
     
-    Example:
-        # Using service key
+    The Nexla API supports two authentication methods:
+    
+    1. **Service Key Authentication** (Recommended for programmatic access):
+       Service keys are "forever keys" created in the Nexla UI that can be used to 
+       programmatically obtain session tokens. The SDK automatically handles token 
+       obtaining and refreshing.
+       
+    2. **Direct Access Token Authentication**:
+       Access tokens obtained can be used directly. Note that these tokens expire 
+       (typically after 1 hour) and cannot be automatically refreshed by the SDK.
+    
+    Examples:
+        # Method 1: Using service key (recommended for automation)
         client = NexlaClient(service_key="your-service-key")
         
-        # List flows
+        # Method 2: Using access token directly (manual/short-term use)
+        client = NexlaClient(access_token="your-access-token")
+        
+        # Using the client (same regardless of authentication method)
         flows = client.flows.list()
+        
+    Note:
+        - Service keys should be treated as highly sensitive credentials
+        - Only provide either service_key OR access_token, not both
+        - When using direct access tokens, ensure they have sufficient lifetime
+          for your operations as they cannot be automatically refreshed
     """
     
     def __init__(self, 
-                 service_key: str, 
+                 service_key: Optional[str] = None,
+                 access_token: Optional[str] = None,
                  api_url: str = "https://dataops.nexla.io/nexla-api", 
                  api_version: str = "v1",
                  token_refresh_margin: int = 300,
@@ -58,12 +79,22 @@ class NexlaClient:
         Initialize the Nexla client
         
         Args:
-            service_key: Nexla service key for authentication
+            service_key: Nexla service key for authentication (mutually exclusive with access_token)
+            access_token: Nexla access token for direct authentication (mutually exclusive with service_key)
             api_url: Nexla API URL
             api_version: API version to use
             token_refresh_margin: Seconds before token expiry to trigger refresh (default: 5 minutes)
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
+            
+        Raises:
+            NexlaClientError: If neither or both authentication methods are provided
         """
+        # Validate authentication parameters
+        if not service_key and not access_token:
+            raise NexlaClientError("Either service_key or access_token must be provided")
+        if service_key and access_token:
+            raise NexlaClientError("Cannot provide both service_key and access_token. Choose one authentication method.")
+            
         self.api_url = api_url.rstrip('/')
         self.api_version = api_version
         self.http_client = http_client or RequestsHttpClient()
@@ -71,6 +102,7 @@ class NexlaClient:
         # Initialize authentication handler
         self.auth_handler = TokenAuthHandler(
             service_key=service_key,
+            access_token=access_token,
             api_url=api_url,
             api_version=api_version,
             token_refresh_margin=token_refresh_margin,
@@ -98,8 +130,36 @@ class NexlaClient:
         self.quarantine_settings = QuarantineSettingsAPI(self)
         self.schemas = SchemasAPI(self)
         
-        # Obtain initial session token
-        self.auth_handler.obtain_session_token()
+        # Validate credentials during initialization
+        if service_key:
+            # For service key: obtain session token (validates the service key)
+            self.auth_handler.obtain_session_token()
+        elif access_token:
+            # For access token: validate and potentially refresh the token
+            self.auth_handler.validate_access_token()
+
+    def get_access_token(self) -> str:
+        """
+        Get a valid access token, automatically refreshing if necessary
+        
+        This method ensures that the returned token is valid and not expired.
+        If the token is about to expire (within the token_refresh_margin), 
+        it will be automatically refreshed before being returned.
+        
+        Returns:
+            A valid access token string
+            
+        Raises:
+            NexlaAuthError: If no valid token is available or refresh fails
+            
+        Examples:
+            # Get a valid access token
+            token = client.get_access_token()
+            
+            # Use the token for external API calls
+            headers = {"Authorization": f"Bearer {token}"}
+        """
+        return self.auth_handler.ensure_valid_token()
 
     def _convert_to_model(self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]) -> Union[T, List[T]]:
         """
