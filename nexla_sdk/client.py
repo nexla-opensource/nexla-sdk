@@ -129,14 +129,6 @@ class NexlaClient:
         self.access_control = AccessControlAPI(self)
         self.quarantine_settings = QuarantineSettingsAPI(self)
         self.schemas = SchemasAPI(self)
-        
-        # Validate credentials during initialization
-        if service_key:
-            # For service key: obtain session token (validates the service key)
-            self.auth_handler.obtain_session_token()
-        elif access_token:
-            # For access token: validate and potentially refresh the token
-            self.auth_handler.validate_access_token()
 
     def get_access_token(self) -> str:
         """
