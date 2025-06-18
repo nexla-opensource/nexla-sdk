@@ -153,6 +153,26 @@ class NexlaClient:
         """
         return self.auth_handler.ensure_valid_token()
 
+    def refresh_access_token(self) -> str:
+        """
+        Refresh the current access token and return the new token
+        
+        This method forces a refresh of the current access token and returns
+        the new token. Works for both service key tokens and direct access tokens.
+        
+        Returns:
+            Refreshed access token string
+            
+        Raises:
+            NexlaAuthError: If token refresh fails
+            
+        Examples:
+            # Force refresh and get new token
+            new_token = client.refresh_access_token()
+        """
+        self.auth_handler.refresh_session_token()
+        return self.auth_handler.get_access_token()
+
     def _convert_to_model(self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]) -> Union[T, List[T]]:
         """
         Convert API response data to a Pydantic model
