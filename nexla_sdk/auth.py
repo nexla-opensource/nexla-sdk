@@ -37,7 +37,7 @@ class TokenAuthHandler:
                  access_token: Optional[str] = None,
                  api_url: str = "https://dataops.nexla.io/nexla-api",
                  api_version: str = "v1",
-                 token_refresh_margin: int = 600,
+                 token_refresh_margin: int = 3600,
                  http_client: Optional[HttpClientInterface] = None):
         """
         Initialize the token authentication handler
@@ -60,13 +60,13 @@ class TokenAuthHandler:
         if access_token:
             self._using_direct_token = True
             self._access_token = access_token
-            self._token_expiry = 0
-            self.refresh_session_token()
+            self._token_expiry = time.time() + 86400
         else:
             # Service key authentication
             self._access_token = None
             self._token_expiry = 0
             self._using_direct_token = False
+            self.obtain_session_token()
 
     def get_access_token(self) -> str:
         """
@@ -106,7 +106,7 @@ class TokenAuthHandler:
             token_data = self.http_client.request("POST", url, headers=headers)
             self._access_token = token_data.get("access_token")
             # Calculate expiry time (current time + expires_in seconds)
-            expires_in = token_data.get("expires_in", 3600)
+            expires_in = token_data.get("expires_in", 86400)
             self._token_expiry = time.time() + expires_in
             
             logger.debug("Session token obtained successfully")
