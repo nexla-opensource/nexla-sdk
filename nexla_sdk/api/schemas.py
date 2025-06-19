@@ -133,4 +133,45 @@ class SchemasAPI(BaseAPI):
         Returns:
             Empty dictionary on success
         """
-        return self._delete(f"/data_schemas/{schema_id}") 
+        return self._delete(f"/data_schemas/{schema_id}")
+    
+    def get_schema_template(self, template_id: str) -> DataSchema:
+        """
+        Get metadata for a specific schema template
+        
+        Args:
+            template_id: Template ID
+            
+        Returns:
+            DataSchema object for the template
+        """
+        return self._get(f"/data_schemas/templates/{template_id}", model_class=DataSchema)
+
+    def create_schema_template(self, template_data: Dict[str, Any]) -> DataSchema:
+        """
+        Create a new schema template
+        
+        Args:
+            template_data: Template configuration with:
+                - name: Template name
+                - schema: Schema specification
+                - annotations: Optional schema annotations
+                - description: Optional template description
+                
+        Returns:
+            Created DataSchema template
+        """
+        template_data["template"] = True  # Ensure it's created as a template
+        return self._post("/data_schemas/templates", json=template_data, model_class=DataSchema)
+
+    def delete_schema_template(self, template_id: str) -> Dict[str, Any]:
+        """
+        Delete a schema template
+        
+        Args:
+            template_id: Template ID
+            
+        Returns:
+            Empty dictionary on success
+        """
+        return self._delete(f"/data_schemas/templates/{template_id}") 
