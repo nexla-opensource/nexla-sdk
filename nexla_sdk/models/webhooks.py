@@ -43,4 +43,30 @@ class WebhookResponse(BaseModel):
     success: bool = Field(..., description="Whether the webhook call was successful")
     status_code: int = Field(..., description="HTTP status code")
     message: Optional[str] = Field(None, description="Response message")
-    response_body: Optional[Dict[str, Any]] = Field(None, description="Response body") 
+    response_body: Optional[Dict[str, Any]] = Field(None, description="Response body")
+
+
+class WebhookDelivery(BaseModel):
+    """Webhook delivery attempt details"""
+    id: str = Field(..., description="Delivery ID")
+    webhook_id: str = Field(..., description="Webhook ID")
+    event_id: str = Field(..., description="Event ID")
+    timestamp: datetime = Field(..., description="Delivery timestamp")
+    status: str = Field(..., description="Delivery status (success/failure)")
+    status_code: Optional[int] = Field(None, description="HTTP status code")
+    response: Optional[WebhookResponse] = Field(None, description="Response details")
+    error: Optional[str] = Field(None, description="Error message if failed")
+    retry_count: int = Field(default=0, description="Number of retry attempts")
+
+
+class WebhookDeliveryList(PaginatedList[WebhookDelivery]):
+    """Paginated list of webhook deliveries"""
+    pass
+
+
+class WebhookTestResult(BaseModel):
+    """Result of testing a webhook"""
+    success: bool = Field(..., description="Whether the test was successful")
+    timestamp: datetime = Field(..., description="Test timestamp")
+    request: Dict[str, Any] = Field(..., description="Request details sent")
+    response: WebhookResponse = Field(..., description="Response from the webhook endpoint") 
