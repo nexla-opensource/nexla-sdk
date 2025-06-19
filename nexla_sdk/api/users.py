@@ -46,6 +46,26 @@ class UsersAPI(BaseAPI):
         
         return []
         
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        """
+        Get a user by their email address
+        
+        Args:
+            email: The email address to search for
+            
+        Returns:
+            User object if found, None otherwise
+        """
+        # List all users and filter by email
+        users = self.list(per_page=500)  # Get a large batch to increase chances of finding the user
+        
+        # Find first user with matching email
+        for user in users:
+            if hasattr(user, "email") and user.email == email:
+                return user
+                
+        return None
+        
     def get(self, user_id: Union[str, int], expand: bool = False) -> Union[User, UserDetailExpanded]:
         """
         Get a user by ID
