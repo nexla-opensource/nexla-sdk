@@ -182,7 +182,35 @@ class TestUsersIntegration:
         except Exception as e:
             logger.error(f"Test failed: {e}")
             raise Exception(f"Get user test failed: {e}") from e
-    
+
+    def test_get_user_by_email(self, nexla_client: NexlaClient):
+        """Test getting a user by email (using current user)"""
+        try:
+            # First get the current user to have a valid email
+            logger.info("Getting current user email")
+            current_user = nexla_client.users.get_current()
+            email = current_user.email
+            logger.info(f"Current user email: {email}")
+            
+            # Now get the same user by email
+            logger.info(f"Getting user with email: {email}")
+            user = nexla_client.users.get_by_email(email)
+            logger.debug(f"User details: {user}")
+            
+            assert isinstance(user, User)
+            assert user.id == current_user.id
+            assert user.email == current_user.email
+            logger.info(f"Successfully retrieved user by email: {user.email}")
+            
+        except NexlaAPIError as e:
+            # Get by email might not be allowed for the current user
+            logger.warning(f"Get user by email operation not allowed: {e}")
+            pytest.skip(f"Get user by email operation not allowed: {e}")
+            
+        except Exception as e:
+            logger.error(f"Test failed: {e}")
+            raise Exception(f"Get user by email test failed: {e}") from e
+            
     def test_user_metrics(self, nexla_client: NexlaClient):
         """Test getting user metrics (if available)"""
         try:
