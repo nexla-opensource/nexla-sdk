@@ -1,0 +1,79 @@
+---
+globs: tests/*.py,tests/**/*.py,**/test_*.py,**/*_test.py
+---
+
+# Testing Standards for Nexla SDK
+
+## Test Organization
+- Place tests in `tests/` directory
+- Mirror the package structure: `tests/test_client.py` for `nexla_sdk/client.py`
+- Use descriptive test file names with `test_` prefix
+- Group related tests in test classes
+
+## Test Configuration
+- Use [pytest.ini](mdc:pytest.ini) for test configuration
+- Mark integration tests with `@pytest.mark.integration`
+- Use [conftest.py](mdc:tests/conftest.py) for shared fixtures and configuration
+
+## Mocking Pattern
+- Use `pytest-mock` for mocking external dependencies
+- Mock HTTP requests to avoid actual API calls in unit tests
+- Mock authentication for consistent test behavior
+- Example pattern:
+```python
+def test_list_flows(mocker):
+    mock_response = {"data": [{"id": "123", "name": "test"}]}
+    mocker.patch.object(client.http_client, "request", return_value=mock_response)
+    
+    flows = client.flows.list()
+    assert len(flows) == 1
+    assert flows[0].id == "123"
+```
+
+## Test Structure
+- Use descriptive test names: `test_should_return_flows_when_list_called`
+- Follow AAA pattern: Arrange, Act, Assert
+- One assertion per test when possible
+- Use parametrized tests for multiple scenarios
+
+## Fixtures
+- Create reusable fixtures for common test objects
+- Use `@pytest.fixture` for setup/teardown
+- Keep fixtures in `conftest.py` for shared use
+- Example:
+```python
+@pytest.fixture
+def mock_client():
+    return NexlaClient(service_key="test-key")
+```
+
+## Authentication Testing
+- Test both service key and access token authentication
+- Test authentication error scenarios
+- Mock authentication responses for consistent behavior
+- Test token refresh logic
+
+## Error Testing
+- Test all custom exception types
+- Test error propagation from HTTP client
+- Test validation error handling
+- Use `pytest.raises()` for exception testing
+
+## Integration Tests
+- Mark with `@pytest.mark.integration`
+- Require real API credentials
+- Test end-to-end workflows
+- Use environment variables for credentials
+- Skip gracefully when credentials not available
+
+## Test Data
+- Use realistic but minimal test data
+- Avoid hardcoded values when possible
+- Use factories or builders for complex objects
+- Clean up test data in integration tests
+
+## Coverage
+- Aim for high test coverage on critical paths
+- Test both success and failure scenarios
+- Cover edge cases and error conditions
+- Use meaningful assertions, not just "doesn't crash"

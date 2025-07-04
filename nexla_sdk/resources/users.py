@@ -1,0 +1,200 @@
+from typing import List, Optional, Dict, Any
+from nexla_sdk.resources.base_resource import BaseResource
+from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings
+
+
+class UsersResource(BaseResource):
+    """Resource for managing users."""
+    
+    def __init__(self, client):
+        super().__init__(client)
+        self._path = "/users"
+        self._model_class = User
+    
+    def list(self, expand: bool = False, **kwargs) -> List[User]:
+        """
+        List all users.
+        
+        Args:
+            expand: Include expanded information
+            **kwargs: Additional parameters
+        
+        Returns:
+            List of users
+        """
+        if expand:
+            response = self._make_request('GET', f"{self._path}?expand=1", params=kwargs)
+            return [UserExpanded(**item) for item in response]
+        
+        return super().list(**kwargs)
+    
+    def get(self, user_id: int, expand: bool = False) -> User:
+        """
+        Get user by ID.
+        
+        Args:
+            user_id: User ID
+            expand: Include expanded information
+        
+        Returns:
+            User object
+        """
+        if expand:
+            path = f"{self._path}/{user_id}?expand=1"
+            response = self._make_request('GET', path)
+            return UserExpanded(**response)
+        
+        return super().get(user_id, expand=False)
+    
+    def get_settings(self) -> List[UserSettings]:
+        """
+        Get current user's settings.
+        
+        Returns:
+            List of user settings
+        """
+        path = "/user_settings"
+        response = self._make_request('GET', path)
+        return [UserSettings(**item) for item in response]
+    
+    def get_quarantine_settings(self, user_id: int) -> Dict[str, Any]:
+        """
+        Get quarantine data export settings for user.
+        
+        Args:
+            user_id: User ID
+        
+        Returns:
+            Quarantine settings
+        """
+        path = f"{self._path}/{user_id}/quarantine_settings"
+        return self._make_request('GET', path)
+    
+    def create_quarantine_settings(self,
+                                   user_id: int,
+                                   data_credentials_id: int,
+                                   config: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Create quarantine data export settings.
+        
+        Args:
+            user_id: User ID
+            data_credentials_id: Credential ID for export location
+            config: Configuration including cron schedule and path
+        
+        Returns:
+            Created settings
+        """
+        path = f"{self._path}/{user_id}/quarantine_settings"
+        data = {
+            'data_credentials_id': data_credentials_id,
+            'config': config
+        }
+        return self._make_request('POST', path, json=data)
+    
+    def update_quarantine_settings(self,
+                                   user_id: int,
+                                   data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Update quarantine data export settings.
+        
+        Args:
+            user_id: User ID
+            data: Updated settings
+        
+        Returns:
+            Updated settings
+        """
+        path = f"{self._path}/{user_id}/quarantine_settings"
+        return self._make_request('PUT', path, json=data)
+    
+    def delete_quarantine_settings(self, user_id: int) -> Dict[str, Any]:
+        """
+        Delete quarantine data export settings.
+        
+        Args:
+            user_id: User ID
+        
+        Returns:
+            Response status
+        """
+        path = f"{self._path}/{user_id}/quarantine_settings"
+        return self._make_request('DELETE', path)
+    
+    def get_account_metrics(self,
+                            user_id: int,
+                            from_date: str,
+                            to_date: Optional[str] = None,
+                            org_id: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Get total account metrics for user.
+        
+        Args:
+            user_id: User ID
+            from_date: Start date (YYYY-MM-DD)
+            to_date: End date (optional)
+            org_id: Organization ID (for users in multiple orgs)
+        
+        Returns:
+            Account metrics
+        """
+        path = f"{self._path}/{user_id}/flows/account_metrics"
+        params = {'from': from_date}
+        if to_date:
+            params['to'] = to_date
+        if org_id:
+            params['org_id'] = org_id
+        
+        return self._make_request('GET', path, params=params)
+    
+    def get_dashboard_metrics(self,
+                              user_id: int,
+                              access_role: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get 24 hour flow stats for user.
+        
+        Args:
+            user_id: User ID
+            access_role: Filter by access role
+        
+        Returns:
+            Dashboard metrics
+        """
+        path = f"{self._path}/{user_id}/flows/dashboard"
+        params = {}
+        if access_role:
+            params['access_role'] = access_role
+        
+        return self._make_request('GET', path, params=params)
+    
+    def get_daily_metrics(self,
+                          user_id: int,
+                          resource_type: str,
+                          from_date: str,
+                          to_date: Optional[str] = None,
+                          org_id: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Get daily data processing metrics.
+        
+        Args:
+            user_id: User ID
+            resource_type: SOURCE or SINK
+            from_date: Start date
+            to_date: End date (optional)
+            org_id: Organization ID (optional)
+        
+        Returns:
+            Daily metrics
+        """
+        path = f"{self._path}/{user_id}/metrics"
+        params = {
+            'resource_type': resource_type,
+            'from': from_date,
+            'aggregate': 1
+        }
+        if to_date:
+            params['to'] = to_date
+        if org_id:
+            params['org_id'] = org_id
+        
+        return self._make_request('GET', path, params=params)

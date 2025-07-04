@@ -2,6 +2,7 @@
 Nexla API client
 """
 import logging
+import os
 import time
 from typing import Dict, Any, Optional, Type, TypeVar, Union, List, cast
 import base64
@@ -10,30 +11,23 @@ from pydantic import BaseModel, ValidationError
 
 from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError, NexlaNotFoundError
 from .auth import TokenAuthHandler
-from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
-from .api.flows import FlowsAPI
-from .api.sources import SourcesAPI
-from .api.destinations import DestinationsAPI
-from .api.credentials import CredentialsAPI
-from .api.lookups import LookupsAPI
-from .api.transforms import TransformsAPI
-from .api.nexsets import NexsetsAPI
-from .api.webhooks import WebhooksAPI
-from .api.organizations import OrganizationsAPI
-from .api.users import UsersAPI
-from .api.teams import TeamsAPI
-from .api.projects import ProjectsAPI
-from .api.notifications import NotificationsApi
-from .api.metrics import MetricsAPI
-from .api.audit_logs import AuditLogsAPI
-from .api.session import SessionAPI
-from .api.access import AccessControlAPI
-from .api.quarantine_settings import QuarantineSettingsAPI
-from .api.schemas import SchemasAPI
+from .http_client import HttpClientInterface, RequestsHttpClient, HttpClientError
+from .resources.flows import FlowsResource  
+from .resources.sources import SourcesResource
+from .resources.destinations import DestinationsResource
+from .resources.credentials import CredentialsResource
+from .resources.lookups import LookupsResource
+from .resources.nexsets import NexsetsResource
+from .resources.users import UsersResource
+from .resources.organizations import OrganizationsResource
+from .resources.teams import TeamsResource
+from .resources.projects import ProjectsResource
+from .resources.notifications import NotificationsResource
+from .resources.metrics import MetricsResource
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T', bound=BaseModel)
+T = TypeVar('T')
 
 
 class NexlaClient:
@@ -88,10 +82,25 @@ class NexlaClient:
             
         Raises:
             NexlaClientError: If neither or both authentication methods are provided
+            
+        Environment Variables:
+            NEXLA_SERVICE_KEY: Service key (used if no authentication parameters are provided)
+            NEXLA_ACCESS_TOKEN: Access token (used if no authentication parameters are provided and NEXLA_SERVICE_KEY is not set)
         """
+        # Check environment variables only if neither parameter is provided
+        if not service_key and not access_token:
+            # First check for service_key in environment
+            service_key = os.getenv("NEXLA_SERVICE_KEY")
+            # Only check for access_token if service_key is not available
+            if not service_key:
+                access_token = os.getenv("NEXLA_ACCESS_TOKEN")
+            
         # Validate authentication parameters
         if not service_key and not access_token:
-            raise NexlaClientError("Either service_key or access_token must be provided")
+            raise NexlaClientError(
+                "Either service_key or access_token must be provided either as parameters "
+                "or via NEXLA_SERVICE_KEY/NEXLA_ACCESS_TOKEN environment variables"
+            )
         if service_key and access_token:
             raise NexlaClientError("Cannot provide both service_key and access_token. Choose one authentication method.")
             
@@ -110,25 +119,18 @@ class NexlaClient:
         )
         
         # Initialize API endpoints
-        self.flows = FlowsAPI(self)
-        self.sources = SourcesAPI(self)
-        self.destinations = DestinationsAPI(self)
-        self.credentials = CredentialsAPI(self)
-        self.lookups = LookupsAPI(self)
-        self.transforms = TransformsAPI(self)
-        self.nexsets = NexsetsAPI(self)
-        self.webhooks = WebhooksAPI(self)
-        self.organizations = OrganizationsAPI(self)
-        self.users = UsersAPI(self)
-        self.teams = TeamsAPI(self)
-        self.projects = ProjectsAPI(self)
-        self.notifications = NotificationsApi(self)
-        self.metrics = MetricsAPI(self)
-        self.audit_logs = AuditLogsAPI(self)
-        self.session = SessionAPI(self)
-        self.access_control = AccessControlAPI(self)
-        self.quarantine_settings = QuarantineSettingsAPI(self)
-        self.schemas = SchemasAPI(self)
+        self.flows = FlowsResource(self)
+        self.sources = SourcesResource(self)
+        self.destinations = DestinationsResource(self)
+        self.credentials = CredentialsResource(self)
+        self.lookups = LookupsResource(self)
+        self.nexsets = NexsetsResource(self)
+        self.users = UsersResource(self)
+        self.organizations = OrganizationsResource(self)
+        self.teams = TeamsResource(self)
+        self.projects = ProjectsResource(self)
+        self.notifications = NotificationsResource(self)
+        self.metrics = MetricsResource(self)
 
     def get_access_token(self) -> str:
         """

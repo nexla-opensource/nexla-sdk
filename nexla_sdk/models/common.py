@@ -1,60 +1,88 @@
-"""
-Common models used across the Nexla SDK
-"""
-from typing import List, Dict, Any, Generic, TypeVar, Optional, Union
+from typing import List, Optional, Dict, Any
 from datetime import datetime
-from enum import Enum, auto
-from pydantic import BaseModel, Field
+from nexla_sdk.models.base import BaseModel
 
 
-class ResourceID(BaseModel):
-    """Resource identifier"""
-    id: str = Field(..., description="Unique identifier for the resource")
+class Owner(BaseModel):
+    """User who owns a resource."""
+    id: int
+    full_name: str
+    email: str
+    email_verified_at: Optional[datetime] = None
 
 
-T = TypeVar('T')
+class Organization(BaseModel):
+    """Organization details."""
+    id: int
+    name: str
+    email_domain: Optional[str] = None
+    email: Optional[str] = None
+    client_identifier: Optional[str] = None
+    org_webhook_host: Optional[str] = None
+    cluster_id: Optional[int] = None
+    new_cluster_id: Optional[int] = None
+    cluster_status: Optional[str] = None
+    status: Optional[str] = None
+    self_signup: Optional[bool] = None
+    features_enabled: Optional[List[str]] = None
+    org_tier: Optional[Dict[str, Any]] = None
 
 
-class PaginatedList(BaseModel, Generic[T]):
-    """Generic paginated list response"""
-    items: List[T] = Field(..., description="List of items")
-    total: int = Field(..., description="Total number of items available")
-    page: Optional[int] = Field(None, description="Current page number")
-    page_size: Optional[int] = Field(None, description="Number of items per page")
-    
-
-class Status(BaseModel):
-    """Resource status information"""
-    state: str = Field(..., description="Current state of the resource")
-    message: Optional[str] = Field(None, description="Status message")
-    last_updated: Optional[datetime] = Field(None, description="Last status update timestamp")
+class Connector(BaseModel):
+    """Connector information."""
+    id: int
+    type: str
+    connection_type: str
+    name: str
+    description: str
+    nexset_api_compatible: bool
 
 
-class Resource(BaseModel):
-    """Base resource model"""
-    id: Union[str, int] = Field(..., description="Unique identifier for the resource")
-    name: str = Field(..., description="Name of the resource")
-    description: Optional[str] = Field(None, description="Description of the resource")
-    created_at: Optional[datetime] = Field(None, description="Resource creation timestamp")
-    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
+class LogEntry(BaseModel):
+    """Audit log entry."""
+    id: int
+    item_type: str
+    item_id: int
+    event: str
+    change_summary: List[str]
+    object_changes: Dict[str, List[Any]]
+    request_ip: str
+    request_user_agent: str
+    request_url: str
+    user: Dict[str, Any]
+    org_id: int
+    owner_id: int
+    owner_email: str
+    created_at: datetime
+    association_resource: Optional[Dict[str, Any]] = None
+    impersonator_id: Optional[str] = None
 
 
-class ResourceType(str, Enum):
-    """Resource types"""
-    FLOW = "flow"
-    DATA_SOURCE = "data_source"
-    DATA_SET = "data_set"
-    DATA_SINK = "data_sink"
-    CODE_CONTAINER = "code_container"
-    DATA_CREDENTIAL = "data_credential"
-    PROJECT = "project"
-    TRANSFORM = "transform"
+class AccessorRule(BaseModel):
+    """Access control rule."""
+    type: str  # USER, TEAM, ORG
+    access_roles: List[str]
+    created_at: datetime
+    updated_at: datetime
+    # Additional fields based on type
+    email: Optional[str] = None  # For USER
+    name: Optional[str] = None  # For TEAM
+    email_domain: Optional[str] = None  # For ORG
+    client_identifier: Optional[str] = None  # For ORG
 
 
-class ConnectorType(str, Enum):
-    """Connector types for data sources and sinks"""
-    FILE = "file"
-    DATABASE = "database"
-    API = "api"
-    STREAMING = "streaming"
-    CLOUD_STORAGE = "cloud_storage" 
+class FlowNode(BaseModel):
+    """Flow node in a data pipeline."""
+    id: int
+    origin_node_id: int
+    parent_node_id: Optional[int] = None
+    data_source_id: Optional[int] = None
+    data_set_id: Optional[int] = None
+    data_sink_id: Optional[int] = None
+    status: Optional[str] = None
+    project_id: Optional[int] = None
+    flow_type: Optional[str] = None
+    ingestion_mode: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    children: Optional[List['FlowNode']] = None

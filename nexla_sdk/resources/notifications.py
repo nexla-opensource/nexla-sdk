@@ -1,0 +1,351 @@
+from typing import List, Optional, Dict, Any, Union
+from nexla_sdk.resources.base_resource import BaseResource
+from nexla_sdk.models.notifications.responses import (
+    Notification, NotificationType, NotificationChannelSetting,
+    NotificationSetting, NotificationCount
+)
+
+
+class NotificationsResource(BaseResource):
+    """Resource for managing notifications."""
+    
+    def __init__(self, client):
+        super().__init__(client)
+        self._path = "/notifications"
+        self._model_class = Notification
+    
+    def list(self,
+             read: Optional[int] = None,
+             level: Optional[str] = None,
+             from_timestamp: Optional[int] = None,
+             to_timestamp: Optional[int] = None,
+             **kwargs) -> List[Notification]:
+        """
+        List notifications.
+        
+        Args:
+            read: Filter by read status (0=unread, 1=read)
+            level: Filter by level (DEBUG, INFO, WARN, ERROR, RECOVERED, RESOLVED)
+            from_timestamp: Start timestamp (unix)
+            to_timestamp: End timestamp (unix)
+            **kwargs: Additional parameters
+        
+        Returns:
+            List of notifications
+        """
+        params = kwargs.copy()
+        if read is not None:
+            params['read'] = read
+        if level:
+            params['level'] = level
+        if from_timestamp:
+            params['from'] = from_timestamp
+        if to_timestamp:
+            params['to'] = to_timestamp
+        
+        return super().list(**params)
+    
+    def delete_all(self) -> Dict[str, Any]:
+        """
+        Delete all notifications.
+        
+        Returns:
+            Response status
+        """
+        path = f"{self._path}/all"
+        return self._make_request('DELETE', path)
+    
+    def get_count(self, read: Optional[int] = None) -> NotificationCount:
+        """
+        Get notification count.
+        
+        Args:
+            read: Filter by read status
+        
+        Returns:
+            Notification count
+        """
+        path = f"{self._path}/count"
+        params = {'read': read} if read is not None else {}
+        response = self._make_request('GET', path, params=params)
+        return NotificationCount(**response)
+    
+    def mark_read(self, notification_ids: Union[List[int], str]) -> Dict[str, Any]:
+        """
+        Mark notifications as read.
+        
+        Args:
+            notification_ids: List of IDs or 'all'
+        
+        Returns:
+            Response status
+        """
+        path = f"{self._path}/mark_read"
+        
+        if notification_ids == 'all':
+            params = {'notification_id': 'all'}
+            return self._make_request('PUT', path, params=params)
+        else:
+            return self._make_request('PUT', path, json=notification_ids)
+    
+    def mark_unread(self, notification_ids: Union[List[int], str]) -> Dict[str, Any]:
+        """
+        Mark notifications as unread.
+        
+        Args:
+            notification_ids: List of IDs or 'all'
+        
+        Returns:
+            Response status
+        """
+        path = f"{self._path}/mark_unread"
+        
+        if notification_ids == 'all':
+            params = {'notification_id': 'all'}
+            return self._make_request('PUT', path, params=params)
+        else:
+            return self._make_request('PUT', path, json=notification_ids)
+    
+    # Notification Types
+    def get_types(self, status: Optional[str] = None) -> List[NotificationType]:
+        """
+        Get all notification types.
+        
+        Args:
+            status: Filter by status (ACTIVE, PAUSE)
+        
+        Returns:
+            List of notification types
+        """
+        path = "/notification_types"
+        params = {'status': status} if status else {}
+        response = self._make_request('GET', path, params=params)
+        return [NotificationType(**item) for item in response]
+    
+    def get_type(self, event_type: str, resource_type: str) -> NotificationType:
+        """
+        Get specific notification type.
+        
+        Args:
+            event_type: Event type
+            resource_type: Resource type
+        
+        Returns:
+            Notification type
+        """
+        path = "/notification_types/list"
+        params = {
+            'event_type': event_type,
+            'resource_type': resource_type
+        }
+        response = self._make_request('GET', path, params=params)
+        return NotificationType(**response)
+    
+    # Channel Settings
+    def list_channel_settings(self) -> List[NotificationChannelSetting]:
+        """
+        List notification channel settings.
+        
+        Returns:
+            List of channel settings
+        """
+        path = "/notification_channel_settings"
+        response = self._make_request('GET', path)
+        return [NotificationChannelSetting(**item) for item in response]
+    
+    def create_channel_setting(self,
+                               channel: str,
+                               config: Dict[str, Any]) -> NotificationChannelSetting:
+        """
+        Create notification channel setting.
+        
+        Args:
+            channel: Channel type
+            config: Channel configuration
+        
+        Returns:
+            Created channel setting
+        """
+        path = "/notification_channel_settings"
+        data = {'channel': channel, 'config': config}
+        response = self._make_request('POST', path, json=data)
+        return NotificationChannelSetting(**response)
+    
+    def get_channel_setting(self, setting_id: int) -> NotificationChannelSetting:
+        """
+        Get notification channel setting.
+        
+        Args:
+            setting_id: Channel setting ID
+        
+        Returns:
+            Channel setting
+        """
+        path = f"/notification_channel_settings/{setting_id}"
+        response = self._make_request('GET', path)
+        return NotificationChannelSetting(**response)
+    
+    def update_channel_setting(self,
+                               setting_id: int,
+                               data: Dict[str, Any]) -> NotificationChannelSetting:
+        """
+        Update notification channel setting.
+        
+        Args:
+            setting_id: Channel setting ID
+            data: Updated data
+        
+        Returns:
+            Updated channel setting
+        """
+        path = f"/notification_channel_settings/{setting_id}"
+        response = self._make_request('PUT', path, json=data)
+        return NotificationChannelSetting(**response)
+    
+    def delete_channel_setting(self, setting_id: int) -> Dict[str, Any]:
+        """
+        Delete notification channel setting.
+        
+        Args:
+            setting_id: Channel setting ID
+        
+        Returns:
+            Response status
+        """
+        path = f"/notification_channel_settings/{setting_id}"
+        return self._make_request('DELETE', path)
+    
+    # Notification Settings
+    def list_settings(self,
+                      event_type: Optional[str] = None,
+                      resource_type: Optional[str] = None,
+                      status: Optional[str] = None) -> List[NotificationSetting]:
+        """
+        List notification settings.
+        
+        Args:
+            event_type: Filter by event type
+            resource_type: Filter by resource type
+            status: Filter by status
+        
+        Returns:
+            List of notification settings
+        """
+        path = "/notification_settings"
+        params = {}
+        if event_type:
+            params['event_type'] = event_type
+        if resource_type:
+            params['resource_type'] = resource_type
+        if status:
+            params['status'] = status
+        
+        response = self._make_request('GET', path, params=params)
+        return [NotificationSetting(**item) for item in response]
+    
+    def create_setting(self, data: Dict[str, Any]) -> NotificationSetting:
+        """
+        Create notification setting.
+        
+        Args:
+            data: Setting data
+        
+        Returns:
+            Created setting
+        """
+        path = "/notification_settings"
+        response = self._make_request('POST', path, json=data)
+        return NotificationSetting(**response)
+    
+    def get_setting(self, setting_id: int) -> NotificationSetting:
+        """
+        Get notification setting.
+        
+        Args:
+            setting_id: Setting ID
+        
+        Returns:
+            Notification setting
+        """
+        path = f"/notification_settings/{setting_id}"
+        response = self._make_request('GET', path)
+        return NotificationSetting(**response)
+    
+    def update_setting(self,
+                       setting_id: int,
+                       data: Dict[str, Any]) -> NotificationSetting:
+        """
+        Update notification setting.
+        
+        Args:
+            setting_id: Setting ID
+            data: Updated data
+        
+        Returns:
+            Updated setting
+        """
+        path = f"/notification_settings/{setting_id}"
+        response = self._make_request('PUT', path, json=data)
+        return NotificationSetting(**response)
+    
+    def delete_setting(self, setting_id: int) -> Dict[str, Any]:
+        """
+        Delete notification setting.
+        
+        Args:
+            setting_id: Setting ID
+        
+        Returns:
+            Response status
+        """
+        path = f"/notification_settings/{setting_id}"
+        return self._make_request('DELETE', path)
+    
+    def get_settings_by_type(self,
+                             notification_type_id: int,
+                             expand: bool = False) -> List[NotificationSetting]:
+        """
+        Get notification settings for a type.
+        
+        Args:
+            notification_type_id: Notification type ID
+            expand: Include expanded information
+        
+        Returns:
+            List of settings
+        """
+        path = f"/notification_settings/notification_types/{notification_type_id}"
+        params = {'expand': expand} if expand else {}
+        response = self._make_request('GET', path, params=params)
+        return [NotificationSetting(**item) for item in response]
+    
+    def get_resource_settings(self,
+                              resource_type: str,
+                              resource_id: int,
+                              expand: bool = False,
+                              filter_overridden: bool = False,
+                              notification_type_id: Optional[int] = None) -> List[NotificationSetting]:
+        """
+        Get notification settings for a resource.
+        
+        Args:
+            resource_type: Resource type
+            resource_id: Resource ID
+            expand: Include expanded information
+            filter_overridden: Filter overridden settings
+            notification_type_id: Filter by type ID
+        
+        Returns:
+            List of settings
+        """
+        path = f"/notification_settings/{resource_type}/{resource_id}"
+        params = {}
+        if expand:
+            params['expand'] = expand
+        if filter_overridden:
+            params['filter_overridden_settings'] = filter_overridden
+        if notification_type_id:
+            params['notification_type_id'] = notification_type_id
+        
+        response = self._make_request('GET', path, params=params)
+        return [NotificationSetting(**item) for item in response]

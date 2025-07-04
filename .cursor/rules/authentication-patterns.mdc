@@ -1,0 +1,81 @@
+# Authentication Patterns for Nexla SDK
+
+## Authentication Methods
+The Nexla SDK supports two authentication methods as implemented in [auth.py](mdc:nexla_sdk/auth.py):
+
+1. **Service Key Authentication** (Recommended)
+   - Uses service keys to obtain session tokens
+   - Automatically handles token refresh
+   - Suitable for long-running applications
+   - Example: `NexlaClient(service_key="your-service-key")`
+
+2. **Direct Access Token Authentication**
+   - Uses pre-obtained access tokens directly
+   - Manual token management required
+   - Suitable for short-term operations
+   - Example: `NexlaClient(access_token="your-access-token")`
+
+## TokenAuthHandler Class
+The `TokenAuthHandler` in [auth.py](mdc:nexla_sdk/auth.py) manages authentication:
+
+- **Service Key Flow**: POST to `/token` endpoint with Basic auth
+- **Token Refresh**: POST to `/token/refresh` endpoint with Bearer auth
+- **Automatic Management**: Handles token expiry and refresh automatically
+- **Error Handling**: Graceful handling of authentication failures
+
+## Client Integration
+The `NexlaClient` in [client.py](mdc:nexla_sdk/client.py) integrates authentication:
+
+- **Mutually Exclusive**: Only one authentication method allowed
+- **Environment Variables**: Falls back to `NEXLA_SERVICE_KEY` or `NEXLA_ACCESS_TOKEN`
+- **Automatic Retry**: Retries requests on 401 errors after token refresh
+- **Token Access**: Provides `get_access_token()` and `refresh_access_token()` methods
+
+## Authentication Headers
+- **Service Key**: `Authorization: Basic <service-key>`
+- **Access Token**: `Authorization: Bearer <access-token>`
+- **API Version**: `Accept: application/vnd.nexla.api.v1+json`
+
+## Token Refresh Logic
+- **Proactive Refresh**: Refresh tokens before they expire (configurable margin)
+- **Reactive Refresh**: Refresh on 401 errors during requests
+- **Fallback Handling**: For service keys, obtain new token if refresh fails
+- **Direct Token Limits**: Direct access tokens cannot be refreshed if invalid
+
+## Error Handling
+Use specific exception types from [exceptions.py](mdc:nexla_sdk/exceptions.py):
+- `NexlaAuthError`: Authentication failures, invalid credentials
+- `NexlaAPIError`: API errors with status codes and response data
+- `NexlaError`: General SDK errors
+
+## Security Best Practices
+- **Environment Variables**: Store credentials in environment variables
+- **Service Keys**: Treat as highly sensitive, equivalent to passwords
+- **Token Exposure**: Never log or expose access tokens
+- **Refresh Margins**: Use reasonable refresh margins to avoid token expiry
+
+## Implementation Pattern
+```python
+# Initialize authentication handler
+auth_handler = TokenAuthHandler(
+    service_key=service_key,
+    access_token=access_token,
+    api_url=api_url,
+    api_version=api_version,
+    token_refresh_margin=300  # 5 minutes
+)
+
+# Execute authenticated request
+response = auth_handler.execute_authenticated_request(
+    method="GET",
+    url=url,
+    headers=headers
+)
+```
+
+## Testing Authentication
+- Mock authentication responses for unit tests
+- Test both authentication methods
+- Test token refresh scenarios
+- Test error handling for invalid credentials
+- Use environment variables for integration tests

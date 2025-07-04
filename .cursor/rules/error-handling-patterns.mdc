@@ -1,0 +1,106 @@
+# Error Handling Patterns for Nexla SDK
+
+## Exception Hierarchy
+The SDK uses a structured exception hierarchy defined in [exceptions.py](mdc:nexla_sdk/exceptions.py):
+
+### Base Exceptions
+- `NexlaError`: Base exception for all SDK errors
+- `NexlaAuthError`: Authentication failures
+- `NexlaAPIError`: API-specific errors with status codes and response data
+- `NexlaValidationError`: Data validation errors
+- `NexlaClientError`: Client configuration errors
+- `NexlaNotFoundError`: Resource not found (404 errors)
+
+### Extended Exceptions
+Additional exceptions in [utils/exceptions.py](mdc:nexla_sdk/utils/exceptions.py):
+- `AuthenticationError`: Authentication failures
+- `AuthorizationError`: Permission denied
+- `NotFoundError`: Resource not found
+- `ValidationError`: Request validation failures
+- `RateLimitError`: Rate limit exceeded
+- `ServerError`: Server-side errors (5xx)
+- `ResourceConflictError`: Resource conflict errors
+- `CredentialError`: Credential validation failures
+- `FlowError`: Data flow operation errors
+- `TransformError`: Data transformation errors
+
+## Error Information
+Exceptions should include:
+- **Clear Message**: Descriptive error message
+- **Status Code**: HTTP status code when applicable
+- **Response Data**: Full API response for debugging
+- **Context**: Additional context about the operation
+
+Example from [exceptions.py](mdc:nexla_sdk/exceptions.py):
+```python
+class NexlaAPIError(NexlaError):
+    def __init__(self, message: str, status_code: Optional[int] = None, response: Optional[Dict[str, Any]] = None):
+        super().__init__(message)
+        self.status_code = status_code
+        self.response = response
+```
+
+## Exception Chaining
+Always chain exceptions to preserve stack traces:
+```python
+try:
+    # API operation
+    response = self.http_client.request(method, url, headers=headers)
+except HttpClientError as e:
+    raise NexlaAPIError(f"API request failed: {e}") from e
+```
+
+## Error Mapping
+Map HTTP status codes to appropriate exceptions:
+- **401**: `NexlaAuthError` - Authentication failed
+- **403**: `AuthorizationError` - Permission denied
+- **404**: `NexlaNotFoundError` - Resource not found
+- **409**: `ResourceConflictError` - Resource conflict
+- **429**: `RateLimitError` - Rate limit exceeded
+- **5xx**: `ServerError` - Server errors
+
+## Client Error Handling
+The `NexlaClient` in [client.py](mdc:nexla_sdk/client.py) handles errors:
+- **HTTP Errors**: Mapped to specific exceptions
+- **Authentication Retry**: Automatic retry on 401 errors
+- **Error Context**: Includes operation context in error messages
+
+## Resource Error Handling
+Resources should:
+- **Let Base Handle**: Let base resource handle HTTP errors
+- **Add Context**: Add operation-specific context to errors
+- **Document Errors**: Document possible exceptions in docstrings
+
+## Testing Error Scenarios
+- Test all exception types
+- Test error chaining
+- Test HTTP status code mapping
+- Mock error responses for unit tests
+- Test retry logic for authentication errors
+
+## Best Practices
+1. **Use Specific Exceptions**: Never raise generic `Exception`
+2. **Provide Context**: Include operation details in error messages
+3. **Chain Exceptions**: Preserve original stack traces
+4. **Document Exceptions**: List possible exceptions in docstrings
+5. **Handle Gracefully**: Provide meaningful error messages to users
+
+## Error Message Format
+Follow consistent error message patterns:
+- **Authentication**: "Authentication failed. Check your service key."
+- **API Errors**: "API error: {response_message}"
+- **Validation**: "Failed to convert API response to {model_name}: {validation_error}"
+- **Not Found**: "Resource not found: {resource_type}/{resource_id}"
+
+## Retry Logic
+Implement retry logic for appropriate errors:
+- **Authentication**: Retry once after token refresh
+- **Rate Limits**: Respect retry-after headers
+- **Server Errors**: Consider exponential backoff
+- **Network Errors**: Retry with reasonable limits
+
+## Error Logging
+- Log errors at appropriate levels
+- Include operation context
+- Don't log sensitive information (tokens, credentials)
+- Use structured logging for better debugging

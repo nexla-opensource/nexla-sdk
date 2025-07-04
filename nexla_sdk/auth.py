@@ -6,7 +6,7 @@ import time
 from typing import Dict, Any, Optional, Union
 
 from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError
-from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
+from .http_client import HttpClientInterface, RequestsHttpClient, HttpClientError
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,49 @@
+---
+alwaysApply: true
+---
+
+# Nexla SDK Project Structure
+
+This is the **Nexla SDK for Python** - a comprehensive client library for interacting with the Nexla API.
+
+## Key Entry Points
+
+- **Main Client**: [client.py](mdc:nexla_sdk/client.py) - The `NexlaClient` class is the primary entry point
+- **Package Init**: [__init__.py](mdc:nexla_sdk/__init__.py) - Main package exports and version info
+- **Authentication**: [auth.py](mdc:nexla_sdk/auth.py) - Token-based authentication handlers
+
+## Core Architecture
+
+### Models (`nexla_sdk/models/`)
+- **Base Model**: [base.py](mdc:nexla_sdk/models/base.py) - Base Pydantic model with validation
+- **Common Types**: [common.py](mdc:nexla_sdk/models/common.py) - Shared model definitions
+- **Domain Models**: Organized by domain (credentials, destinations, flows, etc.)
+
+### Resources (`nexla_sdk/resources/`)
+- **Base Resource**: [base_resource.py](mdc:nexla_sdk/resources/base_resource.py) - Base API resource class
+- **API Endpoints**: Each file corresponds to a Nexla API endpoint (flows, sources, destinations, etc.)
+
+### Core Components
+- **HTTP Client**: [http_client.py](mdc:nexla_sdk/http_client.py) - HTTP client interface and implementations
+- **Exceptions**: [exceptions.py](mdc:nexla_sdk/exceptions.py) - Custom exception hierarchy
+- **Utilities**: [utils/](mdc:nexla_sdk/utils/) - Pagination and other utilities
+
+## Configuration Files
+
+- **Project Config**: [pyproject.toml](mdc:pyproject.toml) - Python packaging and dependencies
+- **Requirements**: [requirements.txt](mdc:requirements.txt) - Runtime dependencies
+- **Test Config**: [pytest.ini](mdc:pytest.ini) - Test configuration
+
+## Authentication Pattern
+
+The SDK supports two authentication methods:
+1. **Service Key** (recommended): `NexlaClient(service_key="...")`
+2. **Access Token**: `NexlaClient(access_token="...")`
+
+## Development Standards
+
+- Use type hints extensively
+- Follow Pydantic BaseModel pattern for data models
+- Implement proper exception handling with custom exception hierarchy
+- Support synchronous operations with clean API design
+- Maintain Python 3.7+ compatibility (uses f-strings and modern typing)
