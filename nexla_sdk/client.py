@@ -65,7 +65,7 @@ class NexlaClient:
     def __init__(self, 
                  service_key: Optional[str] = None,
                  access_token: Optional[str] = None,
-                 api_url: str = "https://dataops.nexla.io/nexla-api", 
+                 base_url: Optional[str] = None,
                  api_version: str = "v1",
                  token_refresh_margin: int = 300,
                  http_client: Optional[HttpClientInterface] = None):
@@ -75,7 +75,7 @@ class NexlaClient:
         Args:
             service_key: Nexla service key for authentication (mutually exclusive with access_token)
             access_token: Nexla access token for direct authentication (mutually exclusive with service_key)
-            api_url: Nexla API URL
+            base_url: Nexla API base URL (defaults to environment variable or standard URL)
             api_version: API version to use
             token_refresh_margin: Seconds before token expiry to trigger refresh (default: 5 minutes)
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
@@ -86,6 +86,7 @@ class NexlaClient:
         Environment Variables:
             NEXLA_SERVICE_KEY: Service key (used if no authentication parameters are provided)
             NEXLA_ACCESS_TOKEN: Access token (used if no authentication parameters are provided and NEXLA_SERVICE_KEY is not set)
+            NEXLA_BASE_URL: Base URL for the Nexla API (used if base_url parameter is not provided)
         """
         # Check environment variables only if neither parameter is provided
         if not service_key and not access_token:
@@ -94,6 +95,12 @@ class NexlaClient:
             # Only check for access_token if service_key is not available
             if not service_key:
                 access_token = os.getenv("NEXLA_ACCESS_TOKEN")
+            
+        # Check for base_url in environment if not provided as parameter
+        if not base_url:
+            base_url = os.getenv("NEXLA_BASE_URL")
+            if not base_url:
+                base_url = "https://dataops.nexla.io/nexla-api"
             
         # Validate authentication parameters
         if not service_key and not access_token:
@@ -104,7 +111,7 @@ class NexlaClient:
         if service_key and access_token:
             raise NexlaClientError("Cannot provide both service_key and access_token. Choose one authentication method.")
             
-        self.api_url = api_url.rstrip('/')
+        self.api_url = base_url.rstrip('/')
         self.api_version = api_version
         self.http_client = http_client or RequestsHttpClient()
         
@@ -112,7 +119,7 @@ class NexlaClient:
         self.auth_handler = TokenAuthHandler(
             service_key=service_key,
             access_token=access_token,
-            api_url=api_url,
+            base_url=base_url,
             api_version=api_version,
             token_refresh_margin=token_refresh_margin,
             http_client=self.http_client

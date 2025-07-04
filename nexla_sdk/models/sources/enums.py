@@ -62,6 +62,7 @@ class IngestMethod(str, Enum):
     STREAMING = "STREAMING"
     REAL_TIME = "REAL_TIME"
     SCHEDULED = "SCHEDULED"
+    POLL = "POLL"
 
 
 class FlowType(str, Enum):

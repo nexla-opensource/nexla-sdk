@@ -4,6 +4,10 @@ from nexla_sdk.models.notifications.responses import (
     Notification, NotificationType, NotificationChannelSetting,
     NotificationSetting, NotificationCount
 )
+from nexla_sdk.models.notifications.requests import (
+    NotificationChannelSettingCreate, NotificationChannelSettingUpdate,
+    NotificationSettingCreate, NotificationSettingUpdate
+)
 
 
 class NotificationsResource(BaseResource):
@@ -13,6 +17,31 @@ class NotificationsResource(BaseResource):
         super().__init__(client)
         self._path = "/notifications"
         self._model_class = Notification
+    
+    def get(self, notification_id: int, expand: bool = False) -> Notification:
+        """
+        Get single notification by ID.
+        
+        Args:
+            notification_id: Notification ID
+            expand: Include expanded references
+        
+        Returns:
+            Notification instance
+        """
+        return super().get(notification_id, expand)
+    
+    def delete(self, notification_id: int) -> Dict[str, Any]:
+        """
+        Delete notification.
+        
+        Args:
+            notification_id: Notification ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(notification_id)
     
     def list(self,
              read: Optional[int] = None,
@@ -153,22 +182,18 @@ class NotificationsResource(BaseResource):
         response = self._make_request('GET', path)
         return [NotificationChannelSetting(**item) for item in response]
     
-    def create_channel_setting(self,
-                               channel: str,
-                               config: Dict[str, Any]) -> NotificationChannelSetting:
+    def create_channel_setting(self, data: NotificationChannelSettingCreate) -> NotificationChannelSetting:
         """
         Create notification channel setting.
         
         Args:
-            channel: Channel type
-            config: Channel configuration
+            data: Channel setting creation data
         
         Returns:
             Created channel setting
         """
         path = "/notification_channel_settings"
-        data = {'channel': channel, 'config': config}
-        response = self._make_request('POST', path, json=data)
+        response = self._make_request('POST', path, json=data.to_dict())
         return NotificationChannelSetting(**response)
     
     def get_channel_setting(self, setting_id: int) -> NotificationChannelSetting:
@@ -187,19 +212,19 @@ class NotificationsResource(BaseResource):
     
     def update_channel_setting(self,
                                setting_id: int,
-                               data: Dict[str, Any]) -> NotificationChannelSetting:
+                               data: NotificationChannelSettingUpdate) -> NotificationChannelSetting:
         """
         Update notification channel setting.
         
         Args:
             setting_id: Channel setting ID
-            data: Updated data
+            data: Updated channel setting data
         
         Returns:
             Updated channel setting
         """
         path = f"/notification_channel_settings/{setting_id}"
-        response = self._make_request('PUT', path, json=data)
+        response = self._make_request('PUT', path, json=data.to_dict())
         return NotificationChannelSetting(**response)
     
     def delete_channel_setting(self, setting_id: int) -> Dict[str, Any]:
@@ -243,18 +268,18 @@ class NotificationsResource(BaseResource):
         response = self._make_request('GET', path, params=params)
         return [NotificationSetting(**item) for item in response]
     
-    def create_setting(self, data: Dict[str, Any]) -> NotificationSetting:
+    def create_setting(self, data: NotificationSettingCreate) -> NotificationSetting:
         """
         Create notification setting.
         
         Args:
-            data: Setting data
+            data: Notification setting creation data
         
         Returns:
             Created setting
         """
         path = "/notification_settings"
-        response = self._make_request('POST', path, json=data)
+        response = self._make_request('POST', path, json=data.to_dict())
         return NotificationSetting(**response)
     
     def get_setting(self, setting_id: int) -> NotificationSetting:
@@ -273,19 +298,19 @@ class NotificationsResource(BaseResource):
     
     def update_setting(self,
                        setting_id: int,
-                       data: Dict[str, Any]) -> NotificationSetting:
+                       data: NotificationSettingUpdate) -> NotificationSetting:
         """
         Update notification setting.
         
         Args:
             setting_id: Setting ID
-            data: Updated data
+            data: Updated notification setting data
         
         Returns:
             Updated setting
         """
         path = f"/notification_settings/{setting_id}"
-        response = self._make_request('PUT', path, json=data)
+        response = self._make_request('PUT', path, json=data.to_dict())
         return NotificationSetting(**response)
     
     def delete_setting(self, setting_id: int) -> Dict[str, Any]:

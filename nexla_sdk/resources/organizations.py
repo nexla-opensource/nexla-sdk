@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.organizations.responses import Organization, OrgMember
-from nexla_sdk.models.organizations.requests import OrgMemberList, OrgMemberDelete
+from nexla_sdk.models.organizations.requests import OrganizationUpdate, OrgMemberList, OrgMemberDelete
 
 
 class OrganizationsResource(BaseResource):
@@ -11,6 +11,56 @@ class OrganizationsResource(BaseResource):
         super().__init__(client)
         self._path = "/orgs"
         self._model_class = Organization
+    
+    def list(self, **kwargs) -> List[Organization]:
+        """
+        List all organizations.
+        
+        Args:
+            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+        
+        Returns:
+            List of organizations
+        """
+        return super().list(**kwargs)
+    
+    def get(self, org_id: int, expand: bool = False) -> Organization:
+        """
+        Get single organization by ID.
+        
+        Args:
+            org_id: Organization ID
+            expand: Include expanded references
+        
+        Returns:
+            Organization instance
+        """
+        return super().get(org_id, expand)
+    
+    def update(self, org_id: int, data: OrganizationUpdate) -> Organization:
+        """
+        Update organization.
+        
+        Args:
+            org_id: Organization ID
+            data: Updated organization data
+        
+        Returns:
+            Updated organization
+        """
+        return super().update(org_id, data)
+    
+    def delete(self, org_id: int) -> Dict[str, Any]:
+        """
+        Delete organization.
+        
+        Args:
+            org_id: Organization ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(org_id)
     
     def get_members(self, org_id: int) -> List[OrgMember]:
         """

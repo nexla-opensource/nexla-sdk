@@ -4,6 +4,7 @@ from pydantic import Field, model_validator
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.common import Owner, Organization
 from nexla_sdk.models.sources.responses import DataSetBrief, Source
+from nexla_sdk.models.destinations.enums import DestinationType
 
 
 class DataSinkSimplified(BaseModel):
@@ -13,7 +14,7 @@ class DataSinkSimplified(BaseModel):
     org_id: int
     name: str
     status: Optional[str] = None
-    sink_type: Optional[str] = Field(default=None, alias="sinkType")
+    sink_type: Optional[DestinationType ] = Field(default=None, alias="sinkType")
 
 
 class Nexset(BaseModel):

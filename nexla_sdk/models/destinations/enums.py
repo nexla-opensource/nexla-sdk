@@ -10,7 +10,7 @@ class DestinationStatus(str, Enum):
     ERROR = "ERROR"
 
 
-class SinkType(str, Enum):
+class DestinationType(str, Enum):
     """Supported sink types."""
     # File Systems
     S3 = "s3"
@@ -55,7 +55,7 @@ class SinkType(str, Enum):
     # Add all other types from the spec...
 
 
-class SinkFormat(str, Enum):
+class DestinationFormat(str, Enum):
     """Output format for destinations."""
     JSON = "json"
     CSV = "csv"

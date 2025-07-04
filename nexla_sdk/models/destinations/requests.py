@@ -6,10 +6,16 @@ class DestinationCreate(BaseModel):
     """Request model for creating a destination."""
     name: str
     sink_type: str
-    sink_config: Dict[str, Any]
     data_credentials_id: int
     data_set_id: int
     description: Optional[str] = None
+    
+    # In case of Core Sinks only
+    sink_config: Optional[Dict] = None
+
+    # In case of Templatized API only
+    vendor_endpoint_id: Optional[int] = None
+    template_config: Optional[Dict] = None
 
 
 class DestinationUpdate(BaseModel):

@@ -35,7 +35,7 @@ class TokenAuthHandler:
     def __init__(self,
                  service_key: Optional[str] = None,
                  access_token: Optional[str] = None,
-                 api_url: str = "https://dataops.nexla.io/nexla-api",
+                 base_url: str = "https://dataops.nexla.io/nexla-api",
                  api_version: str = "v1",
                  token_refresh_margin: int = 3600,
                  http_client: Optional[HttpClientInterface] = None):
@@ -45,13 +45,13 @@ class TokenAuthHandler:
         Args:
             service_key: Nexla service key for authentication (mutually exclusive with access_token)
             access_token: Nexla access token for direct authentication (mutually exclusive with service_key)
-            api_url: Nexla API URL
+            base_url: Nexla API base URL
             api_version: API version to use
             token_refresh_margin: Seconds before token expiry to trigger refresh (default: 10 minutes)
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
         """
         self.service_key = service_key
-        self.api_url = api_url.rstrip('/')
+        self.api_url = base_url.rstrip('/')
         self.api_version = api_version
         self.token_refresh_margin = token_refresh_margin
         self.http_client = http_client or RequestsHttpClient()

@@ -2,7 +2,9 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.credentials.responses import Credential, ProbeTreeResponse, ProbeSampleResponse
-from nexla_sdk.models.credentials.requests import ProbeTreeRequest, ProbeSampleRequest
+from nexla_sdk.models.credentials.requests import (
+    CredentialCreate, CredentialUpdate, ProbeTreeRequest, ProbeSampleRequest
+)
 
 
 class CredentialsResource(BaseResource):
@@ -32,6 +34,56 @@ class CredentialsResource(BaseResource):
         
         return super().list(**params)
     
+    def get(self, credential_id: int, expand: bool = False) -> Credential:
+        """
+        Get single credential by ID.
+        
+        Args:
+            credential_id: Credential ID
+            expand: Include expanded references
+        
+        Returns:
+            Credential instance
+        """
+        return super().get(credential_id, expand)
+    
+    def create(self, data: CredentialCreate) -> Credential:
+        """
+        Create new credential.
+        
+        Args:
+            data: Credential creation data
+        
+        Returns:
+            Created credential
+        """
+        return super().create(data)
+    
+    def update(self, credential_id: int, data: CredentialUpdate) -> Credential:
+        """
+        Update credential.
+        
+        Args:
+            credential_id: Credential ID
+            data: Updated credential data
+        
+        Returns:
+            Updated credential
+        """
+        return super().update(credential_id, data)
+    
+    def delete(self, credential_id: int) -> Dict[str, Any]:
+        """
+        Delete credential.
+        
+        Args:
+            credential_id: Credential ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(credential_id)
+    
     def probe(self, credential_id: int) -> Dict[str, Any]:
         """
         Test credential validity.
@@ -43,7 +95,15 @@ class CredentialsResource(BaseResource):
             Probe response
         """
         path = f"{self._path}/{credential_id}/probe"
-        return self._make_request('GET', path)
+        response = self._make_request('GET', path)
+        
+        # Handle cases where the response might be None or contain raw text
+        if response is None:
+            return {"status": "success", "message": "Credential probe completed successfully"}
+        elif isinstance(response, dict) and "raw_text" in response:
+            return {"status": "success", "message": response["raw_text"], "status_code": response.get("status_code")}
+        else:
+            return response
     
     def probe_tree(self, 
                    credential_id: int, 

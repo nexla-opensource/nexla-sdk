@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.nexsets.responses import Nexset, NexsetSample
-from nexla_sdk.models.nexsets.requests import NexsetCopyOptions
+from nexla_sdk.models.nexsets.requests import NexsetCreate, NexsetUpdate, NexsetCopyOptions
 
 
 class NexsetsResource(BaseResource):
@@ -12,6 +12,92 @@ class NexsetsResource(BaseResource):
         self._path = "/data_sets"
         self._model_class = Nexset
     
+    def list(self, **kwargs) -> List[Nexset]:
+        """
+        List all nexsets.
+        
+        Args:
+            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+        
+        Returns:
+            List of nexsets
+        """
+        return super().list(**kwargs)
+    
+    def get(self, set_id: int, expand: bool = False) -> Nexset:
+        """
+        Get single nexset by ID.
+        
+        Args:
+            set_id: Nexset ID
+            expand: Include expanded references
+        
+        Returns:
+            Nexset instance
+        """
+        return super().get(set_id, expand)
+    
+    def create(self, data: NexsetCreate) -> Nexset:
+        """
+        Create new nexset.
+        
+        Args:
+            data: Nexset creation data
+        
+        Returns:
+            Created nexset
+        """
+        return super().create(data)
+    
+    def update(self, set_id: int, data: NexsetUpdate) -> Nexset:
+        """
+        Update nexset.
+        
+        Args:
+            set_id: Nexset ID
+            data: Updated nexset data
+        
+        Returns:
+            Updated nexset
+        """
+        return super().update(set_id, data)
+    
+    def delete(self, set_id: int) -> Dict[str, Any]:
+        """
+        Delete nexset.
+        
+        Args:
+            set_id: Nexset ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(set_id)
+    
+    def activate(self, set_id: int) -> Nexset:
+        """
+        Activate nexset.
+        
+        Args:
+            set_id: Nexset ID
+        
+        Returns:
+            Activated nexset
+        """
+        return super().activate(set_id)
+    
+    def pause(self, set_id: int) -> Nexset:
+        """
+        Pause nexset.
+        
+        Args:
+            set_id: Nexset ID
+        
+        Returns:
+            Paused nexset
+        """
+        return super().pause(set_id)
+
     def get_samples(self,
                     set_id: int,
                     count: int = 10,

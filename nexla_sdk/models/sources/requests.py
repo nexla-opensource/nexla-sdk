@@ -7,9 +7,16 @@ class SourceCreate(BaseModel):
     """Request model for creating a source."""
     name: str
     source_type: str
-    source_config: Dict[str, Any]
     data_credentials_id: int
     description: Optional[str] = None
+
+    # For Core Connectors
+    source_config: Optional[Dict] = None
+
+    # For Templatized APIs
+    vendor_endpoint_id: Optional[int] = None    
+    ingest_method: Optional[str] = None
+    template_config: Optional[Dict] = None
 
 
 class SourceUpdate(BaseModel):

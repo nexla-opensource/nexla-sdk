@@ -117,9 +117,19 @@ class FlowsResource(BaseResource):
         Returns:
             Copied flow
         """
-        data = options.to_dict() if options else {}
-        response = super().copy(flow_id, data)
-        return response
+        return super().copy(flow_id, options)
+    
+    def delete(self, flow_id: int) -> Dict[str, Any]:
+        """
+        Delete flow.
+        
+        Args:
+            flow_id: Flow ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(flow_id)
     
     def delete_by_resource(self, resource_type: str, resource_id: int) -> Dict[str, Any]:
         """

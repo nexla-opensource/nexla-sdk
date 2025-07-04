@@ -4,17 +4,24 @@ from nexla_sdk.models.metrics.responses import (
     AccountMetrics, DashboardMetrics, MetricsResponse,
     MetricsByRunResponse, ResourceMetricDaily, ResourceMetricsByRun
 )
+from nexla_sdk.models.metrics.enums import ResourceType, UserMetricResourceType
 
 
 class MetricsResource(BaseResource):
-    """Resource for retrieving metrics."""
+    """
+    Resource for retrieving metrics.
+    
+    Note: This resource already uses strongly-typed Pydantic models
+    for all return types and doesn't follow standard CRUD patterns,
+    so no additional typed overrides are needed.
+    """
     
     def __init__(self, client):
         super().__init__(client)
         self._path = ""  # Metrics endpoints are distributed
     
     def get_resource_daily_metrics(self,
-                                   resource_type: str,
+                                   resource_type: ResourceType,
                                    resource_id: int,
                                    from_date: str,
                                    to_date: Optional[str] = None) -> MetricsResponse:
@@ -42,7 +49,7 @@ class MetricsResource(BaseResource):
         return MetricsResponse(**response)
     
     def get_resource_metrics_by_run(self,
-                                    resource_type: str,
+                                    resource_type: ResourceType,
                                     resource_id: int,
                                     groupby: Optional[str] = None,
                                     orderby: Optional[str] = None,

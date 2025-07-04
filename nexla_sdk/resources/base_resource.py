@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, List, TypeVar, Type
+from typing import Dict, Any, Optional, List, TypeVar, Type, Union
 from nexla_sdk.utils.pagination import Paginator, Page
 
 T = TypeVar('T')
@@ -24,6 +24,33 @@ class BaseResource:
                       **kwargs) -> Any:
         """Make HTTP request using client."""
         return self.client.request(method, path, **kwargs)
+    
+    def _serialize_data(self, data: Union[Dict[str, Any], Any]) -> Dict[str, Any]:
+        """
+        Convert data to dictionary for JSON serialization.
+        
+        Args:
+            data: Data to serialize (dict or Pydantic model)
+        
+        Returns:
+            Dictionary representation
+        """
+        if data is None:
+            return {}
+        
+        # Check if it's a Pydantic model (has model_dump method)
+        if hasattr(data, 'model_dump'):
+            return data.model_dump(exclude_none=True)
+        
+        # If it's already a dict, return as-is
+        if isinstance(data, dict):
+            return data
+        
+        # For other types, try to convert to dict
+        if hasattr(data, '__dict__'):
+            return data.__dict__
+        
+        return data
     
     def _parse_response(self, response: Any, model_class: Optional[Type[T]] = None) -> Any:
         """Parse response into model objects."""
@@ -107,32 +134,34 @@ class BaseResource:
         response = self._make_request('GET', path, params=params)
         return self._parse_response(response)
     
-    def create(self, data: Dict[str, Any]) -> T:
+    def create(self, data: Union[Dict[str, Any], Any]) -> T:
         """
         Create new resource.
         
         Args:
-            data: Resource data
+            data: Resource data (dict or Pydantic model)
         
         Returns:
             Created resource
         """
-        response = self._make_request('POST', self._path, json=data)
+        serialized_data = self._serialize_data(data)
+        response = self._make_request('POST', self._path, json=serialized_data)
         return self._parse_response(response)
     
-    def update(self, resource_id: int, data: Dict[str, Any]) -> T:
+    def update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> T:
         """
         Update resource.
         
         Args:
             resource_id: Resource ID
-            data: Updated data
+            data: Updated data (dict or Pydantic model)
         
         Returns:
             Updated resource
         """
         path = f"{self._path}/{resource_id}"
-        response = self._make_request('PUT', path, json=data)
+        serialized_data = self._serialize_data(data)
+        response = self._make_request('PUT', path, json=serialized_data)
         return self._parse_response(response)
     
     def delete(self, resource_id: int) -> Dict[str, Any]:
@@ -176,19 +205,20 @@ class BaseResource:
         response = self._make_request('PUT', path)
         return self._parse_response(response)
     
-    def copy(self, resource_id: int, options: Optional[Dict[str, Any]] = None) -> T:
+    def copy(self, resource_id: int, options: Optional[Union[Dict[str, Any], Any]] = None) -> T:
         """
         Copy resource.
         
         Args:
             resource_id: Resource ID
-            options: Copy options
+            options: Copy options (dict or Pydantic model)
         
         Returns:
             Copied resource
         """
         path = f"{self._path}/{resource_id}/copy"
-        response = self._make_request('POST', path, json=options or {})
+        serialized_options = self._serialize_data(options) if options else {}
+        response = self._make_request('POST', path, json=serialized_options)
         return self._parse_response(response)
     
     def get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]:
@@ -217,35 +247,37 @@ class BaseResource:
         path = f"{self._path}/{resource_id}/accessors"
         return self._make_request('GET', path)
     
-    def add_accessors(self, resource_id: int, accessors: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def add_accessors(self, resource_id: int, accessors: List[Union[Dict[str, Any], Any]]) -> List[Dict[str, Any]]:
         """
         Add access control rules.
         
         Args:
             resource_id: Resource ID
-            accessors: List of accessor rules
+            accessors: List of accessor rules (dicts or Pydantic models)
         
         Returns:
             Updated accessor list
         """
         path = f"{self._path}/{resource_id}/accessors"
-        return self._make_request('PUT', path, json={'accessors': accessors})
+        serialized_accessors = [self._serialize_data(accessor) for accessor in accessors]
+        return self._make_request('PUT', path, json={'accessors': serialized_accessors})
     
-    def replace_accessors(self, resource_id: int, accessors: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def replace_accessors(self, resource_id: int, accessors: List[Union[Dict[str, Any], Any]]) -> List[Dict[str, Any]]:
         """
         Replace all access control rules.
         
         Args:
             resource_id: Resource ID
-            accessors: List of accessor rules
+            accessors: List of accessor rules (dicts or Pydantic models)
         
         Returns:
             New accessor list
         """
         path = f"{self._path}/{resource_id}/accessors"
-        return self._make_request('POST', path, json={'accessors': accessors})
+        serialized_accessors = [self._serialize_data(accessor) for accessor in accessors]
+        return self._make_request('POST', path, json={'accessors': serialized_accessors})
     
-    def delete_accessors(self, resource_id: int, accessors: Optional[List[Dict[str, Any]]] = None) -> List[Dict[str, Any]]:
+    def delete_accessors(self, resource_id: int, accessors: Optional[List[Union[Dict[str, Any], Any]]] = None) -> List[Dict[str, Any]]:
         """
         Delete access control rules.
         
@@ -257,5 +289,8 @@ class BaseResource:
             Remaining accessor list
         """
         path = f"{self._path}/{resource_id}/accessors"
-        data = {'accessors': accessors} if accessors else None
+        data = None
+        if accessors:
+            serialized_accessors = [self._serialize_data(accessor) for accessor in accessors]
+            data = {'accessors': serialized_accessors}
         return self._make_request('DELETE', path, json=data)

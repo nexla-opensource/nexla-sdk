@@ -4,6 +4,7 @@ from pydantic import Field
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.common import Owner, Organization, Connector
 from nexla_sdk.models.credentials.responses import Credential
+from nexla_sdk.models.destinations.enums import DestinationFormat
 
 
 class DataSetInfo(BaseModel):
@@ -47,7 +48,7 @@ class Destination(BaseModel):
     data_set_id: Optional[int] = None
     data_map_id: Optional[int] = None
     data_source_id: Optional[int] = None
-    sink_format: Optional[str] = None
+    sink_format: Optional[DestinationFormat] = None
     sink_config: Optional[Dict[str, Any]] = None
     sink_schedule: Optional[str] = None
     in_memory: bool = False

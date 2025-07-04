@@ -6,8 +6,15 @@ class CredentialCreate(BaseModel):
     """Request model for creating a credential."""
     name: str
     credentials_type: str
-    credentials: Dict[str, Any]
     description: Optional[str] = None
+
+    # For templatized APIs; int
+    auth_template_id: Optional[int] = None
+    vendor_id: Optional[int] = None
+    template_config: Optional[Dict] = None
+
+    # For Core Connectors (Non-templatized)
+    credentials: Optional[Dict] = None
 
 
 class CredentialUpdate(BaseModel):

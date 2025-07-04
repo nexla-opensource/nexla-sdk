@@ -1,6 +1,8 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings
+from nexla_sdk.models.users.requests import UserCreate, UserUpdate
+from nexla_sdk.models.metrics.enums import UserMetricResourceType
 
 
 class UsersResource(BaseResource):
@@ -17,7 +19,7 @@ class UsersResource(BaseResource):
         
         Args:
             expand: Include expanded information
-            **kwargs: Additional parameters
+            **kwargs: Additional parameters (page, per_page, access_role, etc.)
         
         Returns:
             List of users
@@ -45,6 +47,43 @@ class UsersResource(BaseResource):
             return UserExpanded(**response)
         
         return super().get(user_id, expand=False)
+    
+    def create(self, data: UserCreate) -> User:
+        """
+        Create new user.
+        
+        Args:
+            data: User creation data
+        
+        Returns:
+            Created user
+        """
+        return super().create(data)
+    
+    def update(self, user_id: int, data: UserUpdate) -> User:
+        """
+        Update user.
+        
+        Args:
+            user_id: User ID
+            data: Updated user data
+        
+        Returns:
+            Updated user
+        """
+        return super().update(user_id, data)
+    
+    def delete(self, user_id: int) -> Dict[str, Any]:
+        """
+        Delete user.
+        
+        Args:
+            user_id: User ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(user_id)
     
     def get_settings(self) -> List[UserSettings]:
         """
@@ -169,22 +208,22 @@ class UsersResource(BaseResource):
     
     def get_daily_metrics(self,
                           user_id: int,
-                          resource_type: str,
+                          resource_type: UserMetricResourceType,
                           from_date: str,
                           to_date: Optional[str] = None,
                           org_id: Optional[int] = None) -> Dict[str, Any]:
         """
-        Get daily data processing metrics.
+        Get daily data processing metrics for a user.
         
         Args:
             user_id: User ID
-            resource_type: SOURCE or SINK
-            from_date: Start date
+            resource_type: Type of resource (SOURCE, SINK)
+            from_date: Start date (YYYY-MM-DD)
             to_date: End date (optional)
             org_id: Organization ID (optional)
         
         Returns:
-            Daily metrics
+            Daily metrics data
         """
         path = f"{self._path}/{user_id}/metrics"
         params = {

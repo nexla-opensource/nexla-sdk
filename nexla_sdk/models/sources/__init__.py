@@ -1,3 +1,6 @@
+from nexla_sdk.models.sources.enums import (
+    SourceStatus, SourceType, IngestMethod, FlowType
+)
 from nexla_sdk.models.sources.responses import (
     Source, DataSetBrief, RunInfo
 )
@@ -6,6 +9,11 @@ from nexla_sdk.models.sources.requests import (
 )
 
 __all__ = [
+    # Enums
+    'SourceStatus',
+    'SourceType',
+    'IngestMethod',
+    'FlowType',
     # Responses
     'Source',
     'DataSetBrief',

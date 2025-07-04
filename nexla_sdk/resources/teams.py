@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.teams.responses import Team, TeamMember
-from nexla_sdk.models.teams.requests import TeamMemberList
+from nexla_sdk.models.teams.requests import TeamCreate, TeamUpdate, TeamMemberList
 
 
 class TeamsResource(BaseResource):
@@ -12,6 +12,68 @@ class TeamsResource(BaseResource):
         self._path = "/teams"
         self._model_class = Team
     
+    def list(self, **kwargs) -> List[Team]:
+        """
+        List all teams.
+        
+        Args:
+            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+        
+        Returns:
+            List of teams
+        """
+        return super().list(**kwargs)
+    
+    def get(self, team_id: int, expand: bool = False) -> Team:
+        """
+        Get single team by ID.
+        
+        Args:
+            team_id: Team ID
+            expand: Include expanded references
+        
+        Returns:
+            Team instance
+        """
+        return super().get(team_id, expand)
+    
+    def create(self, data: TeamCreate) -> Team:
+        """
+        Create new team.
+        
+        Args:
+            data: Team creation data
+        
+        Returns:
+            Created team
+        """
+        return super().create(data)
+    
+    def update(self, team_id: int, data: TeamUpdate) -> Team:
+        """
+        Update team.
+        
+        Args:
+            team_id: Team ID
+            data: Updated team data
+        
+        Returns:
+            Updated team
+        """
+        return super().update(team_id, data)
+    
+    def delete(self, team_id: int) -> Dict[str, Any]:
+        """
+        Delete team.
+        
+        Args:
+            team_id: Team ID
+        
+        Returns:
+            Response with status
+        """
+        return super().delete(team_id)
+
     def get_members(self, team_id: int) -> List[TeamMember]:
         """
         Get team members.

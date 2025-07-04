@@ -66,12 +66,21 @@ class RequestsHttpClient(HttpClientInterface):
             response = requests.request(method, url, headers=headers, **kwargs)
             response.raise_for_status()
             
-            # Return None for 204 No Content
-            if response.status_code == 204:
+            # Return None for 204 No Content or empty responses
+            if response.status_code == 204 or not response.content:
                 return None
-                
-            # Parse JSON response
-            return response.json()
+            
+            # Check if response content type indicates JSON
+            content_type = response.headers.get('content-type', '').lower()
+            if 'application/json' in content_type or 'text/json' in content_type:
+                return response.json()
+            
+            # Try to parse as JSON anyway, but handle cases where it's not JSON
+            try:
+                return response.json()
+            except (ValueError, requests.exceptions.JSONDecodeError):
+                # If it's not JSON, return the response as text in a dict
+                return {"raw_text": response.text, "status_code": response.status_code}
             
         except requests.exceptions.HTTPError as e:
             # Create standardized error with status code and response data
