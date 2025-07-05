@@ -58,19 +58,6 @@ class LogEntry(BaseModel):
     impersonator_id: Optional[str] = None
 
 
-class AccessorRule(BaseModel):
-    """Access control rule."""
-    type: str  # USER, TEAM, ORG
-    access_roles: List[str]
-    created_at: datetime
-    updated_at: datetime
-    # Additional fields based on type
-    email: Optional[str] = None  # For USER
-    name: Optional[str] = None  # For TEAM
-    email_domain: Optional[str] = None  # For ORG
-    client_identifier: Optional[str] = None  # For ORG
-
-
 class FlowNode(BaseModel):
     """Flow node in a data pipeline."""
     id: int

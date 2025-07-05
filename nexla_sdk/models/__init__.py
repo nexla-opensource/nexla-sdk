@@ -1,7 +1,13 @@
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.common import (
     Owner, Organization, Connector, LogEntry, 
-    AccessorRule, FlowNode
+    FlowNode
+)
+from nexla_sdk.models.access import (
+    UserAccessorRequest, TeamAccessorRequest, OrgAccessorRequest,
+    UserAccessorResponse, TeamAccessorResponse, OrgAccessorResponse,
+    AccessorRequest, AccessorResponse, AccessorsRequest,
+    AccessorRequestList, AccessorResponseList, AccessorType
 )
 from nexla_sdk.models.enums import (
     AccessRole, ResourceStatus, ResourceType, NotificationLevel,
@@ -30,8 +36,21 @@ __all__ = [
     'Organization', 
     'Connector',
     'LogEntry',
-    'AccessorRule',
     'FlowNode',
+    
+    # Accessor models
+    'UserAccessorRequest',
+    'TeamAccessorRequest', 
+    'OrgAccessorRequest',
+    'UserAccessorResponse',
+    'TeamAccessorResponse',
+    'OrgAccessorResponse',
+    'AccessorRequest',
+    'AccessorResponse',
+    'AccessorsRequest',
+    'AccessorRequestList',
+    'AccessorResponseList',
+    'AccessorType',
     
     # General Enums
     'AccessRole',

@@ -1,5 +1,9 @@
 from typing import Dict, Any, Optional, List, TypeVar, Type, Union
 from nexla_sdk.utils.pagination import Paginator, Page
+from nexla_sdk.models.access import (
+    AccessorResponse,
+    AccessorRequestList, AccessorResponseList
+)
 
 T = TypeVar('T')
 
@@ -234,7 +238,7 @@ class BaseResource:
         path = f"{self._path}/{resource_id}/audit_log"
         return self._make_request('GET', path)
     
-    def get_accessors(self, resource_id: int) -> List[Dict[str, Any]]:
+    def get_accessors(self, resource_id: int) -> AccessorResponseList:
         """
         Get access control rules for resource.
         
@@ -245,39 +249,54 @@ class BaseResource:
             List of access control rules
         """
         path = f"{self._path}/{resource_id}/accessors"
-        return self._make_request('GET', path)
+        response = self._make_request('GET', path)
+        
+        # Parse response into AccessorResponse objects
+        if isinstance(response, list):
+            return [AccessorResponse.model_validate(item) for item in response]
+        return []
     
-    def add_accessors(self, resource_id: int, accessors: List[Union[Dict[str, Any], Any]]) -> List[Dict[str, Any]]:
+    def add_accessors(self, resource_id: int, accessors: AccessorRequestList) -> AccessorResponseList:
         """
         Add access control rules.
         
         Args:
             resource_id: Resource ID
-            accessors: List of accessor rules (dicts or Pydantic models)
+            accessors: List of accessor rules
         
         Returns:
             Updated accessor list
         """
         path = f"{self._path}/{resource_id}/accessors"
         serialized_accessors = [self._serialize_data(accessor) for accessor in accessors]
-        return self._make_request('PUT', path, json={'accessors': serialized_accessors})
+        response = self._make_request('PUT', path, json={'accessors': serialized_accessors})
+        
+        # Parse response into AccessorResponse objects
+        if isinstance(response, list):
+            return [AccessorResponse.model_validate(item) for item in response]
+        return []
     
-    def replace_accessors(self, resource_id: int, accessors: List[Union[Dict[str, Any], Any]]) -> List[Dict[str, Any]]:
+    def replace_accessors(self, resource_id: int, accessors: AccessorRequestList) -> AccessorResponseList:
         """
         Replace all access control rules.
         
         Args:
             resource_id: Resource ID
-            accessors: List of accessor rules (dicts or Pydantic models)
+            accessors: List of accessor rules
         
         Returns:
             New accessor list
         """
         path = f"{self._path}/{resource_id}/accessors"
         serialized_accessors = [self._serialize_data(accessor) for accessor in accessors]
-        return self._make_request('POST', path, json={'accessors': serialized_accessors})
+        response = self._make_request('POST', path, json={'accessors': serialized_accessors})
+        
+        # Parse response into AccessorResponse objects
+        if isinstance(response, list):
+            return [AccessorResponse.model_validate(item) for item in response]
+        return []
     
-    def delete_accessors(self, resource_id: int, accessors: Optional[List[Union[Dict[str, Any], Any]]] = None) -> List[Dict[str, Any]]:
+    def delete_accessors(self, resource_id: int, accessors: Optional[AccessorRequestList] = None) -> AccessorResponseList:
         """
         Delete access control rules.
         
@@ -293,4 +312,9 @@ class BaseResource:
         if accessors:
             serialized_accessors = [self._serialize_data(accessor) for accessor in accessors]
             data = {'accessors': serialized_accessors}
-        return self._make_request('DELETE', path, json=data)
+        response = self._make_request('DELETE', path, json=data)
+        
+        # Parse response into AccessorResponse objects
+        if isinstance(response, list):
+            return [AccessorResponse.model_validate(item) for item in response]
+        return []

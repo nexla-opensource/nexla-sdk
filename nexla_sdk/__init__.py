@@ -28,7 +28,6 @@ from nexla_sdk.models import (
     Organization,
     Connector,
     LogEntry,
-    AccessorRule,
     FlowNode,
 )
 
@@ -84,7 +83,6 @@ __all__ = [
     'Organization',
     'Connector',
     'LogEntry',
-    'AccessorRule',
     'FlowNode',
     
     # Exceptions
