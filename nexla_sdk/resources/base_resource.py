@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional, List, TypeVar, Type, Union
 from nexla_sdk.utils.pagination import Paginator, Page
+from nexla_sdk.utils.exceptions import NexlaError
 from nexla_sdk.models.access import (
     AccessorResponse,
     AccessorRequestList, AccessorResponseList
@@ -25,9 +26,38 @@ class BaseResource:
     def _make_request(self, 
                       method: str, 
                       path: str, 
+                      resource_id: Optional[str] = None,
+                      operation: Optional[str] = None,
                       **kwargs) -> Any:
-        """Make HTTP request using client."""
-        return self.client.request(method, path, **kwargs)
+        """Make HTTP request using client with enhanced error context."""
+        try:
+            return self.client.request(method, path, **kwargs)
+        except Exception as e:
+            # Extract resource type from path
+            resource_type = self._path.strip('/').split('/')[-1] if self._path else "unknown"
+            
+            # Build context information
+            context = {
+                "method": method,
+                "path": path,
+                "resource_path": self._path,
+                "kwargs": {k: v for k, v in kwargs.items() if k not in ['json', 'data']}  # Exclude sensitive data
+            }
+            
+            if hasattr(e, 'response') and e.response:
+                context['api_response'] = e.response
+            if hasattr(e, 'status_code'):
+                context['status_code'] = e.status_code
+                
+            # Re-raise with enhanced context
+            raise NexlaError(
+                message=str(e),
+                operation=operation or f"{method.lower()}_{resource_type}",
+                resource_type=resource_type,
+                resource_id=resource_id,
+                context=context,
+                original_error=e
+            ) from e
     
     def _serialize_data(self, data: Union[Dict[str, Any], Any]) -> Dict[str, Any]:
         """
@@ -96,7 +126,7 @@ class BaseResource:
             query_params['access_role'] = access_role
         query_params.update(params)
         
-        response = self._make_request('GET', self._path, params=query_params)
+        response = self._make_request('GET', self._path, operation="list_resources", params=query_params)
         return self._parse_response(response)
     
     def paginate(self,
@@ -135,7 +165,7 @@ class BaseResource:
         path = f"{self._path}/{resource_id}"
         params = {'expand': 1} if expand else {}
         
-        response = self._make_request('GET', path, params=params)
+        response = self._make_request('GET', path, resource_id=str(resource_id), operation="get_resource", params=params)
         return self._parse_response(response)
     
     def create(self, data: Union[Dict[str, Any], Any]) -> T:
@@ -149,7 +179,7 @@ class BaseResource:
             Created resource
         """
         serialized_data = self._serialize_data(data)
-        response = self._make_request('POST', self._path, json=serialized_data)
+        response = self._make_request('POST', self._path, operation="create_resource", json=serialized_data)
         return self._parse_response(response)
     
     def update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> T:
@@ -165,7 +195,7 @@ class BaseResource:
         """
         path = f"{self._path}/{resource_id}"
         serialized_data = self._serialize_data(data)
-        response = self._make_request('PUT', path, json=serialized_data)
+        response = self._make_request('PUT', path, resource_id=str(resource_id), operation="update_resource", json=serialized_data)
         return self._parse_response(response)
     
     def delete(self, resource_id: int) -> Dict[str, Any]:
@@ -179,7 +209,7 @@ class BaseResource:
             Response with status
         """
         path = f"{self._path}/{resource_id}"
-        return self._make_request('DELETE', path)
+        return self._make_request('DELETE', path, resource_id=str(resource_id), operation="delete_resource")
     
     def activate(self, resource_id: int) -> T:
         """
@@ -192,7 +222,7 @@ class BaseResource:
             Activated resource
         """
         path = f"{self._path}/{resource_id}/activate"
-        response = self._make_request('PUT', path)
+        response = self._make_request('PUT', path, resource_id=str(resource_id), operation="activate_resource")
         return self._parse_response(response)
     
     def pause(self, resource_id: int) -> T:
@@ -206,7 +236,7 @@ class BaseResource:
             Paused resource
         """
         path = f"{self._path}/{resource_id}/pause"
-        response = self._make_request('PUT', path)
+        response = self._make_request('PUT', path, resource_id=str(resource_id), operation="pause_resource")
         return self._parse_response(response)
     
     def copy(self, resource_id: int, options: Optional[Union[Dict[str, Any], Any]] = None) -> T:

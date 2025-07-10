@@ -249,16 +249,30 @@ class NexlaClient:
             )
         except HttpClientError as e:
             # Map HTTP client errors to appropriate Nexla exceptions
-            self._handle_http_error(e)
+            self._handle_http_error(e, method, path, url, kwargs)
         except Exception as e:
-            raise NexlaError(f"Request failed: {e}") from e
+            raise NexlaError(
+                message=f"Request failed: {e}",
+                operation=f"{method.lower()}_request",
+                context={
+                    "method": method,
+                    "path": path,
+                    "url": url,
+                    "kwargs": {k: v for k, v in kwargs.items() if k not in ['json', 'data']}
+                },
+                original_error=e
+            ) from e
 
-    def _handle_http_error(self, error: HttpClientError):
+    def _handle_http_error(self, error: HttpClientError, method: str, path: str, url: str, kwargs: dict):
         """
         Handle HTTP client errors by mapping them to appropriate Nexla exceptions
         
         Args:
             error: The HTTP client error
+            method: HTTP method that failed
+            path: API path that failed
+            url: Full URL that failed
+            kwargs: Request parameters
             
         Raises:
             NexlaAuthError: If authentication fails (401)
@@ -276,20 +290,53 @@ class NexlaClient:
             elif "error" in error_data:
                 error_msg = f"API error: {error_data['error']}"
         
+        # Extract resource information from path
+        resource_type = "unknown"
+        resource_id = None
+        if path:
+            path_parts = path.strip('/').split('/')
+            if len(path_parts) >= 1:
+                resource_type = path_parts[0]
+            if len(path_parts) >= 2 and path_parts[1].isdigit():
+                resource_id = path_parts[1]
+        
+        # Build context
+        context = {
+            "method": method,
+            "path": path,
+            "url": url,
+            "status_code": status_code,
+            "api_response": error_data,
+            "request_params": {k: v for k, v in kwargs.items() if k not in ['json', 'data']}
+        }
+        
         # Map status codes to specific exceptions
         if status_code == 401:
-            raise NexlaAuthError("Authentication failed. Check your service key.") from error
-        elif status_code == 404:
-            resource_type = error_data.get("resource_type", "")
-            resource_id = error_data.get("resource_id", "")
-            raise NexlaNotFoundError(
-                f"Resource not found: {resource_type}/{resource_id}",
+            raise NexlaAuthError(
+                "Authentication failed. Check your service key.",
+                operation=f"{method.lower()}_request",
                 resource_type=resource_type,
-                resource_id=resource_id
+                resource_id=resource_id,
+                context=context,
+                original_error=error
+            ) from error
+        elif status_code == 404:
+            raise NexlaNotFoundError(
+                f"Resource not found: {resource_type}/{resource_id or 'unknown'}",
+                resource_type=resource_type,
+                resource_id=resource_id,
+                operation=f"{method.lower()}_request",
+                context=context,
+                original_error=error
             ) from error
         else:
             raise NexlaAPIError(
                 error_msg,
                 status_code=status_code,
-                response=error_data
+                response=error_data,
+                operation=f"{method.lower()}_request",
+                resource_type=resource_type,
+                resource_id=resource_id,
+                context=context,
+                original_error=error
             ) from error 
