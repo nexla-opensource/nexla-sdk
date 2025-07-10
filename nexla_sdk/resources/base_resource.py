@@ -1,6 +1,6 @@
 from typing import Dict, Any, Optional, List, TypeVar, Type, Union
 from nexla_sdk.utils.pagination import Paginator, Page
-from nexla_sdk.utils.exceptions import NexlaError
+from nexla_sdk.exceptions import NexlaError
 from nexla_sdk.models.access import (
     AccessorResponse,
     AccessorRequestList, AccessorResponseList

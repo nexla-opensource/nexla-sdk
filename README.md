@@ -420,7 +420,7 @@ client.users.create_quarantine_settings(
 The SDK provides specific exception types:
 
 ```python
-from nexla_sdk.utils.exceptions import (
+from nexla_sdk.exceptions import (
     NexlaError,
     AuthenticationError,
     NotFoundError,

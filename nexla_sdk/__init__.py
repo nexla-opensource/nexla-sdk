@@ -32,7 +32,7 @@ from nexla_sdk.models import (
 )
 
 # Import exceptions
-from nexla_sdk.utils.exceptions import (
+from nexla_sdk.exceptions import (
     NexlaError,
     AuthenticationError,
     AuthorizationError,
