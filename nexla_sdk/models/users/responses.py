@@ -16,6 +16,7 @@ class OrgMembership(BaseModel):
     name: str
     is_admin: Optional[bool] = Field(default=None, alias="isAdmin")
     org_membership_status: str  # ACTIVE, DEACTIVATED
+    api_key: Optional[str] = None
 
 
 class User(BaseModel):
@@ -30,6 +31,7 @@ class User(BaseModel):
     status: str  # ACTIVE, DEACTIVATED, SOURCE_COUNT_CAPPED, etc.
     account_locked: bool
     org_memberships: List[OrgMembership]
+    api_key: Optional[str] = None
     
     email_verified_at: Optional[datetime] = None
     tos_signed_at: Optional[datetime] = None

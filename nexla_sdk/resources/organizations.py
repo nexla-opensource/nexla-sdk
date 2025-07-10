@@ -1,17 +1,24 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
-from nexla_sdk.models.organizations.responses import Organization, OrgMember
-from nexla_sdk.models.organizations.requests import OrganizationUpdate, OrgMemberList, OrgMemberDelete
+from nexla_sdk.models.common import LogEntry
+from nexla_sdk.models.organizations.responses import Organization, OrgMember, AccountSummary
+from nexla_sdk.models.organizations.requests import (
+    OrganizationCreate,
+    OrganizationUpdate,
+    OrgMemberList,
+    OrgMemberDelete,
+    OrgMemberActivateDeactivateRequest
+)
 
 
 class OrganizationsResource(BaseResource):
     """Resource for managing organizations."""
-    
+
     def __init__(self, client):
         super().__init__(client)
         self._path = "/orgs"
         self._model_class = Organization
-    
+
     def list(self, **kwargs) -> List[Organization]:
         """
         List all organizations.
@@ -23,7 +30,7 @@ class OrganizationsResource(BaseResource):
             List of organizations
         """
         return super().list(**kwargs)
-    
+
     def get(self, org_id: int, expand: bool = False) -> Organization:
         """
         Get single organization by ID.
@@ -36,7 +43,19 @@ class OrganizationsResource(BaseResource):
             Organization instance
         """
         return super().get(org_id, expand)
-    
+
+    def create(self, data: OrganizationCreate) -> Organization:
+        """
+        Create a new organization. Note: This is an admin-only operation.
+        
+        Args:
+            data: Organization creation data
+            
+        Returns:
+            Created organization
+        """
+        return super().create(data)
+
     def update(self, org_id: int, data: OrganizationUpdate) -> Organization:
         """
         Update organization.
@@ -49,7 +68,7 @@ class OrganizationsResource(BaseResource):
             Updated organization
         """
         return super().update(org_id, data)
-    
+
     def delete(self, org_id: int) -> Dict[str, Any]:
         """
         Delete organization.
@@ -61,7 +80,7 @@ class OrganizationsResource(BaseResource):
             Response with status
         """
         return super().delete(org_id)
-    
+
     def get_members(self, org_id: int) -> List[OrgMember]:
         """
         Get all members in organization.
@@ -75,7 +94,7 @@ class OrganizationsResource(BaseResource):
         path = f"{self._path}/{org_id}/members"
         response = self._make_request('GET', path)
         return [OrgMember(**member) for member in response]
-    
+
     def update_members(self, org_id: int, members: OrgMemberList) -> List[OrgMember]:
         """
         Add or update members in organization.
@@ -90,7 +109,7 @@ class OrganizationsResource(BaseResource):
         path = f"{self._path}/{org_id}/members"
         response = self._make_request('PUT', path, json=members.to_dict())
         return [OrgMember(**member) for member in response]
-    
+
     def replace_members(self, org_id: int, members: OrgMemberList) -> List[OrgMember]:
         """
         Replace all members in organization.
@@ -105,7 +124,7 @@ class OrganizationsResource(BaseResource):
         path = f"{self._path}/{org_id}/members"
         response = self._make_request('POST', path, json=members.to_dict())
         return [OrgMember(**member) for member in response]
-    
+
     def delete_members(self, org_id: int, members: OrgMemberDelete) -> Dict[str, Any]:
         """
         Remove members from organization.
@@ -119,29 +138,93 @@ class OrganizationsResource(BaseResource):
         """
         path = f"{self._path}/{org_id}/members"
         return self._make_request('DELETE', path, json=members.to_dict())
-    
-    def get_account_metrics(self,
-                            org_id: int,
-                            from_date: str,
-                            to_date: Optional[str] = None) -> Dict[str, Any]:
+
+    def deactivate_members(self, org_id: int, members: OrgMemberActivateDeactivateRequest) -> List[OrgMember]:
         """
-        Get total account metrics for organization.
+        Deactivate members in an organization.
         
         Args:
             org_id: Organization ID
-            from_date: Start date (YYYY-MM-DD)
-            to_date: End date (optional)
+            members: Members to deactivate
+            
+        Returns:
+            Updated list of members
+        """
+        path = f"{self._path}/{org_id}/members/deactivate"
+        response = self._make_request('PUT', path, json=members.to_dict())
+        return [OrgMember(**member) for member in response]
+
+    def activate_members(self, org_id: int, members: OrgMemberActivateDeactivateRequest) -> List[OrgMember]:
+        """
+        Activate members in an organization.
+        
+        Args:
+            org_id: Organization ID
+            members: Members to activate
+            
+        Returns:
+            Updated list of members
+        """
+        path = f"{self._path}/{org_id}/members/activate"
+        response = self._make_request('PUT', path, json=members.to_dict())
+        return [OrgMember(**member) for member in response]
+
+    def get_account_summary(self, org_id: int) -> AccountSummary:
+        """
+        Get account summary statistics for an organization.
+        
+        Args:
+            org_id: Organization ID
         
         Returns:
-            Account metrics
+            Account summary
         """
-        path = f"{self._path}/{org_id}/flows/account_metrics"
-        params = {'from': from_date}
-        if to_date:
-            params['to'] = to_date
+        path = f"{self._path}/{org_id}/account_summary"
+        response = self._make_request('GET', path)
+        return AccountSummary.model_validate(response)
+
+    def get_current_account_summary(self) -> AccountSummary:
+        """
+        Get account summary for the current organization based on auth token.
         
-        return self._make_request('GET', path, params=params)
-    
+        Returns:
+            Account summary
+        """
+        path = f"{self._path}/account_summary"
+        response = self._make_request('GET', path)
+        return AccountSummary.model_validate(response)
+
+    def get_audit_log(self, org_id: int, **params) -> List[LogEntry]:
+        """
+        Get audit log for an organization.
+        
+        Args:
+            org_id: Organization ID
+            **params: Additional query parameters (e.g., page, per_page)
+            
+        Returns:
+            List of audit log entries
+        """
+        path = f"{self._path}/{org_id}/audit_log"
+        response = self._make_request('GET', path, params=params)
+        return [LogEntry.model_validate(item) for item in response]
+
+    def get_resource_audit_log(self, org_id: int, resource_type: str, **params) -> List[LogEntry]:
+        """
+        Get audit log for a specific resource type within an organization.
+        
+        Args:
+            org_id: Organization ID
+            resource_type: The type of resource (e.g., 'data_source', 'data_sink')
+            **params: Additional query parameters
+        
+        Returns:
+            List of audit log entries
+        """
+        path = f"{self._path}/{org_id}/{resource_type}/audit_log"
+        response = self._make_request('GET', path, params=params)
+        return [LogEntry.model_validate(item) for item in response]
+        
     def get_auth_settings(self, org_id: int) -> List[Dict[str, Any]]:
         """
         Get authentication settings for organization.
@@ -154,7 +237,7 @@ class OrganizationsResource(BaseResource):
         """
         path = f"{self._path}/{org_id}/auth_settings"
         return self._make_request('GET', path)
-    
+
     def update_auth_setting(self,
                             org_id: int,
                             auth_setting_id: int,

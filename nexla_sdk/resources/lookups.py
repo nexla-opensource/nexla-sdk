@@ -113,7 +113,7 @@ class LookupsResource(BaseResource):
         else:
             keys_str = str(entry_keys)
         
-        path = f"/date_maps/{data_map_id}/entries/{keys_str}"
+        path = f"/data_maps/{data_map_id}/entries/{keys_str}"
         return self._make_request('GET', path)
     
     def delete_entries(self,
@@ -134,5 +134,5 @@ class LookupsResource(BaseResource):
         else:
             keys_str = str(entry_keys)
         
-        path = f"/date_maps/{data_map_id}/entries/{keys_str}"
+        path = f"/data_maps/{data_map_id}/entries/{keys_str}"
         return self._make_request('DELETE', path)

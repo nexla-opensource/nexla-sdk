@@ -11,6 +11,9 @@ class ProjectDataFlow(BaseModel):
     project_id: int
     data_source_id: Optional[int] = None
     data_set_id: Optional[int] = None
+    data_sink_id: Optional[int] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -22,10 +25,14 @@ class Project(BaseModel):
     org: Organization
     name: str
     description: str
-    data_flows: List[ProjectDataFlow]
-    flows: List[ProjectDataFlow]
     access_roles: List[str]
     
+    # Optional fields
+    data_flows: List[ProjectDataFlow] = Field(default_factory=list)
+    flows: List[ProjectDataFlow] = Field(default_factory=list)
+    client_identifier: Optional[str] = None
+    client_url: Optional[str] = None
+    flows_count: Optional[int] = None
     tags: List[str] = Field(default_factory=list)
     copied_from_id: Optional[int] = None
     created_at: Optional[datetime] = None

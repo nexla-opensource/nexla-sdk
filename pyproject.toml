@@ -42,6 +42,9 @@ Documentation = "https://github.com/nexla/nexla-sdk"
 [tool.setuptools_scm]
 version_scheme = "post-release"
 
+[tool.setuptools]
+packages = ["nexla_sdk"]
+
 [tool.pytest.ini_options]
 markers = [
     "integration: marks tests as integration tests (require API credentials)",

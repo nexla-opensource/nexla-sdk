@@ -160,6 +160,40 @@ class UsersResource(BaseResource):
         path = f"{self._path}/{user_id}/quarantine_settings"
         return self._make_request('DELETE', path)
     
+    def get_transferable_resources(self, user_id: int, org_id: int) -> Dict[str, Any]:
+        """
+        Get a list of resources owned by a user that can be transferred.
+        
+        Args:
+            user_id: The ID of the user whose resources are being checked
+            org_id: The ID of the organization context
+            
+        Returns:
+            A dictionary of transferable resources by type
+        """
+        path = f"{self._path}/{user_id}/transferable"
+        params = {'org_id': org_id}
+        return self._make_request('GET', path, params=params)
+        
+    def transfer_resources(self, user_id: int, org_id: int, delegate_owner_id: int) -> Dict[str, Any]:
+        """
+        Transfer a user's resources to another user within an organization.
+        
+        Args:
+            user_id: The ID of the user whose resources are being transferred
+            org_id: The ID of the organization context
+            delegate_owner_id: The ID of the user to whom resources will be transferred
+            
+        Returns:
+            A dictionary confirming the transfer details
+        """
+        path = f"{self._path}/{user_id}/transfer"
+        data = {
+            'org_id': org_id,
+            'delegate_owner_id': delegate_owner_id
+        }
+        return self._make_request('PUT', path, json=data)
+        
     def get_account_metrics(self,
                             user_id: int,
                             from_date: str,

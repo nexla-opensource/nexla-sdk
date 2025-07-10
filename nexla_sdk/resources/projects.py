@@ -13,16 +13,19 @@ class ProjectsResource(BaseResource):
         self._path = "/projects"
         self._model_class = Project
     
-    def list(self, **kwargs) -> List[Project]:
+    def list(self, expand: bool = False, **kwargs) -> List[Project]:
         """
         List all projects.
         
         Args:
+            expand: Include flows in the response
             **kwargs: Additional parameters (page, per_page, access_role, etc.)
         
         Returns:
             List of projects
         """
+        if expand:
+            kwargs['expand'] = 'true'
         return super().list(**kwargs)
     
     def get(self, project_id: int, expand: bool = False) -> Project:
