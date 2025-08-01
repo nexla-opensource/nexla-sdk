@@ -32,6 +32,9 @@ class BaseResource:
         """Make HTTP request using client with enhanced error context."""
         try:
             return self.client.request(method, path, **kwargs)
+        except NexlaError:
+            # NexlaError and its subclasses should pass through unchanged
+            raise
         except Exception as e:
             # Extract resource type from path
             resource_type = self._path.strip('/').split('/')[-1] if self._path else "unknown"

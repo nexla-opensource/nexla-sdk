@@ -1,6 +1,6 @@
 from typing import List, Optional, Dict, Any
 from datetime import datetime
-from pydantic import Field
+from pydantic import Field, field_validator
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.common import Owner, Organization, Connector
 from nexla_sdk.models.credentials.responses import Credential
@@ -57,3 +57,19 @@ class Source(BaseModel):
     tags: List[str] = Field(default_factory=list)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    
+    @field_validator('data_sets', mode='before')
+    @classmethod
+    def validate_data_sets(cls, v):
+        """Handle None data_sets."""
+        if v is None:
+            return []
+        return v
+    
+    @field_validator('tags', mode='before')
+    @classmethod
+    def validate_tags(cls, v):
+        """Handle None tags."""
+        if v is None:
+            return []
+        return v

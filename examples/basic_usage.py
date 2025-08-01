@@ -153,6 +153,35 @@ def main():
         if metrics.metrics:
             for metric in metrics.metrics:
                 print(f"  {metric}")
+    
+    # Example 12: Connectors
+    print("\n=== Connectors Example ===")
+    
+    # List all connectors
+    all_connectors = client.connectors.list()
+    print(f"Total connectors available: {len(all_connectors)}")
+    
+    # List only source connectors
+    source_connectors = client.connectors.list(type='source')
+    print(f"Source connectors: {len(source_connectors)}")
+    for connector in source_connectors[:5]:  # Show first 5
+        print(f"  - {connector['display_name']} ({connector['name']})")
+    
+    # List only destination connectors
+    destination_connectors = client.connectors.list(type='destination')
+    print(f"Destination connectors: {len(destination_connectors)}")
+    for connector in destination_connectors[:5]:  # Show first 5
+        print(f"  - {connector['display_name']} ({connector['name']})")
+    
+    # Get specific connector details
+    if source_connectors:
+        connector_name = source_connectors[0]['name']
+        connector_details = client.connectors.get(connector_name)
+        if connector_details:
+            print(f"\nConnector details for {connector_name}:")
+            print(f"  Display Name: {connector_details['display_name']}")
+            print(f"  Connection Type: {connector_details['connection_type']}")
+            print(f"  Config Keys: {list(connector_details['config'].keys())}")
 
 
 if __name__ == "__main__":

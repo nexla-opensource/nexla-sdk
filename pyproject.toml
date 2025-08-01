@@ -40,7 +40,8 @@ Documentation = "https://github.com/nexla/nexla-sdk"
 "Bug Tracker" = "https://github.com/nexla/nexla-sdk/issues"
 
 [tool.setuptools_scm]
-version_scheme = "post-release"
+version_scheme = "no-guess-dev"
+local_scheme = "no-local-version"
 
 [tool.setuptools]
 packages = ["nexla_sdk"]

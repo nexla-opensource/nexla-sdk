@@ -7,9 +7,9 @@ import time
 from typing import Dict, Any, Optional, Type, TypeVar, Union, List, cast
 import base64
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError as PydanticValidationError
 
-from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError, NexlaNotFoundError
+from .exceptions import NexlaError, AuthenticationError, ServerError, ValidationError, NotFoundError
 from .auth import TokenAuthHandler
 from .http_client import HttpClientInterface, RequestsHttpClient, HttpClientError
 from .resources.flows import FlowsResource  
@@ -24,6 +24,7 @@ from .resources.teams import TeamsResource
 from .resources.projects import ProjectsResource
 from .resources.notifications import NotificationsResource
 from .resources.metrics import MetricsResource
+from .resources.connectors import ConnectorsResource
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +82,7 @@ class NexlaClient:
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
             
         Raises:
-            NexlaClientError: If neither or both authentication methods are provided
+            NexlaError: If neither or both authentication methods are provided
             
         Environment Variables:
             NEXLA_SERVICE_KEY: Service key (used if no authentication parameters are provided)
@@ -104,12 +105,12 @@ class NexlaClient:
             
         # Validate authentication parameters
         if not service_key and not access_token:
-            raise NexlaClientError(
+            raise NexlaError(
                 "Either service_key or access_token must be provided either as parameters "
                 "or via NEXLA_SERVICE_KEY/NEXLA_ACCESS_TOKEN environment variables"
             )
         if service_key and access_token:
-            raise NexlaClientError("Cannot provide both service_key and access_token. Choose one authentication method.")
+            raise NexlaError("Cannot provide both service_key and access_token. Choose one authentication method.")
             
         self.api_url = base_url.rstrip('/')
         self.api_version = api_version
@@ -138,6 +139,7 @@ class NexlaClient:
         self.projects = ProjectsResource(self)
         self.notifications = NotificationsResource(self)
         self.metrics = MetricsResource(self)
+        self.connectors = ConnectorsResource(self)
 
     def get_access_token(self) -> str:
         """
@@ -151,7 +153,7 @@ class NexlaClient:
             A valid access token string
             
         Raises:
-            NexlaAuthError: If no valid token is available or refresh fails
+            AuthenticationError: If no valid token is available or refresh fails
             
         Examples:
             # Get a valid access token
@@ -173,7 +175,7 @@ class NexlaClient:
             Refreshed access token string
             
         Raises:
-            NexlaAuthError: If token refresh fails
+            AuthenticationError: If token refresh fails
             
         Examples:
             # Force refresh and get new token
@@ -194,7 +196,7 @@ class NexlaClient:
             Pydantic model instance or list of instances
             
         Raises:
-            NexlaValidationError: If validation fails
+            ValidationError: If validation fails
         """
         try:
             logger.debug(f"Converting data to model: {model_class.__name__}")
@@ -208,10 +210,10 @@ class NexlaClient:
             result = model_class.model_validate(data)
             logger.debug(f"Converted single result: {result}")
             return result
-        except ValidationError as e:
+        except PydanticValidationError as e:
             # Log the validation error details
             logger.error(f"Validation error converting to {model_class.__name__}: {e}")
-            raise NexlaValidationError(f"Failed to convert API response to {model_class.__name__}: {e}")
+            raise ValidationError(f"Failed to convert API response to {model_class.__name__}: {e}")
             
     def request(self, method: str, path: str, **kwargs) -> Union[Dict[str, Any], None]:
         """
@@ -226,8 +228,8 @@ class NexlaClient:
             API response as a dictionary or None for 204 No Content responses
             
         Raises:
-            NexlaAuthError: If authentication fails
-            NexlaAPIError: If the API returns an error
+            AuthenticationError: If authentication fails
+            ServerError: If the API returns an error
         """
         url = f"{self.api_url}{path}"
         headers = {
@@ -275,9 +277,9 @@ class NexlaClient:
             kwargs: Request parameters
             
         Raises:
-            NexlaAuthError: If authentication fails (401)
-            NexlaNotFoundError: If resource not found (404)
-            NexlaAPIError: For other API errors
+            AuthenticationError: If authentication fails (401)
+            NotFoundError: If resource not found (404)
+            ServerError: For other API errors
         """
         status_code = getattr(error, 'status_code', None)
         error_data = getattr(error, 'response', {})
@@ -312,7 +314,7 @@ class NexlaClient:
         
         # Map status codes to specific exceptions
         if status_code == 401:
-            raise NexlaAuthError(
+            raise AuthenticationError(
                 "Authentication failed. Check your service key.",
                 operation=f"{method.lower()}_request",
                 resource_type=resource_type,
@@ -321,7 +323,7 @@ class NexlaClient:
                 original_error=error
             ) from error
         elif status_code == 404:
-            raise NexlaNotFoundError(
+            raise NotFoundError(
                 f"Resource not found: {resource_type}/{resource_id or 'unknown'}",
                 resource_type=resource_type,
                 resource_id=resource_id,
@@ -330,7 +332,7 @@ class NexlaClient:
                 original_error=error
             ) from error
         else:
-            raise NexlaAPIError(
+            raise ServerError(
                 error_msg,
                 status_code=status_code,
                 response=error_data,

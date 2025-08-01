@@ -137,3 +137,9 @@ cython_debug/
 
 .DS_Store
 openapi/
+
+CLAUDE.md 
+digest.txt
+plugin-redoc-0.yaml
+
+create_flow_sample/

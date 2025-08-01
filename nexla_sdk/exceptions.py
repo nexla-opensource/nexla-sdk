@@ -13,7 +13,9 @@ class NexlaError(Exception):
                  resource_id: Optional[str] = None,
                  step: Optional[str] = None,
                  context: Optional[Dict[str, Any]] = None,
-                 original_error: Optional[Exception] = None):
+                 original_error: Optional[Exception] = None,
+                 status_code: Optional[int] = None,
+                 response: Optional[Dict[str, Any]] = None):
         super().__init__(message)
         self.message = message
         self.details = details or {}
@@ -23,6 +25,8 @@ class NexlaError(Exception):
         self.step = step
         self.context = context or {}
         self.original_error = original_error
+        self.status_code = status_code
+        self.response = response
         
     def __str__(self):
         """Provide detailed error information."""
@@ -58,6 +62,8 @@ class NexlaError(Exception):
             "resource_id": self.resource_id,
             "details": self.details,
             "context": self.context,
+            "status_code": self.status_code,
+            "response": self.response,
             "original_error": str(self.original_error) if self.original_error else None
         }
 
@@ -66,7 +72,10 @@ class AuthenticationError(NexlaError):
     """Raised when authentication fails."""
     
     def __init__(self, message: str = "Authentication failed", **kwargs):
-        super().__init__(message, operation="authentication", **kwargs)
+        # If operation is not provided, default to "authentication"
+        if 'operation' not in kwargs:
+            kwargs['operation'] = "authentication"
+        super().__init__(message, **kwargs)
 
 
 class AuthorizationError(NexlaError):
@@ -106,31 +115,35 @@ class CredentialError(NexlaError):
     """Raised when credential validation fails."""
     
     def __init__(self, message: str, credential_id: Optional[str] = None, **kwargs):
-        super().__init__(message, 
-                         operation="credential_validation",
-                         resource_type="credential",
-                         resource_id=credential_id,
-                         **kwargs)
+        # Set defaults if not provided
+        kwargs.setdefault('operation', 'credential_validation')
+        kwargs.setdefault('resource_type', 'credential')
+        if credential_id:
+            kwargs.setdefault('resource_id', credential_id)
+        super().__init__(message, **kwargs)
 
 
 class FlowError(NexlaError):
     """Raised when flow operations fail."""
     
     def __init__(self, message: str, flow_id: Optional[str] = None, flow_step: Optional[str] = None, **kwargs):
-        super().__init__(message, 
-                         operation="flow_operation",
-                         resource_type="flow",
-                         resource_id=flow_id,
-                         step=flow_step,
-                         **kwargs)
+        # Set defaults if not provided
+        kwargs.setdefault('operation', 'flow_operation')
+        kwargs.setdefault('resource_type', 'flow')
+        if flow_id:
+            kwargs.setdefault('resource_id', flow_id)
+        if flow_step:
+            kwargs.setdefault('step', flow_step)
+        super().__init__(message, **kwargs)
 
 
 class TransformError(NexlaError):
     """Raised when transform operations fail."""
     
     def __init__(self, message: str, transform_id: Optional[str] = None, **kwargs):
-        super().__init__(message, 
-                         operation="transform_operation",
-                         resource_type="transform",
-                         resource_id=transform_id,
-                         **kwargs)
+        # Set defaults if not provided
+        kwargs.setdefault('operation', 'transform_operation')
+        kwargs.setdefault('resource_type', 'transform')
+        if transform_id:
+            kwargs.setdefault('resource_id', transform_id)
+        super().__init__(message, **kwargs)
