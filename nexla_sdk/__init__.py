@@ -7,7 +7,6 @@ from nexla_sdk.client import NexlaClient
 
 # Import resources
 from nexla_sdk.resources import (
-    ConnectorsResource,
     CredentialsResource,
     FlowsResource,
     SourcesResource,
@@ -65,7 +64,6 @@ __all__ = [
     'NexlaClient',
     
     # Resources
-    'ConnectorsResource',
     'CredentialsResource',
     'FlowsResource',
     'SourcesResource',

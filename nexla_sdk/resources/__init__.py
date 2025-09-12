@@ -1,5 +1,4 @@
 from nexla_sdk.resources.base_resource import BaseResource
-from nexla_sdk.resources.connectors import ConnectorsResource
 from nexla_sdk.resources.credentials import CredentialsResource
 from nexla_sdk.resources.flows import FlowsResource
 from nexla_sdk.resources.sources import SourcesResource
@@ -15,7 +14,6 @@ from nexla_sdk.resources.metrics import MetricsResource
 
 __all__ = [
     'BaseResource',
-    'ConnectorsResource',
     'CredentialsResource',
     'FlowsResource', 
     'SourcesResource',

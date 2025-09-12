@@ -24,7 +24,6 @@ from .resources.teams import TeamsResource
 from .resources.projects import ProjectsResource
 from .resources.notifications import NotificationsResource
 from .resources.metrics import MetricsResource
-from .resources.connectors import ConnectorsResource
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +138,6 @@ class NexlaClient:
         self.projects = ProjectsResource(self)
         self.notifications = NotificationsResource(self)
         self.metrics = MetricsResource(self)
-        self.connectors = ConnectorsResource(self)
 
     def get_access_token(self) -> str:
         """

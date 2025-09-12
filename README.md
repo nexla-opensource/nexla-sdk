@@ -198,31 +198,6 @@ destination = client.destinations.create(destination_data)
 activated_destination = client.destinations.activate(destination.id)
 ```
 
-### Connectors
-
-```python
-# List all available connectors
-all_connectors = client.connectors.list()
-print(f"Total connectors: {len(all_connectors)}")
-
-# List only source connectors
-source_connectors = client.connectors.list(type='source')
-for connector in source_connectors:
-    print(f"Source: {connector['display_name']} ({connector['name']})")
-
-# List only destination connectors
-destination_connectors = client.connectors.list(type='destination')
-for connector in destination_connectors:
-    print(f"Destination: {connector['display_name']} ({connector['name']})")
-
-# Get specific connector details
-connector_details = client.connectors.get('s3')
-if connector_details:
-    print(f"Connector: {connector_details['display_name']}")
-    print(f"Type: {connector_details['connection_type']}")
-    print(f"Config options: {list(connector_details['config'].keys())}")
-```
-
 ### Flows
 
 ```python
