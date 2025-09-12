@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=67", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -14,14 +14,15 @@ authors = [
 license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 dependencies = [
     "requests>=2.25.0",
     "pydantic>=2.0.0",
@@ -44,7 +45,9 @@ version_scheme = "no-guess-dev"
 local_scheme = "no-local-version"
 
 [tool.setuptools]
-packages = ["nexla_sdk"]
+
+[tool.setuptools.packages.find]
+include = ["nexla_sdk*"]
 
 [tool.pytest.ini_options]
 markers = [

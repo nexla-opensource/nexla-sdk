@@ -36,14 +36,13 @@ class NexlaClient:
     
     The Nexla API supports two authentication methods:
     
-    1. **Service Key Authentication** (Recommended for programmatic access):
-       Service keys are "forever keys" created in the Nexla UI that can be used to 
-       programmatically obtain session tokens. The SDK automatically handles token 
-       obtaining and refreshing.
+    1. **Service Key Authentication** (recommended):
+       Service keys are long-lived credentials created in the Nexla UI. The SDK
+       obtains session tokens using the service key on demand and re-obtains a new
+       token as needed. No refresh endpoint is used.
        
     2. **Direct Access Token Authentication**:
-       Access tokens obtained can be used directly. Note that these tokens expire 
-       (typically after 1 hour) and cannot be automatically refreshed by the SDK.
+       Use a pre-obtained access token directly. These tokens are not refreshed by the SDK.
     
     Examples:
         # Method 1: Using service key (recommended for automation)
@@ -67,7 +66,7 @@ class NexlaClient:
                  access_token: Optional[str] = None,
                  base_url: Optional[str] = None,
                  api_version: str = "v1",
-                 token_refresh_margin: int = 300,
+                 token_refresh_margin: int = 3600,
                  http_client: Optional[HttpClientInterface] = None):
         """
         Initialize the Nexla client
@@ -86,7 +85,7 @@ class NexlaClient:
         Environment Variables:
             NEXLA_SERVICE_KEY: Service key (used if no authentication parameters are provided)
             NEXLA_ACCESS_TOKEN: Access token (used if no authentication parameters are provided and NEXLA_SERVICE_KEY is not set)
-            NEXLA_BASE_URL: Base URL for the Nexla API (used if base_url parameter is not provided)
+            NEXLA_API_URL: Base URL for the Nexla API (used if base_url parameter is not provided)
         """
         # Check environment variables only if neither parameter is provided
         if not service_key and not access_token:
@@ -98,7 +97,7 @@ class NexlaClient:
             
         # Check for base_url in environment if not provided as parameter
         if not base_url:
-            base_url = os.getenv("NEXLA_BASE_URL")
+            base_url = os.getenv("NEXLA_API_URL")
             if not base_url:
                 base_url = "https://dataops.nexla.io/nexla-api"
             
@@ -141,11 +140,10 @@ class NexlaClient:
 
     def get_access_token(self) -> str:
         """
-        Get a valid access token, automatically refreshing if necessary
+        Get a valid access token.
         
-        This method ensures that the returned token is valid and not expired.
-        If the token is about to expire (within the token_refresh_margin), 
-        it will be automatically refreshed before being returned.
+        For service keys, the SDK obtains tokens as needed and re-obtains a new
+        one if the current token is near expiry. Direct access tokens are used as-is.
         
         Returns:
             A valid access token string
@@ -164,10 +162,10 @@ class NexlaClient:
 
     def refresh_access_token(self) -> str:
         """
-        Refresh the current access token and return the new token
+        Obtain a fresh token and return it.
         
-        This method forces a refresh of the current access token and returns
-        the new token. Works for both service key tokens and direct access tokens.
+        For service keys, this obtains a new token. Direct access tokens cannot
+        be refreshed and will raise an AuthenticationError.
         
         Returns:
             Refreshed access token string
@@ -311,9 +309,32 @@ class NexlaClient:
         }
         
         # Map status codes to specific exceptions
-        if status_code == 401:
+        if status_code == 400:
+            raise ValidationError(
+                error_msg,
+                status_code=status_code,
+                response=error_data,
+                operation=f"{method.lower()}_request",
+                resource_type=resource_type,
+                resource_id=resource_id,
+                context=context,
+                original_error=error
+            ) from error
+        elif status_code == 401:
             raise AuthenticationError(
                 "Authentication failed. Check your service key.",
+                operation=f"{method.lower()}_request",
+                resource_type=resource_type,
+                resource_id=resource_id,
+                context=context,
+                original_error=error
+            ) from error
+        elif status_code == 403:
+            from .exceptions import AuthorizationError
+            raise AuthorizationError(
+                error_msg,
+                status_code=status_code,
+                response=error_data,
                 operation=f"{method.lower()}_request",
                 resource_type=resource_type,
                 resource_id=resource_id,
@@ -326,6 +347,43 @@ class NexlaClient:
                 resource_type=resource_type,
                 resource_id=resource_id,
                 operation=f"{method.lower()}_request",
+                context=context,
+                original_error=error
+            ) from error
+        elif status_code == 409:
+            from .exceptions import ResourceConflictError
+            raise ResourceConflictError(
+                error_msg,
+                status_code=status_code,
+                response=error_data,
+                operation=f"{method.lower()}_request",
+                resource_type=resource_type,
+                resource_id=resource_id,
+                context=context,
+                original_error=error
+            ) from error
+        elif status_code == 429:
+            from .exceptions import RateLimitError
+            retry_after = None
+            # Try to parse retry-after from headers or body
+            headers = getattr(error, 'headers', {}) or {}
+            if headers:
+                retry_after_hdr = headers.get('Retry-After') or headers.get('retry-after')
+                if retry_after_hdr:
+                    try:
+                        retry_after = int(retry_after_hdr)
+                    except Exception:
+                        retry_after = None
+            if not retry_after and isinstance(error_data, dict):
+                retry_after = error_data.get('retry_after')
+            raise RateLimitError(
+                error_msg,
+                retry_after=retry_after,
+                status_code=status_code,
+                response=error_data,
+                operation=f"{method.lower()}_request",
+                resource_type=resource_type,
+                resource_id=resource_id,
                 context=context,
                 original_error=error
             ) from error

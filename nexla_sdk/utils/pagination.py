@@ -72,25 +72,31 @@ class Paginator(Generic[T]):
             per_page=self.page_size,
             **self.kwargs
         )
-        
+
         # Extract page info from response if available
         page_info = PageInfo(
             current_page=page_number,
             page_size=self.page_size
         )
-        
+
         # Try to extract total pages/count from response metadata
+        items: List[T]
         if isinstance(response, dict):
             if 'meta' in response:
-                meta = response['meta']
-                page_info.total_pages = meta.get('pageCount')
-                page_info.total_count = meta.get('totalCount')
+                meta = response['meta'] or {}
+                # Support both snake_case and camelCase keys
+                page_info.total_pages = meta.get('pageCount') or meta.get('total_pages')
+                page_info.total_count = meta.get('totalCount') or meta.get('total_count')
+                current = meta.get('currentPage') or meta.get('current_page')
+                if isinstance(current, int):
+                    page_info.current_page = current
                 items = response.get('data', [])
             else:
-                items = response
+                # Response is not paginated; assume it's a list-like payload
+                items = response  # type: ignore[assignment]
         else:
-            items = response
-        
+            items = response  # type: ignore[assignment]
+
         return Page(items=items, page_info=page_info, raw_response=response)
     
     def __iter__(self) -> Iterator[T]:
@@ -99,10 +105,14 @@ class Paginator(Generic[T]):
         while True:
             page = self.get_page(self.current_page)
             yield from page.items
-            
+
+            # If total pages known, use flag
             if not page.page_info.has_next:
                 break
-            
+            # If total pages unknown, stop when we received fewer items than page size
+            if len(page.items) < self.page_size:
+                break
+
             self.current_page += 1
     
     def iter_pages(self) -> Iterator[Page[T]]:
@@ -111,8 +121,10 @@ class Paginator(Generic[T]):
         while True:
             page = self.get_page(page_num)
             yield page
-            
+
             if not page.page_info.has_next:
                 break
-            
+            if len(page.items) < self.page_size:
+                break
+
             page_num += 1

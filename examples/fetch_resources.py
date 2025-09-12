@@ -27,16 +27,17 @@ from nexla_sdk.exceptions import AuthenticationError, NexlaError
 
 def initialize_client() -> NexlaClient:
     """Initialize Nexla client with authentication."""
+    base_url = os.getenv("NEXLA_API_URL")
     # Option 1: Service key (recommended)
     service_key = os.getenv("NEXLA_SERVICE_KEY")
     if service_key:
-        return NexlaClient(service_key=service_key)
-    
+        return NexlaClient(service_key=service_key, base_url=base_url)
+
     # Option 2: Access token
     access_token = os.getenv("NEXLA_ACCESS_TOKEN")
     if access_token:
-        return NexlaClient(access_token=access_token)
-    
+        return NexlaClient(access_token=access_token, base_url=base_url)
+
     raise ValueError("Please set NEXLA_SERVICE_KEY or NEXLA_ACCESS_TOKEN environment variable")
 
 
@@ -45,8 +46,6 @@ def list_credentials(client: NexlaClient) -> None:
     try:
         print("\n=== CREDENTIALS ===")
         credentials = client.credentials.list()
-        print("type(credentials):", type(credentials))
-        print("type(credentials[0]):", type(credentials[0]))
         print("Total credentials: {}".format(len(credentials)))
         
         for cred in credentials[:3]:  # Show first 3

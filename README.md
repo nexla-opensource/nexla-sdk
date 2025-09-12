@@ -74,25 +74,27 @@ The SDK supports two authentication methods:
 
 ### 1. Service Key Authentication (Recommended)
 
-Service keys are long-lived credentials that automatically obtain and refresh session tokens:
+Service keys are long-lived credentials that obtain session tokens on demand (no refresh endpoint is used):
 
 ```python
 client = NexlaClient(service_key="your_service_key")
 
-# Or use environment variable
+# Or use environment variables
 # export NEXLA_SERVICE_KEY="your_service_key"
+# Optional: export NEXLA_API_URL="https://your-nexla-instance.com/nexla-api"
 client = NexlaClient()
 ```
 
 ### 2. Direct Access Token Authentication
 
-For temporary access using pre-obtained tokens:
+For temporary access using pre-obtained tokens (no refresh available):
 
 ```python
 client = NexlaClient(access_token="your_access_token")
 
-# Or use environment variable
+# Or use environment variables
 # export NEXLA_ACCESS_TOKEN="your_access_token"
+# Optional: export NEXLA_API_URL="https://your-nexla-instance.com/nexla-api"
 client = NexlaClient()
 ```
 

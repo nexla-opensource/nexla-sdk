@@ -9,8 +9,8 @@ from nexla_sdk.models.destinations.requests import DestinationCreate
 def main():
     # Initialize client
     client = NexlaClient(
-        api_key=os.getenv("NEXLA_API_KEY"),
-        base_url="https://dataops.nexla.com/nexla-api"
+        service_key=os.getenv("NEXLA_SERVICE_KEY"),
+        base_url=os.getenv("NEXLA_API_URL", "https://dataops.nexla.io/nexla-api")
     )
     
     # Example 1: List all sources

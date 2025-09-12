@@ -47,7 +47,7 @@ class TokenAuthHandler:
             access_token: Nexla access token for direct authentication (mutually exclusive with service_key)
             base_url: Nexla API base URL
             api_version: API version to use
-            token_refresh_margin: Seconds before token expiry to trigger refresh (default: 10 minutes)
+            token_refresh_margin: Seconds before token expiry to trigger refresh
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
         """
         self.service_key = service_key
@@ -62,11 +62,9 @@ class TokenAuthHandler:
             self._access_token = access_token
             self._token_expiry = time.time() + 86400
         else:
-            # Service key authentication
             self._access_token = None
             self._token_expiry = 0
             self._using_direct_token = False
-            self.obtain_session_token()
 
     def get_access_token(self) -> str:
         """
@@ -135,65 +133,14 @@ class TokenAuthHandler:
 
     def refresh_session_token(self) -> None:
         """
-        Refreshes the session token before it expires
-        
-        Works for both service key tokens and direct access tokens since all valid
-        tokens are refreshable according to Nexla API documentation.
-        
-        Raises:
-            AuthenticationError: If token refresh fails or no token available
+        Refresh token (compat shim).
+        - Direct tokens cannot be refreshed.
+        - Service key mode re-obtains a new token via /token.
         """
-        if not self._access_token:
-            if self._using_direct_token:
-                raise AuthenticationError("No access token available for refresh")
-            else:
-                self.obtain_session_token()
-                return
-        
-        url = f"{self.api_url}/token/refresh"
-        headers = {
-            "Authorization": f"Bearer {self._access_token}",
-            "Accept": f"application/vnd.nexla.api.{self.api_version}+json",
-            "Content-Length": "0"
-        }
-        
-        try:
-            token_data = self.http_client.request("POST", url, headers=headers)
-            self._access_token = token_data.get("access_token")
-            # Calculate expiry time (current time + expires_in seconds)
-            expires_in = token_data.get("expires_in", 3600)
-            self._token_expiry = time.time() + expires_in
-            
-            logger.debug("Session token refreshed successfully")
-            
-        except HttpClientError as e:
-            if getattr(e, 'status_code', None) == 401:
-                if self._using_direct_token:
-                    # Direct token is invalid, can't obtain a new one
-                    raise AuthenticationError("Token refresh failed - access token is invalid or expired") from e
-                else:
-                    # Service key token refresh failed, try obtaining a new token
-                    logger.warning("Token refresh failed with 401, obtaining new session token")
-                    self.obtain_session_token()
-                    return
-                
-            error_msg = f"Failed to refresh session token: {e}"
-            error_data = getattr(e, 'response', {})
-            
-            if error_data:
-                if "message" in error_data:
-                    error_msg = f"Token refresh error: {error_data['message']}"
-                elif "error" in error_data:
-                    error_msg = f"Token refresh error: {error_data['error']}"
-                    
-            raise NexlaError(
-                error_msg, 
-                status_code=getattr(e, 'status_code', None), 
-                response=error_data
-            ) from e
-            
-        except Exception as e:
-            raise NexlaError(f"Failed to refresh session token: {e}") from e
+        if self._using_direct_token:
+            raise AuthenticationError("Direct access tokens cannot be refreshed")
+        # For service key, re-obtain a token via /token
+        self.obtain_session_token()
 
     def ensure_valid_token(self) -> str:
         """
@@ -208,16 +155,16 @@ class TokenAuthHandler:
         if not self._access_token:
             if self._using_direct_token:
                 raise AuthenticationError("No access token available")
-            else:
-                # Obtain new token using service key
+            # Obtain new token using service key lazily
+            self.obtain_session_token()
+            return self._access_token
+
+        # For service key, if nearing expiry, obtain a fresh token via /token
+        if not self._using_direct_token:
+            current_time = time.time()
+            if (self._token_expiry - current_time) < self.token_refresh_margin:
                 self.obtain_session_token()
-                return self._access_token
-        
-        # Check if token needs refresh (applies to both service key and direct tokens)
-        current_time = time.time()
-        if (self._token_expiry - current_time) < self.token_refresh_margin:
-            self.refresh_session_token()
-                
+
         return self._access_token
         
     def execute_authenticated_request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
@@ -245,23 +192,17 @@ class TokenAuthHandler:
         
         try:
             return self.http_client.request(method, url, headers=headers, **kwargs)
-            
+
         except HttpClientError as e:
             if getattr(e, 'status_code', None) == 401:
-                # If authentication failed, try refreshing the token
-                logger.warning("Request failed with 401, refreshing session token and retrying")
-                try:
-                    self.refresh_session_token()  # Refresh token (works for both service key and direct tokens)
-                    
-                    # Update headers with new token
+                # On 401: if service key mode, obtain new token and retry once
+                if not self._using_direct_token:
+                    logger.warning("401 received; obtaining new session token and retrying once")
+                    self.obtain_session_token()
                     headers["Authorization"] = f"Bearer {self.get_access_token()}"
-                    
-                    # Retry the request with the new token
                     return self.http_client.request(method, url, headers=headers, **kwargs)
-                    
-                except AuthenticationError:
-                    # If refresh fails, re-raise the original authentication error
-                    raise AuthenticationError("Authentication failed and token refresh unsuccessful") from e
-            
+                # Direct token cannot be refreshed
+                raise AuthenticationError("Authentication failed (access token invalid or expired)") from e
+
             # For other errors, let the caller handle them
             raise
