@@ -1,0 +1,97 @@
+---
+id: nexla_sdk.models.notifications.responses
+title: nexla_sdk.models.notifications.responses
+slug: /api/python/modules/nexla_sdk/models/notifications/responses
+description: API for nexla_sdk.models.notifications.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### Notification
+
+Defined in `nexla_sdk/models/notifications/responses.py:8`
+
+Notification response model.
+
+Fields:
+
+- `id`: `int`
+- `owner`: `Owner`
+- `org`: `Organization`
+- `access_roles`: `typing.List[str]`
+- `level`: `str`
+- `resource_id`: `int`
+- `resource_type`: `str`
+- `message_id`: `int`
+- `message`: `str`
+- `read_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### NotificationChannelSetting
+
+Defined in `nexla_sdk/models/notifications/responses.py:37`
+
+Notification channel configuration.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `channel`: `str`
+- `config`: `typing.Dict[str, typing.Any]`
+
+### NotificationCount
+
+Defined in `nexla_sdk/models/notifications/responses.py:67`
+
+Notification count response.
+
+Fields:
+
+- `count`: `int`
+
+### NotificationSetting
+
+Defined in `nexla_sdk/models/notifications/responses.py:46`
+
+Notification setting configuration.
+
+Fields:
+
+- `id`: `int`
+- `org_id`: `int`
+- `owner_id`: `int`
+- `channel`: `str`
+- `notification_resource_type`: `str`
+- `resource_id`: `int`
+- `status`: `str`
+- `notification_type_id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `code`: `int`
+- `category`: `str`
+- `event_type`: `str`
+- `resource_type`: `str`
+- `config`: `typing.Dict[str, typing.Any]`
+- `priority`: `typing.Optional[int]`
+
+### NotificationType
+
+Defined in `nexla_sdk/models/notifications/responses.py:25`
+
+Notification type information.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `category`: `str`
+- `default`: `bool`
+- `status`: `bool`
+- `event_type`: `str`
+- `resource_type`: `str`
+

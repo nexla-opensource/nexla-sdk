@@ -34,6 +34,10 @@ dev = [
     "pytest-mock>=3.0.0",
     "python-dotenv>=1.0.0",
 ]
+tracing = [
+    "opentelemetry-distro",
+    "opentelemetry-exporter-otlp",
+]
 
 [project.urls]
 Homepage = "https://github.com/nexla/nexla-sdk"

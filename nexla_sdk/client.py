@@ -12,6 +12,7 @@ from pydantic import BaseModel, ValidationError as PydanticValidationError
 from .exceptions import NexlaError, AuthenticationError, ServerError, ValidationError, NotFoundError
 from .auth import TokenAuthHandler
 from .http_client import HttpClientInterface, RequestsHttpClient, HttpClientError
+from . import telemetry
 from .resources.flows import FlowsResource  
 from .resources.sources import SourcesResource
 from .resources.destinations import DestinationsResource
@@ -67,7 +68,8 @@ class NexlaClient:
                  base_url: Optional[str] = None,
                  api_version: str = "v1",
                  token_refresh_margin: int = 3600,
-                 http_client: Optional[HttpClientInterface] = None):
+                 http_client: Optional[HttpClientInterface] = None,
+                 trace_enabled: Optional[bool] = None):
         """
         Initialize the Nexla client
         
@@ -78,6 +80,8 @@ class NexlaClient:
             api_version: API version to use
             token_refresh_margin: Seconds before token expiry to trigger refresh (default: 5 minutes)
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
+            trace_enabled: Explicitly enable/disable OpenTelemetry tracing. If None,
+                           tracing auto-enables when a global OTEL config is detected.
             
         Raises:
             NexlaError: If neither or both authentication methods are provided
@@ -112,7 +116,19 @@ class NexlaClient:
             
         self.api_url = base_url.rstrip('/')
         self.api_version = api_version
-        self.http_client = http_client or RequestsHttpClient()
+
+        # Determine if tracing should be active and get a tracer
+        self._trace_enabled = False
+        if trace_enabled is True:
+            self._trace_enabled = True
+        elif trace_enabled is None and telemetry.is_tracing_configured():
+            logger.debug("Global OpenTelemetry configuration detected. Enabling tracing for Nexla SDK.")
+            self._trace_enabled = True
+
+        self.tracer = telemetry.get_tracer(self._trace_enabled)
+
+        # Initialize HTTP client (instrumented if tracer provided)
+        self.http_client = http_client or RequestsHttpClient(tracer=self.tracer)
         
         # Initialize authentication handler
         self.auth_handler = TokenAuthHandler(

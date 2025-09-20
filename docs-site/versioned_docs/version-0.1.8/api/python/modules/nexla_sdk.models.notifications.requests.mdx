@@ -1,0 +1,65 @@
+---
+id: nexla_sdk.models.notifications.requests
+title: nexla_sdk.models.notifications.requests
+slug: /api/python/modules/nexla_sdk/models/notifications/requests
+description: API for nexla_sdk.models.notifications.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### NotificationChannelSettingCreate
+
+Defined in `nexla_sdk/models/notifications/requests.py:6`
+
+Request model for creating notification channel setting.
+
+Fields:
+
+- `channel`: `str`
+- `config`: `typing.Dict[str, typing.Any]`
+
+### NotificationChannelSettingUpdate
+
+Defined in `nexla_sdk/models/notifications/requests.py:12`
+
+Request model for updating notification channel setting.
+
+Fields:
+
+- `channel`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+### NotificationSettingCreate
+
+Defined in `nexla_sdk/models/notifications/requests.py:18`
+
+Request model for creating notification setting.
+
+Fields:
+
+- `channel`: `str`
+- `notification_type_id`: `int`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Dict[str, typing.Any]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
+
+### NotificationSettingUpdate
+
+Defined in `nexla_sdk/models/notifications/requests.py:29`
+
+Request model for updating notification setting.
+
+Fields:
+
+- `channel`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `checked`: `typing.Optional[bool]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
+- `notification_type_id`: `typing.Optional[int]`
+

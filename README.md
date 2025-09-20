@@ -25,11 +25,11 @@ from nexla_sdk import NexlaClient
 # Initialize the client with your service key
 client = NexlaClient(service_key="your_nexla_service_key")
 
-# List flows - returns a FlowResponse object with flows
-flows = client.flows.list()
-for flow_response in flows:
+# List flows — returns a list with one FlowResponse that contains flow nodes
+flow_responses = client.flows.list()
+for flow_response in flow_responses:
     for flow in flow_response.flows:
-        print(f"Flow name: {flow.name}, ID: {flow.id}")
+        print(f"Flow node: {flow.name}, ID: {flow.id}")
 
 # List sources - returns a list of Source objects
 sources = client.sources.list()
@@ -117,11 +117,11 @@ credential = client.credentials.create(credential_data)
 
 # Test credential
 probe_result = client.credentials.probe(credential.id)
-print(f"Credential valid: {probe_result.get('success', False)}")
+print(f"Credential valid: {probe_result.get('status') in ('ok', 'success')}")
 
 # Get credential tree structure
 from nexla_sdk.models.credentials.requests import ProbeTreeRequest
-tree_request = ProbeTreeRequest(path="/")
+tree_request = ProbeTreeRequest(depth=1, path="/")
 tree = client.credentials.probe_tree(credential.id, tree_request)
 
 # Get sample data
@@ -150,7 +150,7 @@ activated_source = client.sources.activate(source.id)
 
 # Copy source
 from nexla_sdk.models.sources.requests import SourceCopyOptions
-copy_options = SourceCopyOptions(new_name="Copied Source")
+copy_options = SourceCopyOptions(copy_access_controls=True)
 copied_source = client.sources.copy(source.id, copy_options)
 ```
 
@@ -161,11 +161,12 @@ copied_source = client.sources.copy(source.id, copy_options)
 nexsets = client.nexsets.list()
 
 # Get samples from a nexset
-samples = client.nexsets.get_samples(
-    set_id=nexset.id,
-    count=10,
-    include_metadata=True
-)
+if nexsets:
+    samples = client.nexsets.get_samples(
+        set_id=nexsets[0].id,
+        count=10,
+        include_metadata=True
+    )
 
 # Create a transformed nexset
 nexset_data = {
@@ -217,7 +218,7 @@ client.flows.pause(flow.flows[0].id, all=True)
 
 # Copy flow
 from nexla_sdk.models.flows.requests import FlowCopyOptions
-copy_options = FlowCopyOptions(new_name="Copied Flow")
+copy_options = FlowCopyOptions(copy_access_controls=True)
 copied_flow = client.flows.copy(flow.flows[0].id, copy_options)
 ```
 
@@ -238,6 +239,44 @@ for page in paginator.iter_pages():
     print(f"Page {page.page_info.current_page}")
     for source in page:
         print(f"  - {source.name}")
+```
+
+## Observability: OpenTelemetry Tracing (Optional)
+
+You can instrument the Nexla SDK with OpenTelemetry to emit spans for each outgoing API request. Tracing is optional and a no‑op unless enabled.
+
+- Install optional tracing extras in your application environment:
+
+```bash
+pip install "nexla-sdk[tracing]"
+# or install explicitly
+pip install opentelemetry-distro opentelemetry-exporter-otlp
+```
+
+- Auto‑detection: If your app configures a global tracer provider, `NexlaClient` auto‑enables tracing. To control explicitly, use `trace_enabled=True|False`.
+
+Example setup with console exporter:
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+
+trace.set_tracer_provider(TracerProvider(resource=Resource({"service.name": "my-nexla-app"})))
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
+
+from nexla_sdk import NexlaClient
+
+client = NexlaClient(service_key="<YOUR_SERVICE_KEY>")  # auto‑detects tracing
+# or force: NexlaClient(service_key=..., trace_enabled=True)
+
+flows = client.flows.list(page=1, per_page=1)  # emits a span
+```
+
+Notes:
+- Tracing is a no‑op unless OpenTelemetry is installed and enabled.
+- Spans include attributes like `http.method`, `url.full`, `server.address`, and `http.status_code`.
 ```
 
 ## Access Control
@@ -280,7 +319,7 @@ members = client.organizations.get_members(org.id)
 # Update organization members
 from nexla_sdk.models.organizations.requests import OrgMemberList
 member_list = OrgMemberList(members=[
-    {"email": "new@example.com", "access_role": ["admin"]}
+    {"email": "new@example.com", "access_role": "admin"}
 ])
 client.organizations.update_members(org.id, member_list)
 
@@ -312,8 +351,15 @@ project = client.projects.create(project_data)
 
 # Add flows to project
 from nexla_sdk.models.projects.requests import ProjectFlowList
-flow_list = ProjectFlowList(flows=[{"id": flow.id}])
+
+# Option 1: Provide flow node IDs directly
+flow_list = ProjectFlowList(flows=[flow_id])  # replace with actual flow node IDs
 client.projects.add_flows(project.id, flow_list)
+
+# Option 2: Provide resource identifiers (data flow edges)
+# from nexla_sdk.models.projects.requests import ProjectFlowIdentifier
+# flow_list = ProjectFlowList(data_flows=[ProjectFlowIdentifier(data_set_id=nexset.id)])
+# client.projects.add_flows(project.id, flow_list)
 
 # Get project flows
 project_flows = client.projects.get_flows(project.id)
@@ -326,7 +372,7 @@ project_flows = client.projects.get_flows(project.id)
 notifications = client.notifications.list(read=0)
 
 # Mark notification as read
-client.notifications.mark_read(notification.id)
+client.notifications.mark_read([notification.id])
 
 # Mark all notifications as read
 client.notifications.mark_read("all")
@@ -396,22 +442,19 @@ client.lookups.upsert_entries(lookup.id, new_entries)
 ### User Management
 
 ```python
-# Get current user
-current_user = client.users.get_current()
-
-# Get user settings
+# Get user settings for the current authenticated user
 settings = client.users.get_settings()
 
 # Get user dashboard metrics
-dashboard_metrics = client.users.get_dashboard_metrics(user_id)
+dashboard_metrics = client.users.get_dashboard_metrics(user_id)  # replace with a valid user_id (int)
 
-# Update quarantine settings
+# Update quarantine settings for a user
 quarantine_config = {
     "cron_schedule": "0 0 * * *",
     "path": "/quarantine/exports/"
 }
 client.users.create_quarantine_settings(
-    user_id=user.id,
+    user_id=user_id,  # replace with a valid user_id (int)
     data_credentials_id=credential.id,
     config=quarantine_config
 )
@@ -472,6 +515,8 @@ All resources support these base methods:
 - `get_accessors(id)` - Get access control rules
 - `add_accessors(id, accessors)` - Add access control rules
 - `get_audit_log(id)` - Get audit log entries
+ - `replace_accessors(id, accessors)` - Replace access control rules
+ - `delete_accessors(id, accessors=None)` - Delete some or all access control rules
 
 ## Development
 

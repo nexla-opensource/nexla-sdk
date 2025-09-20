@@ -1,0 +1,45 @@
+---
+id: nexla_sdk.resources.lookups
+title: nexla_sdk.resources.lookups
+slug: /api/python/modules/nexla_sdk/resources/lookups
+description: API for nexla_sdk.resources.lookups
+keywords: [Nexla, SDK, Python, API]
+---
+
+Lookups resource implementation.
+
+## Classes
+
+### LookupsResource
+
+Defined in `nexla_sdk/resources/lookups.py:8`
+
+Resource for managing lookups (data maps).
+
+Methods:
+
+- `create(self, data: nexla_sdk.models.lookups.requests.LookupCreate) -> nexla_sdk.models.lookups.responses.Lookup`
+  - Source: `nexla_sdk/resources/lookups.py:41`
+  - Create new lookup.
+- `delete(self, data_map_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/lookups.py:66`
+  - Delete lookup.
+- `delete_entries(self, data_map_id: int, entry_keys: Union[str, List[str]]) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/lookups.py:119`
+  - Delete specific entries from a lookup.
+- `get(self, data_map_id: int, expand: bool = False) -> nexla_sdk.models.lookups.responses.Lookup`
+  - Source: `nexla_sdk/resources/lookups.py:28`
+  - Get single lookup by ID.
+- `get_entries(self, data_map_id: int, entry_keys: Union[str, List[str]]) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/lookups.py:98`
+  - Get specific entries from a lookup.
+- `list(self, **kwargs) -> List[nexla_sdk.models.lookups.responses.Lookup]`
+  - Source: `nexla_sdk/resources/lookups.py:16`
+  - List all lookups.
+- `update(self, data_map_id: int, data: nexla_sdk.models.lookups.requests.LookupUpdate) -> nexla_sdk.models.lookups.responses.Lookup`
+  - Source: `nexla_sdk/resources/lookups.py:53`
+  - Update lookup.
+- `upsert_entries(self, data_map_id: int, entries: List[Dict[str, Any]]) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/lookups.py:78`
+  - Upsert entries in a lookup.
+

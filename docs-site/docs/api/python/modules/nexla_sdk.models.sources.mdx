@@ -1,0 +1,197 @@
+---
+id: nexla_sdk.models.sources
+title: nexla_sdk.models.sources
+slug: /api/python/modules/nexla_sdk/models/sources
+description: API for nexla_sdk.models.sources
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataSetBrief
+
+Defined in `nexla_sdk/models/sources/responses.py:9`
+
+Brief dataset information.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `Optional`
+- `description`: `Optional`
+- `version`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### FlowType
+
+Defined in `nexla_sdk/models/sources/enums.py:68`
+
+Flow processing types.
+
+Members:
+
+- `BATCH` = `batch`
+- `STREAMING` = `streaming`
+- `REAL_TIME` = `real_time`
+
+### IngestMethod
+
+Defined in `nexla_sdk/models/sources/enums.py:59`
+
+Data ingestion methods.
+
+Members:
+
+- `BATCH` = `BATCH`
+- `STREAMING` = `STREAMING`
+- `REAL_TIME` = `REAL_TIME`
+- `SCHEDULED` = `SCHEDULED`
+- `POLL` = `POLL`
+
+### RunInfo
+
+Defined in `nexla_sdk/models/sources/responses.py:21`
+
+Run information.
+
+Fields:
+
+- `id`: `int`
+- `created_at`: `datetime`
+
+### Source
+
+Defined in `nexla_sdk/models/sources/responses.py:27`
+
+Data source response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `status`: `str`
+- `source_type`: `str`
+- `connector_type`: `Optional`
+- `owner`: `Optional`
+- `org`: `Optional`
+- `access_roles`: `Optional`
+- `managed`: `Optional`
+- `auto_generated`: `Optional`
+- `connector`: `Optional`
+- `description`: `Optional`
+- `ingest_method`: `Optional`
+- `source_format`: `Optional`
+- `source_config`: `Optional`
+- `poll_schedule`: `Optional`
+- `code_container_id`: `Optional`
+- `data_credentials_id`: `Optional`
+- `data_credentials`: `Optional`
+- `data_sets`: `List`
+- `api_keys`: `List`
+- `run_ids`: `List`
+- `copied_from_id`: `Optional`
+- `flow_type`: `Optional`
+- `has_template`: `Optional`
+- `vendor_endpoint`: `Optional`
+- `vendor`: `Optional`
+- `tags`: `List`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### SourceCopyOptions
+
+Defined in `nexla_sdk/models/sources/requests.py:30`
+
+Options for copying a source.
+
+Fields:
+
+- `reuse_data_credentials`: `bool`
+- `copy_access_controls`: `bool`
+- `owner_id`: `Optional`
+- `org_id`: `Optional`
+
+### SourceCreate
+
+Defined in `nexla_sdk/models/sources/requests.py:6`
+
+Request model for creating a source.
+
+Fields:
+
+- `name`: `str`
+- `source_type`: `str`
+- `data_credentials_id`: `int`
+- `description`: `Optional`
+- `source_config`: `Optional`
+- `vendor_endpoint_id`: `Optional`
+- `ingest_method`: `Optional`
+- `template_config`: `Optional`
+
+### SourceStatus
+
+Defined in `nexla_sdk/models/sources/enums.py:5`
+
+Source status values.
+
+Members:
+
+- `ACTIVE` = `ACTIVE`
+- `PAUSED` = `PAUSED`
+- `DRAFT` = `DRAFT`
+- `DELETED` = `DELETED`
+- `ERROR` = `ERROR`
+
+### SourceType
+
+Defined in `nexla_sdk/models/sources/enums.py:14`
+
+Supported source types.
+
+Members:
+
+- `S3` = `s3`
+- `GCS` = `gcs`
+- `AZURE_BLB` = `azure_blb`
+- `FTP` = `ftp`
+- `DROPBOX` = `dropbox`
+- `BOX` = `box`
+- `GDRIVE` = `gdrive`
+- `SHAREPOINT` = `sharepoint`
+- `MYSQL` = `mysql`
+- `POSTGRES` = `postgres`
+- `SQLSERVER` = `sqlserver`
+- `ORACLE` = `oracle`
+- `REDSHIFT` = `redshift`
+- `SNOWFLAKE` = `snowflake`
+- `BIGQUERY` = `bigquery`
+- `DATABRICKS` = `databricks`
+- `MONGO` = `mongo`
+- `DYNAMODB` = `dynamodb`
+- `FIREBASE` = `firebase`
+- `KAFKA` = `kafka`
+- `CONFLUENT_KAFKA` = `confluent_kafka`
+- `GOOGLE_PUBSUB` = `google_pubsub`
+- `REST` = `rest`
+- `SOAP` = `soap`
+- `NEXLA_REST` = `nexla_rest`
+- `FILE_UPLOAD` = `file_upload`
+- `EMAIL` = `email`
+- `NEXLA_MONITOR` = `nexla_monitor`
+
+### SourceUpdate
+
+Defined in `nexla_sdk/models/sources/requests.py:22`
+
+Request model for updating a source.
+
+Fields:
+
+- `name`: `Optional`
+- `description`: `Optional`
+- `source_config`: `Optional`
+- `data_credentials_id`: `Optional`
+

@@ -1,0 +1,52 @@
+---
+id: nexla_sdk.models.projects.responses
+title: nexla_sdk.models.projects.responses
+slug: /api/python/modules/nexla_sdk/models/projects/responses
+description: API for nexla_sdk.models.projects.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### Project
+
+Defined in `nexla_sdk/models/projects/responses.py:21`
+
+Project response model.
+
+Fields:
+
+- `id`: `int`
+- `owner`: `Owner`
+- `org`: `Organization`
+- `name`: `str`
+- `description`: `str`
+- `access_roles`: `List`
+- `data_flows`: `List`
+- `flows`: `List`
+- `client_identifier`: `Optional`
+- `client_url`: `Optional`
+- `flows_count`: `Optional`
+- `tags`: `List`
+- `copied_from_id`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### ProjectDataFlow
+
+Defined in `nexla_sdk/models/projects/responses.py:8`
+
+Project data flow information.
+
+Fields:
+
+- `id`: `int`
+- `project_id`: `int`
+- `data_source_id`: `Optional`
+- `data_set_id`: `Optional`
+- `data_sink_id`: `Optional`
+- `name`: `Optional`
+- `description`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+

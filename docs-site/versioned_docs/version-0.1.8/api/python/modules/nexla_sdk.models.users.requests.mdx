@@ -1,0 +1,47 @@
+---
+id: nexla_sdk.models.users.requests
+title: nexla_sdk.models.users.requests
+slug: /api/python/modules/nexla_sdk/models/users/requests
+description: API for nexla_sdk.models.users.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### UserCreate
+
+Defined in `nexla_sdk/models/users/requests.py:6`
+
+Request model for creating a user.
+
+Fields:
+
+- `full_name`: `str`
+- `email`: `str`
+- `default_org_id`: `typing.Optional[int]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
+
+### UserUpdate
+
+Defined in `nexla_sdk/models/users/requests.py:19`
+
+Request model for updating a user.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `password_confirmation`: `typing.Optional[str]`
+- `password_current`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
+

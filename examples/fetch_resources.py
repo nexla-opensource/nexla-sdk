@@ -184,8 +184,8 @@ def list_users(client: NexlaClient) -> None:
         
         for user in users[:3]:  # Show first 3
             print("- ID: {}, Name: {}, Email: {}".format(
-                user.id, 
-                getattr(user, 'name', 'N/A'), 
+                user.id,
+                getattr(user, 'full_name', 'N/A'),
                 getattr(user, 'email', 'N/A')))
         
         # Get detailed info for first user
@@ -210,7 +210,7 @@ def demonstrate_pagination(client: NexlaClient) -> None:
         page_count = 0
         total_items = 0
         
-        for page in paginator:
+        for page in paginator.iter_pages():
             page_count += 1
             page_items = len(page.items)
             total_items += page_items

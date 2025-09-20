@@ -1,0 +1,105 @@
+---
+id: nexla_sdk.models.metrics
+title: nexla_sdk.models.metrics
+slug: /api/python/modules/nexla_sdk/models/metrics
+description: API for nexla_sdk.models.metrics
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AccountMetrics
+
+Defined in `nexla_sdk/models/metrics/responses.py:6`
+
+Account utilization metrics.
+
+Fields:
+
+- `status`: `int`
+- `metrics`: `typing.List[typing.Dict[str, typing.Any]]`
+
+### DashboardMetrics
+
+Defined in `nexla_sdk/models/metrics/responses.py:20`
+
+24-hour dashboard metrics.
+
+Fields:
+
+- `status`: `int`
+- `metrics`: `typing.Dict[str, typing.Any]`
+
+### MetricsByRunResponse
+
+Defined in `nexla_sdk/models/metrics/responses.py:50`
+
+Metrics by run response with pagination.
+
+Fields:
+
+- `status`: `int`
+- `metrics`: `typing.Dict[str, typing.Any]`
+
+### MetricsResponse
+
+Defined in `nexla_sdk/models/metrics/responses.py:44`
+
+Generic metrics response.
+
+Fields:
+
+- `status`: `int`
+- `metrics`: `typing.List[typing.Any]`
+
+### ResourceMetricDaily
+
+Defined in `nexla_sdk/models/metrics/responses.py:26`
+
+Daily resource metrics.
+
+Fields:
+
+- `time`: `str`
+- `records`: `int`
+- `size`: `int`
+- `errors`: `int`
+
+### ResourceMetricsByRun
+
+Defined in `nexla_sdk/models/metrics/responses.py:34`
+
+Resource metrics grouped by run.
+
+Fields:
+
+- `runId`: `typing.Optional[int]`
+- `lastWritten`: `typing.Optional[int]`
+- `dataSetId`: `int`
+- `records`: `int`
+- `size`: `int`
+- `errors`: `int`
+
+### ResourceType
+
+Defined in `nexla_sdk/models/metrics/enums.py:4`
+
+Valid resource types for metrics endpoints.
+
+Members:
+
+- `DATA_SOURCES` = `data_sources`
+- `DATA_SINKS` = `data_sinks`
+- `DATA_SETS` = `data_sets`
+
+### UserMetricResourceType
+
+Defined in `nexla_sdk/models/metrics/enums.py:12`
+
+Valid resource types for user metrics endpoints.
+
+Members:
+
+- `SOURCE` = `SOURCE`
+- `SINK` = `SINK`
+

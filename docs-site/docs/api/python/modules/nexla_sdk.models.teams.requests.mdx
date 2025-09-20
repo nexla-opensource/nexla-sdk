@@ -1,0 +1,56 @@
+---
+id: nexla_sdk.models.teams.requests
+title: nexla_sdk.models.teams.requests
+slug: /api/python/modules/nexla_sdk/models/teams/requests
+description: API for nexla_sdk.models.teams.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### TeamCreate
+
+Defined in `nexla_sdk/models/teams/requests.py:14`
+
+Request model for creating a team.
+
+Fields:
+
+- `name`: `str`
+- `description`: `Optional`
+- `members`: `List`
+
+### TeamMemberList
+
+Defined in `nexla_sdk/models/teams/requests.py:28`
+
+Request model for team member operations.
+
+Fields:
+
+- `members`: `List`
+
+### TeamMemberRequest
+
+Defined in `nexla_sdk/models/teams/requests.py:6`
+
+Request model for team member.
+
+Fields:
+
+- `id`: `Optional`
+- `email`: `Optional`
+- `admin`: `bool`
+
+### TeamUpdate
+
+Defined in `nexla_sdk/models/teams/requests.py:21`
+
+Request model for updating a team.
+
+Fields:
+
+- `name`: `Optional`
+- `description`: `Optional`
+- `members`: `Optional`
+

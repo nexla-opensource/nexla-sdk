@@ -1,0 +1,52 @@
+---
+id: nexla_sdk.models.lookups.requests
+title: nexla_sdk.models.lookups.requests
+slug: /api/python/modules/nexla_sdk/models/lookups/requests
+description: API for nexla_sdk.models.lookups.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### LookupCreate
+
+Defined in `nexla_sdk/models/lookups/requests.py:6`
+
+Request model for creating a lookup.
+
+Fields:
+
+- `name`: `str`
+- `data_type`: `str`
+- `map_primary_key`: `str`
+- `description`: `typing.Optional[str]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
+- `emit_data_default`: `bool`
+- `data_map`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `tags`: `typing.List[str]`
+
+### LookupEntriesUpsert
+
+Defined in `nexla_sdk/models/lookups/requests.py:28`
+
+Request model for upserting lookup entries.
+
+Fields:
+
+- `entries`: `typing.List[typing.Dict[str, typing.Any]]`
+
+### LookupUpdate
+
+Defined in `nexla_sdk/models/lookups/requests.py:18`
+
+Request model for updating a lookup.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `map_primary_key`: `typing.Optional[str]`
+- `data_defaults`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `emit_data_default`: `typing.Optional[bool]`
+- `tags`: `typing.Optional[typing.List[str]]`
+

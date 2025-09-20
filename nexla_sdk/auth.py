@@ -17,8 +17,8 @@ class TokenAuthHandler:
     
     Supports two authentication flows as per Nexla API documentation:
     
-    1. **Service Key Flow**: Uses service keys to obtain session tokens via POST to 
-       /token endpoint with "Authorization: Basic <Service-Key>". Automatically 
+    1. **Service Key Flow**: Uses service keys to obtain session tokens via POST to
+       /token endpoint with `Authorization: Basic <Service-Key>`. Automatically
        refreshes tokens before expiry using /token/refresh endpoint.
        
     2. **Direct Token Flow**: Uses pre-obtained access tokens directly. These tokens

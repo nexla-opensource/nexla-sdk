@@ -1,0 +1,83 @@
+---
+id: nexla_sdk.models.destinations.responses
+title: nexla_sdk.models.destinations.responses
+slug: /api/python/modules/nexla_sdk/models/destinations/responses
+description: API for nexla_sdk.models.destinations.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataMapInfo
+
+Defined in `nexla_sdk/models/destinations/responses.py:22`
+
+Basic data map information for destination.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `public`: `bool`
+- `created_at`: `datetime`
+- `updated_at`: `datetime`
+
+### DataSetInfo
+
+Defined in `nexla_sdk/models/destinations/responses.py:10`
+
+Basic dataset information for destination.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `output_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `version`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### Destination
+
+Defined in `nexla_sdk/models/destinations/responses.py:34`
+
+Destination (data sink) response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `status`: `str`
+- `sink_type`: `str`
+- `connector_type`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.common.Owner]`
+- `org`: `typing.Optional[nexla_sdk.models.common.Organization]`
+- `access_roles`: `typing.Optional[typing.List[str]]`
+- `managed`: `typing.Optional[bool]`
+- `connector`: `typing.Optional[nexla_sdk.models.common.Connector]`
+- `description`: `typing.Optional[str]`
+- `data_set_id`: `typing.Optional[int]`
+- `data_map_id`: `typing.Optional[int]`
+- `data_source_id`: `typing.Optional[int]`
+- `sink_format`: `typing.Optional[nexla_sdk.models.destinations.enums.DestinationFormat]`
+- `sink_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `sink_schedule`: `typing.Optional[str]`
+- `in_memory`: `bool`
+- `data_set`: `typing.Optional[nexla_sdk.models.destinations.responses.DataSetInfo]`
+- `data_map`: `typing.Optional[nexla_sdk.models.destinations.responses.DataMapInfo]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `data_credentials`: `typing.Optional[nexla_sdk.models.credentials.responses.Credential]`
+- `copied_from_id`: `typing.Optional[int]`
+- `flow_type`: `typing.Optional[str]`
+- `has_template`: `typing.Optional[bool]`
+- `vendor_endpoint`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `vendor`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+

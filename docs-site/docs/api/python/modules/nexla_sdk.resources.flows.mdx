@@ -1,0 +1,49 @@
+---
+id: nexla_sdk.resources.flows
+title: nexla_sdk.resources.flows
+slug: /api/python/modules/nexla_sdk/resources/flows
+description: API for nexla_sdk.resources.flows
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### FlowsResource
+
+Defined in `nexla_sdk/resources/flows.py:7`
+
+Resource for managing data flows.
+
+Methods:
+
+- `activate(self, flow_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:75`
+  - Activate a flow.
+- `activate_by_resource(self, resource_type: str, resource_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:148`
+  - Activate flow by resource ID.
+- `copy(self, flow_id: int, options: Optional[nexla_sdk.models.flows.requests.FlowCopyOptions] = None) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:109`
+  - Copy a flow.
+- `delete(self, flow_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:122`
+  - Delete flow.
+- `delete_by_resource(self, resource_type: str, resource_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:134`
+  - Delete flow by resource ID.
+- `get(self, flow_id: int, flows_only: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:40`
+  - Get flow by ID.
+- `get_by_resource(self, resource_type: str, resource_id: int, flows_only: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:54`
+  - Get flow by resource ID.
+- `list(self, flows_only: bool = False, include_run_metrics: bool = False, **kwargs) -> List[nexla_sdk.models.flows.responses.FlowResponse]`
+  - Source: `nexla_sdk/resources/flows.py:15`
+  - List all flows.
+- `pause(self, flow_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:92`
+  - Pause a flow.
+- `pause_by_resource(self, resource_type: str, resource_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:169`
+  - Pause flow by resource ID.
+

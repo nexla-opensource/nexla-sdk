@@ -1,0 +1,122 @@
+---
+id: nexla_sdk.models.access
+title: nexla_sdk.models.access
+slug: /api/python/modules/nexla_sdk/models/access
+description: API for nexla_sdk.models.access
+keywords: [Nexla, SDK, Python, API]
+---
+
+Access control models.
+
+## Classes
+
+### AccessorType
+
+Defined in `nexla_sdk/models/access/enums.py:4`
+
+Types of accessors.
+
+Members:
+
+- `USER` = `USER`
+- `TEAM` = `TEAM`
+- `ORG` = `ORG`
+
+### AccessorsRequest
+
+Defined in `nexla_sdk/models/access/requests.py:38`
+
+Request model for accessor operations.
+
+Fields:
+
+- `accessors`: `typing.List[typing.Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]` — List of accessor requests
+
+### OrgAccessorRequest
+
+Defined in `nexla_sdk/models/access/requests.py:25`
+
+Request model for ORG type accessor.
+
+Fields:
+
+- `type`: `typing.Literal[<AccessorType.ORG: 'ORG'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the organization
+- `client_identifier`: `typing.Optional[str]` — Client identifier for the organization
+- `email_domain`: `typing.Optional[str]` — Email domain for the organization
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+
+### OrgAccessorResponse
+
+Defined in `nexla_sdk/models/access/responses.py:30`
+
+Response model for ORG type accessor.
+
+Fields:
+
+- `type`: `typing.Literal[<AccessorType.ORG: 'ORG'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the organization
+- `client_identifier`: `typing.Optional[str]` — Client identifier for the organization
+- `email_domain`: `typing.Optional[str]` — Email domain for the organization
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+- `created_at`: `typing.Optional[datetime.datetime]` — Creation timestamp
+- `updated_at`: `typing.Optional[datetime.datetime]` — Last update timestamp
+
+### TeamAccessorRequest
+
+Defined in `nexla_sdk/models/access/requests.py:17`
+
+Request model for TEAM type accessor.
+
+Fields:
+
+- `type`: `typing.Literal[<AccessorType.TEAM: 'TEAM'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the team
+- `name`: `typing.Optional[str]` — Name of the team
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+
+### TeamAccessorResponse
+
+Defined in `nexla_sdk/models/access/responses.py:20`
+
+Response model for TEAM type accessor.
+
+Fields:
+
+- `type`: `typing.Literal[<AccessorType.TEAM: 'TEAM'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the team
+- `name`: `typing.Optional[str]` — Name of the team
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+- `created_at`: `typing.Optional[datetime.datetime]` — Creation timestamp
+- `updated_at`: `typing.Optional[datetime.datetime]` — Last update timestamp
+
+### UserAccessorRequest
+
+Defined in `nexla_sdk/models/access/requests.py:8`
+
+Request model for USER type accessor.
+
+Fields:
+
+- `type`: `typing.Literal[<AccessorType.USER: 'USER'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the user
+- `email`: `typing.Optional[str]` — Email of the user
+- `org_id`: `typing.Optional[int]` — Organization ID for cross-org access
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+
+### UserAccessorResponse
+
+Defined in `nexla_sdk/models/access/responses.py:9`
+
+Response model for USER type accessor.
+
+Fields:
+
+- `type`: `typing.Literal[<AccessorType.USER: 'USER'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the user
+- `email`: `typing.Optional[str]` — Email of the user
+- `org_id`: `typing.Optional[int]` — Organization ID for cross-org access
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+- `created_at`: `typing.Optional[datetime.datetime]` — Creation timestamp
+- `updated_at`: `typing.Optional[datetime.datetime]` — Last update timestamp
+

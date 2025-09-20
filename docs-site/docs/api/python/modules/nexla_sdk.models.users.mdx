@@ -1,0 +1,148 @@
+---
+id: nexla_sdk.models.users
+title: nexla_sdk.models.users
+slug: /api/python/modules/nexla_sdk/models/users
+description: API for nexla_sdk.models.users
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AccountSummary
+
+Defined in `nexla_sdk/models/users/responses.py:42`
+
+User account summary.
+
+Fields:
+
+- `data_sources`: `Dict`
+- `data_sets`: `Dict`
+- `data_sinks`: `Dict`
+- `data_maps`: `Dict`
+
+### DefaultOrg
+
+Defined in `nexla_sdk/models/users/responses.py:7`
+
+User's default organization.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+
+### OrgMembership
+
+Defined in `nexla_sdk/models/users/responses.py:13`
+
+Organization membership details.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `is_admin`: `Optional`
+- `org_membership_status`: `str`
+- `api_key`: `Optional`
+
+### User
+
+Defined in `nexla_sdk/models/users/responses.py:22`
+
+User response model.
+
+Fields:
+
+- `id`: `int`
+- `email`: `str`
+- `full_name`: `str`
+- `super_user`: `Optional`
+- `impersonated`: `bool`
+- `default_org`: `DefaultOrg`
+- `user_tier`: `Optional`
+- `status`: `str`
+- `account_locked`: `bool`
+- `org_memberships`: `List`
+- `api_key`: `Optional`
+- `email_verified_at`: `Optional`
+- `tos_signed_at`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### UserCreate
+
+Defined in `nexla_sdk/models/users/requests.py:6`
+
+Request model for creating a user.
+
+Fields:
+
+- `full_name`: `str`
+- `email`: `str`
+- `default_org_id`: `Optional`
+- `status`: `Optional`
+- `user_tier_id`: `Optional`
+- `user_tier`: `Optional`
+- `password`: `Optional`
+- `tos_signed_at`: `Optional`
+- `admin`: `Union`
+
+### UserExpanded
+
+Defined in `nexla_sdk/models/users/responses.py:50`
+
+User with expanded account summary.
+
+Fields:
+
+- `id`: `int`
+- `email`: `str`
+- `full_name`: `str`
+- `super_user`: `Optional`
+- `impersonated`: `bool`
+- `default_org`: `DefaultOrg`
+- `user_tier`: `Optional`
+- `status`: `str`
+- `account_locked`: `bool`
+- `org_memberships`: `List`
+- `api_key`: `Optional`
+- `email_verified_at`: `Optional`
+- `tos_signed_at`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+- `account_summary`: `Optional`
+
+### UserSettings
+
+Defined in `nexla_sdk/models/users/responses.py:55`
+
+User settings.
+
+Fields:
+
+- `id`: `str`
+- `owner`: `Dict`
+- `org`: `Dict`
+- `user_settings_type`: `str`
+- `settings`: `Dict`
+
+### UserUpdate
+
+Defined in `nexla_sdk/models/users/requests.py:19`
+
+Request model for updating a user.
+
+Fields:
+
+- `name`: `Optional`
+- `email`: `Optional`
+- `status`: `Optional`
+- `user_tier_id`: `Optional`
+- `user_tier`: `Optional`
+- `password`: `Optional`
+- `password_confirmation`: `Optional`
+- `password_current`: `Optional`
+- `tos_signed_at`: `Optional`
+- `admin`: `Union`
+

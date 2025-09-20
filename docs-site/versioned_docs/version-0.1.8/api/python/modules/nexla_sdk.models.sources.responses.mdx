@@ -1,0 +1,77 @@
+---
+id: nexla_sdk.models.sources.responses
+title: nexla_sdk.models.sources.responses
+slug: /api/python/modules/nexla_sdk/models/sources/responses
+description: API for nexla_sdk.models.sources.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataSetBrief
+
+Defined in `nexla_sdk/models/sources/responses.py:9`
+
+Brief dataset information.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `version`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### RunInfo
+
+Defined in `nexla_sdk/models/sources/responses.py:21`
+
+Run information.
+
+Fields:
+
+- `id`: `int`
+- `created_at`: `datetime`
+
+### Source
+
+Defined in `nexla_sdk/models/sources/responses.py:27`
+
+Data source response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `status`: `str`
+- `source_type`: `str`
+- `connector_type`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.common.Owner]`
+- `org`: `typing.Optional[nexla_sdk.models.common.Organization]`
+- `access_roles`: `typing.Optional[typing.List[str]]`
+- `managed`: `typing.Optional[bool]`
+- `auto_generated`: `typing.Optional[bool]`
+- `connector`: `typing.Optional[nexla_sdk.models.common.Connector]`
+- `description`: `typing.Optional[str]`
+- `ingest_method`: `typing.Optional[str]`
+- `source_format`: `typing.Optional[str]`
+- `source_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `poll_schedule`: `typing.Optional[str]`
+- `code_container_id`: `typing.Optional[int]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `data_credentials`: `typing.Optional[nexla_sdk.models.credentials.responses.Credential]`
+- `data_sets`: `typing.List[nexla_sdk.models.sources.responses.DataSetBrief]`
+- `api_keys`: `typing.List[typing.Dict[str, typing.Any]]`
+- `run_ids`: `typing.List[nexla_sdk.models.sources.responses.RunInfo]`
+- `copied_from_id`: `typing.Optional[int]`
+- `flow_type`: `typing.Optional[str]`
+- `has_template`: `typing.Optional[bool]`
+- `vendor_endpoint`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `vendor`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+

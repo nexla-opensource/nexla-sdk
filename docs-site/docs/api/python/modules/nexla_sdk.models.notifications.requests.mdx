@@ -1,0 +1,65 @@
+---
+id: nexla_sdk.models.notifications.requests
+title: nexla_sdk.models.notifications.requests
+slug: /api/python/modules/nexla_sdk/models/notifications/requests
+description: API for nexla_sdk.models.notifications.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### NotificationChannelSettingCreate
+
+Defined in `nexla_sdk/models/notifications/requests.py:6`
+
+Request model for creating notification channel setting.
+
+Fields:
+
+- `channel`: `str`
+- `config`: `Dict`
+
+### NotificationChannelSettingUpdate
+
+Defined in `nexla_sdk/models/notifications/requests.py:12`
+
+Request model for updating notification channel setting.
+
+Fields:
+
+- `channel`: `Optional`
+- `config`: `Optional`
+
+### NotificationSettingCreate
+
+Defined in `nexla_sdk/models/notifications/requests.py:18`
+
+Request model for creating notification setting.
+
+Fields:
+
+- `channel`: `str`
+- `notification_type_id`: `int`
+- `status`: `Optional`
+- `config`: `Dict`
+- `notification_resource_type`: `Optional`
+- `resource_id`: `Optional`
+- `notification_channel_setting_id`: `Optional`
+
+### NotificationSettingUpdate
+
+Defined in `nexla_sdk/models/notifications/requests.py:29`
+
+Request model for updating notification setting.
+
+Fields:
+
+- `channel`: `Optional`
+- `status`: `Optional`
+- `config`: `Optional`
+- `notification_resource_type`: `Optional`
+- `resource_id`: `Optional`
+- `checked`: `Optional`
+- `notification_channel_setting_id`: `Optional`
+- `notification_type_id`: `Optional`
+

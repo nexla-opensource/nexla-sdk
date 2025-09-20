@@ -1,0 +1,47 @@
+---
+id: nexla_sdk.models.users.requests
+title: nexla_sdk.models.users.requests
+slug: /api/python/modules/nexla_sdk/models/users/requests
+description: API for nexla_sdk.models.users.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### UserCreate
+
+Defined in `nexla_sdk/models/users/requests.py:6`
+
+Request model for creating a user.
+
+Fields:
+
+- `full_name`: `str`
+- `email`: `str`
+- `default_org_id`: `Optional`
+- `status`: `Optional`
+- `user_tier_id`: `Optional`
+- `user_tier`: `Optional`
+- `password`: `Optional`
+- `tos_signed_at`: `Optional`
+- `admin`: `Union`
+
+### UserUpdate
+
+Defined in `nexla_sdk/models/users/requests.py:19`
+
+Request model for updating a user.
+
+Fields:
+
+- `name`: `Optional`
+- `email`: `Optional`
+- `status`: `Optional`
+- `user_tier_id`: `Optional`
+- `user_tier`: `Optional`
+- `password`: `Optional`
+- `password_confirmation`: `Optional`
+- `password_current`: `Optional`
+- `tos_signed_at`: `Optional`
+- `admin`: `Union`
+

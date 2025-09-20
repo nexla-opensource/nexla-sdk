@@ -1,0 +1,46 @@
+---
+id: nexla_sdk.resources.nexsets
+title: nexla_sdk.resources.nexsets
+slug: /api/python/modules/nexla_sdk/resources/nexsets
+description: API for nexla_sdk.resources.nexsets
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### NexsetsResource
+
+Defined in `nexla_sdk/resources/nexsets.py:7`
+
+Resource for managing nexsets (data sets).
+
+Methods:
+
+- `activate(self, set_id: int) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:77`
+  - Activate nexset.
+- `copy(self, set_id: int, options: Optional[nexla_sdk.models.nexsets.requests.NexsetCopyOptions] = None) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:132`
+  - Copy a nexset.
+- `create(self, data: nexla_sdk.models.nexsets.requests.NexsetCreate) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:40`
+  - Create new nexset.
+- `delete(self, set_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/nexsets.py:65`
+  - Delete nexset.
+- `get(self, set_id: int, expand: bool = False) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:27`
+  - Get single nexset by ID.
+- `get_samples(self, set_id: int, count: int = 10, include_metadata: bool = False, live: bool = False) -> List[nexla_sdk.models.nexsets.responses.NexsetSample]`
+  - Source: `nexla_sdk/resources/nexsets.py:101`
+  - Get sample records from a nexset.
+- `list(self, **kwargs) -> List[nexla_sdk.models.nexsets.responses.Nexset]`
+  - Source: `nexla_sdk/resources/nexsets.py:15`
+  - List all nexsets.
+- `pause(self, set_id: int) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:89`
+  - Pause nexset.
+- `update(self, set_id: int, data: nexla_sdk.models.nexsets.requests.NexsetUpdate) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:52`
+  - Update nexset.
+

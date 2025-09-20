@@ -1,0 +1,55 @@
+---
+id: nexla_sdk.models.sources.requests
+title: nexla_sdk.models.sources.requests
+slug: /api/python/modules/nexla_sdk/models/sources/requests
+description: API for nexla_sdk.models.sources.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+Request models for sources.
+
+## Classes
+
+### SourceCopyOptions
+
+Defined in `nexla_sdk/models/sources/requests.py:30`
+
+Options for copying a source.
+
+Fields:
+
+- `reuse_data_credentials`: `bool`
+- `copy_access_controls`: `bool`
+- `owner_id`: `Optional`
+- `org_id`: `Optional`
+
+### SourceCreate
+
+Defined in `nexla_sdk/models/sources/requests.py:6`
+
+Request model for creating a source.
+
+Fields:
+
+- `name`: `str`
+- `source_type`: `str`
+- `data_credentials_id`: `int`
+- `description`: `Optional`
+- `source_config`: `Optional`
+- `vendor_endpoint_id`: `Optional`
+- `ingest_method`: `Optional`
+- `template_config`: `Optional`
+
+### SourceUpdate
+
+Defined in `nexla_sdk/models/sources/requests.py:22`
+
+Request model for updating a source.
+
+Fields:
+
+- `name`: `Optional`
+- `description`: `Optional`
+- `source_config`: `Optional`
+- `data_credentials_id`: `Optional`
+

@@ -1,0 +1,88 @@
+---
+id: nexla_sdk.models.teams
+title: nexla_sdk.models.teams
+slug: /api/python/modules/nexla_sdk/models/teams
+description: API for nexla_sdk.models.teams
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### Team
+
+Defined in `nexla_sdk/models/teams/responses.py:15`
+
+Team response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `owner`: `Owner`
+- `org`: `Organization`
+- `member`: `bool`
+- `members`: `typing.List[nexla_sdk.models.teams.responses.TeamMember]`
+- `access_roles`: `typing.List[str]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### TeamCreate
+
+Defined in `nexla_sdk/models/teams/requests.py:14`
+
+Request model for creating a team.
+
+Fields:
+
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `members`: `typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]`
+
+### TeamMember
+
+Defined in `nexla_sdk/models/teams/responses.py:8`
+
+Team member information.
+
+Fields:
+
+- `id`: `int`
+- `email`: `str`
+- `admin`: `bool`
+
+### TeamMemberList
+
+Defined in `nexla_sdk/models/teams/requests.py:28`
+
+Request model for team member operations.
+
+Fields:
+
+- `members`: `typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]`
+
+### TeamMemberRequest
+
+Defined in `nexla_sdk/models/teams/requests.py:6`
+
+Request model for team member.
+
+Fields:
+
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `admin`: `bool`
+
+### TeamUpdate
+
+Defined in `nexla_sdk/models/teams/requests.py:21`
+
+Request model for updating a team.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]]`
+

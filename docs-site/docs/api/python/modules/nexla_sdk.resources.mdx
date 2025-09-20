@@ -1,0 +1,860 @@
+---
+id: nexla_sdk.resources
+title: nexla_sdk.resources
+slug: /api/python/modules/nexla_sdk/resources
+description: API for nexla_sdk.resources
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### BaseResource
+
+Defined in `nexla_sdk/resources/base_resource.py:12`
+
+Base class for all Nexla resources.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:174`
+  - Create new resource.
+- `delete(self, resource_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/base_resource.py:204`
+  - Delete resource.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, resource_id: int, expand: bool = False) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:157`
+  - Get single resource by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `list(self, page: Optional[int] = None, per_page: Optional[int] = None, access_role: Optional[str] = None, **params) -> List[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:106`
+  - List resources.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:188`
+  - Update resource.
+
+### CredentialsResource
+
+Defined in `nexla_sdk/resources/credentials.py:10`
+
+Resource for managing data credentials.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: nexla_sdk.models.credentials.requests.CredentialCreate) -> nexla_sdk.models.credentials.responses.Credential`
+  - Source: `nexla_sdk/resources/credentials.py:50`
+  - Create new credential.
+- `delete(self, credential_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/credentials.py:75`
+  - Delete credential.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, credential_id: int, expand: bool = False) -> nexla_sdk.models.credentials.responses.Credential`
+  - Source: `nexla_sdk/resources/credentials.py:37`
+  - Get single credential by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `list(self, credentials_type: Optional[str] = None, **kwargs) -> List[nexla_sdk.models.credentials.responses.Credential]`
+  - Source: `nexla_sdk/resources/credentials.py:18`
+  - List all credentials.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `probe(self, credential_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/credentials.py:87`
+  - Test credential validity.
+- `probe_sample(self, credential_id: int, request: nexla_sdk.models.credentials.requests.ProbeSampleRequest) -> nexla_sdk.models.credentials.responses.ProbeSampleResponse`
+  - Source: `nexla_sdk/resources/credentials.py:125`
+  - Preview data content accessible by credential.
+- `probe_tree(self, credential_id: int, request: nexla_sdk.models.credentials.requests.ProbeTreeRequest) -> nexla_sdk.models.credentials.responses.ProbeTreeResponse`
+  - Source: `nexla_sdk/resources/credentials.py:108`
+  - Preview storage structure accessible by credential.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, credential_id: int, data: nexla_sdk.models.credentials.requests.CredentialUpdate) -> nexla_sdk.models.credentials.responses.Credential`
+  - Source: `nexla_sdk/resources/credentials.py:62`
+  - Update credential.
+
+### DestinationsResource
+
+Defined in `nexla_sdk/resources/destinations.py:7`
+
+Resource for managing destinations (data sinks).
+
+Methods:
+
+- `activate(self, sink_id: int) -> nexla_sdk.models.destinations.responses.Destination`
+  - Source: `nexla_sdk/resources/destinations.py:77`
+  - Activate destination.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, sink_id: int, options: Optional[nexla_sdk.models.destinations.requests.DestinationCopyOptions] = None) -> nexla_sdk.models.destinations.responses.Destination`
+  - Source: `nexla_sdk/resources/destinations.py:101`
+  - Copy a destination.
+- `create(self, data: nexla_sdk.models.destinations.requests.DestinationCreate) -> nexla_sdk.models.destinations.responses.Destination`
+  - Source: `nexla_sdk/resources/destinations.py:40`
+  - Create new destination.
+- `delete(self, sink_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/destinations.py:65`
+  - Delete destination.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, sink_id: int, expand: bool = False) -> nexla_sdk.models.destinations.responses.Destination`
+  - Source: `nexla_sdk/resources/destinations.py:27`
+  - Get single destination by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `list(self, **kwargs) -> List[nexla_sdk.models.destinations.responses.Destination]`
+  - Source: `nexla_sdk/resources/destinations.py:15`
+  - List all destinations.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, sink_id: int) -> nexla_sdk.models.destinations.responses.Destination`
+  - Source: `nexla_sdk/resources/destinations.py:89`
+  - Pause destination.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, sink_id: int, data: nexla_sdk.models.destinations.requests.DestinationUpdate) -> nexla_sdk.models.destinations.responses.Destination`
+  - Source: `nexla_sdk/resources/destinations.py:52`
+  - Update destination.
+
+### FlowsResource
+
+Defined in `nexla_sdk/resources/flows.py:7`
+
+Resource for managing data flows.
+
+Methods:
+
+- `activate(self, flow_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:75`
+  - Activate a flow.
+- `activate_by_resource(self, resource_type: str, resource_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:148`
+  - Activate flow by resource ID.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, flow_id: int, options: Optional[nexla_sdk.models.flows.requests.FlowCopyOptions] = None) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:109`
+  - Copy a flow.
+- `create(self, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:174`
+  - Create new resource.
+- `delete(self, flow_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:122`
+  - Delete flow.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `delete_by_resource(self, resource_type: str, resource_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:134`
+  - Delete flow by resource ID.
+- `get(self, flow_id: int, flows_only: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:40`
+  - Get flow by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_by_resource(self, resource_type: str, resource_id: int, flows_only: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:54`
+  - Get flow by resource ID.
+- `list(self, flows_only: bool = False, include_run_metrics: bool = False, **kwargs) -> List[nexla_sdk.models.flows.responses.FlowResponse]`
+  - Source: `nexla_sdk/resources/flows.py:15`
+  - List all flows.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, flow_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:92`
+  - Pause a flow.
+- `pause_by_resource(self, resource_type: str, resource_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:169`
+  - Pause flow by resource ID.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:188`
+  - Update resource.
+
+### LookupsResource
+
+Defined in `nexla_sdk/resources/lookups.py:8`
+
+Resource for managing lookups (data maps).
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: nexla_sdk.models.lookups.requests.LookupCreate) -> nexla_sdk.models.lookups.responses.Lookup`
+  - Source: `nexla_sdk/resources/lookups.py:41`
+  - Create new lookup.
+- `delete(self, data_map_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/lookups.py:66`
+  - Delete lookup.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `delete_entries(self, data_map_id: int, entry_keys: Union[str, List[str]]) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/lookups.py:119`
+  - Delete specific entries from a lookup.
+- `get(self, data_map_id: int, expand: bool = False) -> nexla_sdk.models.lookups.responses.Lookup`
+  - Source: `nexla_sdk/resources/lookups.py:28`
+  - Get single lookup by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_entries(self, data_map_id: int, entry_keys: Union[str, List[str]]) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/lookups.py:98`
+  - Get specific entries from a lookup.
+- `list(self, **kwargs) -> List[nexla_sdk.models.lookups.responses.Lookup]`
+  - Source: `nexla_sdk/resources/lookups.py:16`
+  - List all lookups.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, data_map_id: int, data: nexla_sdk.models.lookups.requests.LookupUpdate) -> nexla_sdk.models.lookups.responses.Lookup`
+  - Source: `nexla_sdk/resources/lookups.py:53`
+  - Update lookup.
+- `upsert_entries(self, data_map_id: int, entries: List[Dict[str, Any]]) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/lookups.py:78`
+  - Upsert entries in a lookup.
+
+### MetricsResource
+
+Defined in `nexla_sdk/resources/metrics.py:10`
+
+Resource for retrieving metrics.
+
+Note: This resource already uses strongly-typed Pydantic models
+for all return types and doesn't follow standard CRUD patterns,
+so no additional typed overrides are needed.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:174`
+  - Create new resource.
+- `delete(self, resource_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/base_resource.py:204`
+  - Delete resource.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, resource_id: int, expand: bool = False) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:157`
+  - Get single resource by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_rate_limits(self) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/metrics.py:86`
+  - Get current rate limit and usage.
+- `get_resource_daily_metrics(self, resource_type: nexla_sdk.models.metrics.enums.ResourceType, resource_id: int, from_date: str, to_date: Optional[str] = None) -> nexla_sdk.models.metrics.responses.MetricsResponse`
+  - Source: `nexla_sdk/resources/metrics.py:23`
+  - Get daily metrics for a resource.
+- `get_resource_metrics_by_run(self, resource_type: nexla_sdk.models.metrics.enums.ResourceType, resource_id: int, groupby: Optional[str] = None, orderby: Optional[str] = None, page: Optional[int] = None, size: Optional[int] = None) -> nexla_sdk.models.metrics.responses.MetricsByRunResponse`
+  - Source: `nexla_sdk/resources/metrics.py:51`
+  - Get metrics by run for a resource.
+- `list(self, page: Optional[int] = None, per_page: Optional[int] = None, access_role: Optional[str] = None, **params) -> List[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:106`
+  - List resources.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:188`
+  - Update resource.
+
+### NexsetsResource
+
+Defined in `nexla_sdk/resources/nexsets.py:7`
+
+Resource for managing nexsets (data sets).
+
+Methods:
+
+- `activate(self, set_id: int) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:77`
+  - Activate nexset.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, set_id: int, options: Optional[nexla_sdk.models.nexsets.requests.NexsetCopyOptions] = None) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:132`
+  - Copy a nexset.
+- `create(self, data: nexla_sdk.models.nexsets.requests.NexsetCreate) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:40`
+  - Create new nexset.
+- `delete(self, set_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/nexsets.py:65`
+  - Delete nexset.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, set_id: int, expand: bool = False) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:27`
+  - Get single nexset by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_samples(self, set_id: int, count: int = 10, include_metadata: bool = False, live: bool = False) -> List[nexla_sdk.models.nexsets.responses.NexsetSample]`
+  - Source: `nexla_sdk/resources/nexsets.py:101`
+  - Get sample records from a nexset.
+- `list(self, **kwargs) -> List[nexla_sdk.models.nexsets.responses.Nexset]`
+  - Source: `nexla_sdk/resources/nexsets.py:15`
+  - List all nexsets.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, set_id: int) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:89`
+  - Pause nexset.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, set_id: int, data: nexla_sdk.models.nexsets.requests.NexsetUpdate) -> nexla_sdk.models.nexsets.responses.Nexset`
+  - Source: `nexla_sdk/resources/nexsets.py:52`
+  - Update nexset.
+
+### NotificationsResource
+
+Defined in `nexla_sdk/resources/notifications.py:13`
+
+Resource for managing notifications.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:174`
+  - Create new resource.
+- `create_channel_setting(self, data: nexla_sdk.models.notifications.requests.NotificationChannelSettingCreate) -> nexla_sdk.models.notifications.responses.NotificationChannelSetting`
+  - Source: `nexla_sdk/resources/notifications.py:185`
+  - Create notification channel setting.
+- `create_setting(self, data: nexla_sdk.models.notifications.requests.NotificationSettingCreate) -> nexla_sdk.models.notifications.responses.NotificationSetting`
+  - Source: `nexla_sdk/resources/notifications.py:271`
+  - Create notification setting.
+- `delete(self, notification_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/notifications.py:34`
+  - Delete notification.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `delete_all(self) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/notifications.py:77`
+  - Delete all notifications.
+- `delete_channel_setting(self, setting_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/notifications.py:230`
+  - Delete notification channel setting.
+- `delete_setting(self, setting_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/notifications.py:316`
+  - Delete notification setting.
+- `get(self, notification_id: int, expand: bool = False) -> nexla_sdk.models.notifications.responses.Notification`
+  - Source: `nexla_sdk/resources/notifications.py:21`
+  - Get single notification by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_channel_setting(self, setting_id: int) -> nexla_sdk.models.notifications.responses.NotificationChannelSetting`
+  - Source: `nexla_sdk/resources/notifications.py:199`
+  - Get notification channel setting.
+- `get_count(self, read: Optional[int] = None) -> nexla_sdk.models.notifications.responses.NotificationCount`
+  - Source: `nexla_sdk/resources/notifications.py:87`
+  - Get notification count.
+- `get_resource_settings(self, resource_type: str, resource_id: int, expand: bool = False, filter_overridden: bool = False, notification_type_id: Optional[int] = None) -> List[nexla_sdk.models.notifications.responses.NotificationSetting]`
+  - Source: `nexla_sdk/resources/notifications.py:347`
+  - Get notification settings for a resource.
+- `get_setting(self, setting_id: int) -> nexla_sdk.models.notifications.responses.NotificationSetting`
+  - Source: `nexla_sdk/resources/notifications.py:285`
+  - Get notification setting.
+- `get_settings_by_type(self, notification_type_id: int, expand: bool = False) -> List[nexla_sdk.models.notifications.responses.NotificationSetting]`
+  - Source: `nexla_sdk/resources/notifications.py:329`
+  - Get notification settings for a type.
+- `get_type(self, event_type: str, resource_type: str) -> nexla_sdk.models.notifications.responses.NotificationType`
+  - Source: `nexla_sdk/resources/notifications.py:154`
+  - Get specific notification type.
+- `get_types(self, status: Optional[str] = None) -> List[nexla_sdk.models.notifications.responses.NotificationType]`
+  - Source: `nexla_sdk/resources/notifications.py:139`
+  - Get all notification types.
+- `list(self, read: Optional[int] = None, level: Optional[str] = None, from_timestamp: Optional[int] = None, to_timestamp: Optional[int] = None, **kwargs) -> List[nexla_sdk.models.notifications.responses.Notification]`
+  - Source: `nexla_sdk/resources/notifications.py:46`
+  - List notifications.
+- `list_channel_settings(self) -> List[nexla_sdk.models.notifications.responses.NotificationChannelSetting]`
+  - Source: `nexla_sdk/resources/notifications.py:174`
+  - List notification channel settings.
+- `list_settings(self, event_type: Optional[str] = None, resource_type: Optional[str] = None, status: Optional[str] = None) -> List[nexla_sdk.models.notifications.responses.NotificationSetting]`
+  - Source: `nexla_sdk/resources/notifications.py:244`
+  - List notification settings.
+- `mark_read(self, notification_ids: Union[List[int], str]) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/notifications.py:102`
+  - Mark notifications as read.
+- `mark_unread(self, notification_ids: Union[List[int], str]) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/notifications.py:120`
+  - Mark notifications as unread.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:188`
+  - Update resource.
+- `update_channel_setting(self, setting_id: int, data: nexla_sdk.models.notifications.requests.NotificationChannelSettingUpdate) -> nexla_sdk.models.notifications.responses.NotificationChannelSetting`
+  - Source: `nexla_sdk/resources/notifications.py:213`
+  - Update notification channel setting.
+- `update_setting(self, setting_id: int, data: nexla_sdk.models.notifications.requests.NotificationSettingUpdate) -> nexla_sdk.models.notifications.responses.NotificationSetting`
+  - Source: `nexla_sdk/resources/notifications.py:299`
+  - Update notification setting.
+
+### OrganizationsResource
+
+Defined in `nexla_sdk/resources/organizations.py:14`
+
+Resource for managing organizations.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `activate_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberActivateDeactivateRequest) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:157`
+  - Activate members in an organization.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: nexla_sdk.models.organizations.requests.OrganizationCreate) -> nexla_sdk.models.organizations.responses.Organization`
+  - Source: `nexla_sdk/resources/organizations.py:47`
+  - Create a new organization. Note: This is an admin-only operation.
+- `deactivate_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberActivateDeactivateRequest) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:142`
+  - Deactivate members in an organization.
+- `delete(self, org_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/organizations.py:72`
+  - Delete organization.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `delete_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberDelete) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/organizations.py:128`
+  - Remove members from organization.
+- `get(self, org_id: int, expand: bool = False) -> nexla_sdk.models.organizations.responses.Organization`
+  - Source: `nexla_sdk/resources/organizations.py:34`
+  - Get single organization by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_account_summary(self, org_id: int) -> nexla_sdk.models.organizations.responses.AccountSummary`
+  - Source: `nexla_sdk/resources/organizations.py:172`
+  - Get account summary statistics for an organization.
+- `get_audit_log(self, org_id: int, **params) -> List[nexla_sdk.models.common.LogEntry]`
+  - Source: `nexla_sdk/resources/organizations.py:197`
+  - Get audit log for an organization.
+- `get_auth_settings(self, org_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/organizations.py:228`
+  - Get authentication settings for organization.
+- `get_current_account_summary(self) -> nexla_sdk.models.organizations.responses.AccountSummary`
+  - Source: `nexla_sdk/resources/organizations.py:186`
+  - Get account summary for the current organization based on auth token.
+- `get_members(self, org_id: int) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:84`
+  - Get all members in organization.
+- `get_resource_audit_log(self, org_id: int, resource_type: str, **params) -> List[nexla_sdk.models.common.LogEntry]`
+  - Source: `nexla_sdk/resources/organizations.py:212`
+  - Get audit log for a specific resource type within an organization.
+- `list(self, **kwargs) -> List[nexla_sdk.models.organizations.responses.Organization]`
+  - Source: `nexla_sdk/resources/organizations.py:22`
+  - List all organizations.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `replace_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberList) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:113`
+  - Replace all members in organization.
+- `update(self, org_id: int, data: nexla_sdk.models.organizations.requests.OrganizationUpdate) -> nexla_sdk.models.organizations.responses.Organization`
+  - Source: `nexla_sdk/resources/organizations.py:59`
+  - Update organization.
+- `update_auth_setting(self, org_id: int, auth_setting_id: int, enabled: bool) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/organizations.py:241`
+  - Enable/disable authentication configuration.
+- `update_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberList) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:98`
+  - Add or update members in organization.
+
+### ProjectsResource
+
+Defined in `nexla_sdk/resources/projects.py:8`
+
+Resource for managing projects.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `add_flows(self, project_id: int, flows: nexla_sdk.models.projects.requests.ProjectFlowList) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:95`
+  - Add flows to project.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: nexla_sdk.models.projects.requests.ProjectCreate) -> nexla_sdk.models.projects.responses.Project`
+  - Source: `nexla_sdk/resources/projects.py:44`
+  - Create new project.
+- `delete(self, project_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/projects.py:69`
+  - Delete project.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, project_id: int, expand: bool = False) -> nexla_sdk.models.projects.responses.Project`
+  - Source: `nexla_sdk/resources/projects.py:31`
+  - Get single project by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_flows(self, project_id: int) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:81`
+  - Get flows in project.
+- `list(self, expand: bool = False, **kwargs) -> List[nexla_sdk.models.projects.responses.Project]`
+  - Source: `nexla_sdk/resources/projects.py:16`
+  - List all projects.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `remove_flows(self, project_id: int, flows: Optional[nexla_sdk.models.projects.requests.ProjectFlowList] = None) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:125`
+  - Remove flows from project.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `replace_flows(self, project_id: int, flows: nexla_sdk.models.projects.requests.ProjectFlowList) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:110`
+  - Replace all flows in project.
+- `update(self, project_id: int, data: nexla_sdk.models.projects.requests.ProjectUpdate) -> nexla_sdk.models.projects.responses.Project`
+  - Source: `nexla_sdk/resources/projects.py:56`
+  - Update project.
+
+### SourcesResource
+
+Defined in `nexla_sdk/resources/sources.py:7`
+
+Resource for managing data sources.
+
+Methods:
+
+- `activate(self, source_id: int) -> nexla_sdk.models.sources.responses.Source`
+  - Source: `nexla_sdk/resources/sources.py:77`
+  - Activate source.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, source_id: int, options: Optional[nexla_sdk.models.sources.requests.SourceCopyOptions] = None) -> nexla_sdk.models.sources.responses.Source`
+  - Source: `nexla_sdk/resources/sources.py:101`
+  - Copy a source.
+- `create(self, data: nexla_sdk.models.sources.requests.SourceCreate) -> nexla_sdk.models.sources.responses.Source`
+  - Source: `nexla_sdk/resources/sources.py:40`
+  - Create new source.
+- `delete(self, source_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/sources.py:65`
+  - Delete source.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, source_id: int, expand: bool = False) -> nexla_sdk.models.sources.responses.Source`
+  - Source: `nexla_sdk/resources/sources.py:27`
+  - Get single source by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `list(self, **kwargs) -> List[nexla_sdk.models.sources.responses.Source]`
+  - Source: `nexla_sdk/resources/sources.py:15`
+  - List all sources.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, source_id: int) -> nexla_sdk.models.sources.responses.Source`
+  - Source: `nexla_sdk/resources/sources.py:89`
+  - Pause source.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `update(self, source_id: int, data: nexla_sdk.models.sources.requests.SourceUpdate) -> nexla_sdk.models.sources.responses.Source`
+  - Source: `nexla_sdk/resources/sources.py:52`
+  - Update source.
+
+### TeamsResource
+
+Defined in `nexla_sdk/resources/teams.py:7`
+
+Resource for managing teams.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `add_members(self, team_id: int, members: nexla_sdk.models.teams.requests.TeamMemberList) -> List[nexla_sdk.models.teams.responses.TeamMember]`
+  - Source: `nexla_sdk/resources/teams.py:91`
+  - Add members to team.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: nexla_sdk.models.teams.requests.TeamCreate) -> nexla_sdk.models.teams.responses.Team`
+  - Source: `nexla_sdk/resources/teams.py:40`
+  - Create new team.
+- `delete(self, team_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/teams.py:65`
+  - Delete team.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `get(self, team_id: int, expand: bool = False) -> nexla_sdk.models.teams.responses.Team`
+  - Source: `nexla_sdk/resources/teams.py:27`
+  - Get single team by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_members(self, team_id: int) -> List[nexla_sdk.models.teams.responses.TeamMember]`
+  - Source: `nexla_sdk/resources/teams.py:77`
+  - Get team members.
+- `list(self, **kwargs) -> List[nexla_sdk.models.teams.responses.Team]`
+  - Source: `nexla_sdk/resources/teams.py:15`
+  - List all teams.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `remove_members(self, team_id: int, members: Optional[nexla_sdk.models.teams.requests.TeamMemberList] = None) -> List[nexla_sdk.models.teams.responses.TeamMember]`
+  - Source: `nexla_sdk/resources/teams.py:121`
+  - Remove members from team.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `replace_members(self, team_id: int, members: nexla_sdk.models.teams.requests.TeamMemberList) -> List[nexla_sdk.models.teams.responses.TeamMember]`
+  - Source: `nexla_sdk/resources/teams.py:106`
+  - Replace all team members.
+- `update(self, team_id: int, data: nexla_sdk.models.teams.requests.TeamUpdate) -> nexla_sdk.models.teams.responses.Team`
+  - Source: `nexla_sdk/resources/teams.py:52`
+  - Update team.
+
+### UsersResource
+
+Defined in `nexla_sdk/resources/users.py:8`
+
+Resource for managing users.
+
+Methods:
+
+- `activate(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Activate resource.
+- `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Add access control rules.
+- `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Copy resource.
+- `create(self, data: nexla_sdk.models.users.requests.UserCreate) -> nexla_sdk.models.users.responses.User`
+  - Source: `nexla_sdk/resources/users.py:51`
+  - Create new user.
+- `create_quarantine_settings(self, user_id: int, data_credentials_id: int, config: Dict[str, Any]) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:112`
+  - Create quarantine data export settings.
+- `delete(self, user_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:76`
+  - Delete user.
+- `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Delete access control rules.
+- `delete_quarantine_settings(self, user_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:150`
+  - Delete quarantine data export settings.
+- `get(self, user_id: int, expand: bool = False) -> nexla_sdk.models.users.responses.User`
+  - Source: `nexla_sdk/resources/users.py:33`
+  - Get user by ID.
+- `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Get access control rules for resource.
+- `get_account_metrics(self, user_id: int, from_date: str, to_date: Optional[str] = None, org_id: Optional[int] = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:197`
+  - Get total account metrics for user.
+- `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Get audit log for resource.
+- `get_daily_metrics(self, user_id: int, resource_type: nexla_sdk.models.metrics.enums.UserMetricResourceType, from_date: str, to_date: Optional[str] = None, org_id: Optional[int] = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:243`
+  - Get daily data processing metrics for a user.
+- `get_dashboard_metrics(self, user_id: int, access_role: Optional[str] = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:223`
+  - Get 24 hour flow stats for user.
+- `get_quarantine_settings(self, user_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:99`
+  - Get quarantine data export settings for user.
+- `get_settings(self) -> List[nexla_sdk.models.users.responses.UserSettings]`
+  - Source: `nexla_sdk/resources/users.py:88`
+  - Get current user's settings.
+- `get_transferable_resources(self, user_id: int, org_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:163`
+  - Get a list of resources owned by a user that can be transferred.
+- `list(self, expand: bool = False, **kwargs) -> List[nexla_sdk.models.users.responses.User]`
+  - Source: `nexla_sdk/resources/users.py:16`
+  - List all users.
+- `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
+  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Get paginator for iterating through resources.
+- `pause(self, resource_id: int) -> ~T`
+  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Pause resource.
+- `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
+  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Replace all access control rules.
+- `transfer_resources(self, user_id: int, org_id: int, delegate_owner_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:178`
+  - Transfer a user's resources to another user within an organization.
+- `update(self, user_id: int, data: nexla_sdk.models.users.requests.UserUpdate) -> nexla_sdk.models.users.responses.User`
+  - Source: `nexla_sdk/resources/users.py:63`
+  - Update user.
+- `update_quarantine_settings(self, user_id: int, data: Dict[str, Any]) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/users.py:134`
+  - Update quarantine data export settings.
+
