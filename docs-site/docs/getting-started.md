@@ -201,16 +201,15 @@ Now that you have the SDK set up and working, explore these areas:
 - **[API Reference](api/python/overview)** - Complete method documentation
 
 ### 📋 **Common Use Cases**
-- **[Authentication & Credentials](authentication-credentials)** - Detailed auth setup
+- **[Authentication & Credentials](auth)** - Detailed auth setup
 - **[Examples](examples)** - Real-world code examples
-- **[Error Handling](error-handling-retries)** - Robust error management
+- **[Error Handling](error-handling)** - Robust error management
 
 ### 🔧 **Advanced Topics**
 - **[Configuration](configuration)** - Advanced client configuration
-- **[Observability](observability-logging-metrics-tracing)** - Logging and monitoring
-- **[Rate Limits](rate-limits-idempotency)** - Best practices for API usage
+- **[Observability](observability)** - Logging and monitoring
+- **[Rate Limits](rate-limits)** - Best practices for API usage
 
 :::info Need Help?
 If you encounter any issues, check our [FAQ](faq) or review the [Troubleshooting](errors) section.
 :::
-
