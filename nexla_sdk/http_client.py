@@ -12,7 +12,7 @@ except Exception:  # pragma: no cover
     Retry = None
 
 try:
-    from importlib.metadata import version, PackageNotFoundError  # Python 3.8+
+    from importlib.metadata import version  # Python 3.8+
     _SDK_VERSION = version("nexla-sdk")
 except Exception:  # pragma: no cover
     _SDK_VERSION = "unknown"

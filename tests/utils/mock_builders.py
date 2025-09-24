@@ -1,11 +1,8 @@
 """Mock response builders for creating realistic test data."""
 
-from datetime import datetime, timezone
+from datetime import timezone
 from typing import Dict, Any, Optional, List
-import uuid
 from faker import Faker
-import random
-from nexla_sdk.models.organizations.responses import Organization, OrgMember, OrgTier, AccountSummary
 
 # Set a seed for deterministic test data generation
 # Can be overridden by environment variable for debugging
@@ -856,7 +853,7 @@ class MockDataFactory:
                     "flow_type": "batch",
                     "ingestion_mode": "POLL",
                     "name": f"Flow {self.fake.random_int(1, 100)}",
-                    "description": f"Mock flow for testing",
+                    "description": "Mock flow for testing",
                     "children": []
                 }
             ]

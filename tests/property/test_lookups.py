@@ -1,14 +1,9 @@
 """Property-based tests for lookups resource."""
-import pytest
-from hypothesis import given, strategies as st, assume, settings, HealthCheck
-from hypothesis.stateful import RuleBasedStateMachine, rule, invariant, Bundle
+from hypothesis import given, strategies as st, settings, HealthCheck
 from unittest.mock import MagicMock
-from typing import Dict, List, Any, Optional
 
-from nexla_sdk import NexlaClient
 from nexla_sdk.models.lookups.responses import Lookup
 from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate
-from nexla_sdk.exceptions import ValidationError
 
 from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockDataFactory

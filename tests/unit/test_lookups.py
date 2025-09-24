@@ -1,15 +1,14 @@
 """Unit tests for lookups resource."""
 import pytest
 from unittest.mock import MagicMock
-from typing import List, Dict, Any
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.lookups.responses import Lookup
-from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate, LookupEntriesUpsert
-from nexla_sdk.exceptions import NexlaError, ServerError
+from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate
+from nexla_sdk.exceptions import ServerError
 from nexla_sdk.http_client import HttpClientError
 
-from tests.utils.fixtures import MockHTTPClient, create_test_client, create_mock_response
+from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockDataFactory
 from tests.utils.assertions import NexlaAssertions
 

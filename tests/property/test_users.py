@@ -1,11 +1,9 @@
 """Property-based tests for UsersResource."""
 
-import pytest
 from hypothesis import given, strategies as st, assume
-from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings, DefaultOrg, OrgMembership
+from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings, OrgMembership
 from nexla_sdk.models.users.requests import UserCreate, UserUpdate
 from tests.utils.mock_builders import MockResponseBuilder
-from tests.utils.assertions import NexlaAssertions
 
 
 def generate_text_without_space():

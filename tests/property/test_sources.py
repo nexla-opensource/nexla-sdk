@@ -1,10 +1,8 @@
 """Property-based tests for sources using hypothesis."""
 
 import pytest
-from hypothesis import given, strategies as st, settings, assume
+from hypothesis import given, strategies as st, settings
 from hypothesis.strategies import composite
-from pydantic import ValidationError
-from datetime import datetime
 
 from nexla_sdk.models.sources.responses import Source, DataSetBrief, RunInfo
 from nexla_sdk.models.sources.requests import SourceCreate, SourceUpdate, SourceCopyOptions

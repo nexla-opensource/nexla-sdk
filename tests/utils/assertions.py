@@ -1,6 +1,6 @@
 """Custom assertions for testing."""
 
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type
 from pydantic import ValidationError
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.destinations.responses import Destination, DataSetInfo, DataMapInfo
@@ -10,9 +10,6 @@ from nexla_sdk.models.lookups.responses import Lookup
 from nexla_sdk.models.sources.responses import Source
 from nexla_sdk.models.nexsets.responses import Nexset
 from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
-from nexla_sdk.models.credentials.responses import Credential
-from nexla_sdk.models.users.responses import User, UserExpanded
-from nexla_sdk.models.teams.responses import Team, TeamMember
 from nexla_sdk.models.organizations.responses import Organization, OrgMember
 
 
@@ -332,14 +329,6 @@ class NexlaAssertions:
         assert actual.id == expected["id"]
         assert actual.full_name == expected["full_name"]
         assert actual.email == expected["email"]
-    
-    @staticmethod
-    def assert_organization_response(actual, expected: Dict[str, Any]) -> None:
-        """Assert organization response matches expected data."""
-        assert actual.id == expected["id"]
-        assert actual.name == expected["name"]
-        if expected.get("email_domain"):
-            assert actual.email_domain == expected["email_domain"]
     
     @staticmethod
     def assert_source_response(response: Source, expected_data: Dict[str, Any]):

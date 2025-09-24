@@ -20,7 +20,6 @@ python examples/fetch_resources.py
 """
 
 import os
-from typing import List, Optional, Dict, Any
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import AuthenticationError, NexlaError
 

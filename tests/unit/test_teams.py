@@ -1,14 +1,12 @@
 """Unit tests for TeamsResource."""
 
 import pytest
-from unittest.mock import Mock, patch
 from nexla_sdk.exceptions import ServerError, NotFoundError
 from nexla_sdk.models.teams.responses import Team, TeamMember
 from nexla_sdk.models.teams.requests import TeamCreate, TeamUpdate, TeamMemberRequest, TeamMemberList
 from nexla_sdk.http_client import HttpClientError
 from tests.utils.mock_builders import MockResponseBuilder
 from tests.utils.assertions import NexlaAssertions
-from tests.utils.fixtures import MockHTTPClient
 
 
 class TestTeamsUnitTests:
@@ -50,7 +48,7 @@ class TestTeamsUnitTests:
         team_data["id"] = 123
         client.http_client.add_response("/teams", [team_data])
         
-        teams = client.teams.list(page=2, per_page=50)
+        client.teams.list(page=2, per_page=50)
         
         client.http_client.assert_request_made("GET", "/teams", params={"page": 2, "per_page": 50})
 
@@ -177,9 +175,9 @@ class TestTeamsUnitTests:
         assert len(members) == 2
         assert all(isinstance(member, TeamMember) for member in members)
         assert members[0].email == "user1@example.com"
-        assert members[0].admin == True
+        assert members[0].admin
         assert members[1].email == "user2@example.com"
-        assert members[1].admin == False
+        assert not members[1].admin
         client.http_client.assert_request_made("GET", "/teams/123/members")
 
     def test_add_members_success(self, mock_client):
@@ -303,20 +301,20 @@ class TestTeamsUnitTests:
         # Valid with email
         request1 = TeamMemberRequest(email="test@example.com", admin=True)
         assert request1.email == "test@example.com"
-        assert request1.admin == True
+        assert request1.admin
         assert request1.id is None
         
         # Valid with ID
         request2 = TeamMemberRequest(id=123, admin=False)
         assert request2.id == 123
-        assert request2.admin == False
+        assert not request2.admin
         assert request2.email is None
         
         # Valid with both (API allows this)
         request3 = TeamMemberRequest(id=123, email="test@example.com", admin=True)
         assert request3.id == 123
         assert request3.email == "test@example.com"
-        assert request3.admin == True
+        assert request3.admin
 
     def test_create_team_minimal_data(self, mock_client):
         """Test creating team with minimal required data."""

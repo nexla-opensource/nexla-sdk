@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
 from nexla_sdk.models.projects.requests import ProjectCreate, ProjectUpdate, ProjectFlowList, ProjectFlowIdentifier
 from nexla_sdk.models.flows.responses import FlowResponse
-from nexla_sdk.exceptions import ServerError, NotFoundError, ValidationError
+from nexla_sdk.exceptions import ServerError
 from nexla_sdk.http_client import HttpClientError
 from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockResponseBuilder, MockDataFactory

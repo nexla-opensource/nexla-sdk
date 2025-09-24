@@ -1,15 +1,14 @@
 """Unit tests for flows resource."""
 import pytest
 from unittest.mock import MagicMock
-from typing import List
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.flows.responses import FlowResponse, FlowMetrics
 from nexla_sdk.models.flows.requests import FlowCopyOptions
 from nexla_sdk.models.common import FlowNode
-from nexla_sdk.exceptions import NexlaError, ServerError, ValidationError
+from nexla_sdk.exceptions import ServerError
 
-from tests.utils.fixtures import MockHTTPClient, create_test_client, create_mock_response
+from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockDataFactory
 from tests.utils.assertions import NexlaAssertions
 
@@ -160,7 +159,7 @@ class TestFlowsUnit:
         mock_client.http_client.request = MagicMock(return_value=mock_response)
         
         # Act
-        flow = mock_client.flows.activate(flow_id, all=True)
+        mock_client.flows.activate(flow_id, all=True)
         
         # Assert
         _, _, kwargs = mock_client.http_client.request.mock_calls[0]

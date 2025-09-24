@@ -1,14 +1,13 @@
 """Unit tests for nexsets resource."""
 import pytest
 from unittest.mock import MagicMock
-from typing import List, Dict, Any
 
 from nexla_sdk import NexlaClient
-from nexla_sdk.models.nexsets import Nexset, NexsetSample, NexsetCreate, NexsetUpdate, NexsetCopyOptions
-from nexla_sdk.exceptions import ServerError, AuthenticationError, ValidationError
+from nexla_sdk.models.nexsets import NexsetCreate, NexsetUpdate, NexsetCopyOptions
+from nexla_sdk.exceptions import ServerError
 from nexla_sdk.http_client import HttpClientError
 from tests.utils.fixtures import create_test_client
-from tests.utils.mock_builders import MockDataFactory, MockResponseBuilder
+from tests.utils.mock_builders import MockDataFactory
 from tests.utils.assertions import NexlaAssertions
 
 

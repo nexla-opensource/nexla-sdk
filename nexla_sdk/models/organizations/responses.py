@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 from datetime import datetime
 from pydantic import Field
 from nexla_sdk.models.base import BaseModel

@@ -1,13 +1,13 @@
 """Integration tests for flows resource."""
 import os
 import pytest
-from typing import Optional, List
+from typing import Optional
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.flows.responses import FlowResponse, FlowMetrics
 from nexla_sdk.models.flows.requests import FlowCopyOptions
 from nexla_sdk.models.common import FlowNode
-from nexla_sdk.exceptions import NexlaError, ServerError
+from nexla_sdk.exceptions import ServerError
 
 from tests.utils.fixtures import get_test_credentials
 
@@ -176,7 +176,7 @@ class TestFlowsIntegration:
             pytest.skip("No test flow ID provided")
         
         # Get initial state
-        initial_flow = client.flows.get(test_flow_id)
+        # initial_flow = client.flows.get(test_flow_id)  # Not used, saving API call
         
         try:
             # Pause the flow first to ensure we can activate it
@@ -295,6 +295,15 @@ class TestFlowsIntegration:
     
     # Helper methods
     def _find_node_in_children(self, node: FlowNode, target_id: int) -> bool:
+        """Find a node with target_id in the children of the given node."""
+        if hasattr(node, 'children') and node.children:
+            for child in node.children:
+                if child.id == target_id:
+                    return True
+                if self._find_node_in_children(child, target_id):
+                    return True
+        return False
+    
     def _validate_flow_node(self, node: FlowNode) -> None:
         """Validate flow node structure."""
         assert hasattr(node, 'id')

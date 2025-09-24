@@ -1,11 +1,9 @@
 """Property-based tests for TeamsResource."""
 
-import pytest
-from hypothesis import given, strategies as st, assume
+from hypothesis import given, strategies as st
 from nexla_sdk.models.teams.responses import Team, TeamMember
 from nexla_sdk.models.teams.requests import TeamCreate, TeamUpdate, TeamMemberRequest, TeamMemberList
 from tests.utils.mock_builders import MockResponseBuilder
-from tests.utils.assertions import NexlaAssertions
 
 
 def generate_text_without_space():

@@ -1,15 +1,11 @@
 """Property-based tests for flows resource."""
-import pytest
-from hypothesis import given, strategies as st, assume, settings
+from hypothesis import given, strategies as st, settings
 from hypothesis.stateful import RuleBasedStateMachine, rule, invariant, Bundle
 from unittest.mock import MagicMock
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 
-from nexla_sdk import NexlaClient
-from nexla_sdk.models.flows.responses import FlowResponse, FlowMetrics
+from nexla_sdk.models.flows.responses import FlowResponse
 from nexla_sdk.models.flows.requests import FlowCopyOptions
-from nexla_sdk.models.common import FlowNode
-from nexla_sdk.exceptions import ValidationError
 
 from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockDataFactory

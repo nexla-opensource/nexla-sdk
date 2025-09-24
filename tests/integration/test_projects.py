@@ -1,12 +1,9 @@
 """Integration tests for projects resource."""
 import pytest
-import os
-from nexla_sdk import NexlaClient
-from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
-from nexla_sdk.models.projects.requests import ProjectCreate, ProjectUpdate, ProjectFlowList, ProjectFlowIdentifier
+from nexla_sdk.models.projects.responses import Project
+from nexla_sdk.models.projects.requests import ProjectCreate, ProjectUpdate
 from nexla_sdk.models.flows.responses import FlowResponse
 from nexla_sdk.exceptions import NotFoundError, ValidationError
-from tests.utils.assertions import NexlaAssertions
 
 
 @pytest.mark.integration
@@ -91,7 +88,6 @@ class TestProjectsIntegration:
         owner_projects = integration_client.projects.list(access_role="owner")
         assert isinstance(owner_projects, list)
 
-    def test_get_project_flows(self, integration_client):
     def test_get_project_flows(self, integration_client):
         """Test getting flows for a project."""
         # First get a project

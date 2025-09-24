@@ -4,10 +4,9 @@ import pytest
 from hypothesis import given, strategies as st, settings, assume
 from hypothesis.strategies import composite
 from pydantic import ValidationError
-from datetime import datetime
 
-from nexla_sdk.models.credentials.responses import Credential, ProbeTreeResponse, ProbeSampleResponse
-from nexla_sdk.models.credentials.requests import CredentialCreate, CredentialUpdate, ProbeTreeRequest, ProbeSampleRequest
+from nexla_sdk.models.credentials.responses import Credential
+from nexla_sdk.models.credentials.requests import CredentialCreate, ProbeTreeRequest
 
 
 # Custom strategies for generating test data

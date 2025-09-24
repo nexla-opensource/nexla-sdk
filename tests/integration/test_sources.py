@@ -2,12 +2,10 @@
 
 import pytest
 import time
-from typing import List
 
 from nexla_sdk.exceptions import AuthenticationError, NotFoundError
 from nexla_sdk.models.sources.responses import Source
-from nexla_sdk.models.sources.requests import SourceCreate, SourceUpdate, SourceCopyOptions
-from tests.utils import MockDataFactory
+from nexla_sdk.models.sources.requests import SourceCreate, SourceUpdate
 
 
 @pytest.mark.integration

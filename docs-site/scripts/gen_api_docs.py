@@ -5,9 +5,7 @@ Generate API Reference (MDX) for the Nexla Python SDK using introspection.
 Outputs under docs-site/docs/api/python/modules.
 Also writes a coverage and gaps REPORT.md.
 """
-import os
 import sys
-import json
 import inspect
 import importlib
 import pkgutil

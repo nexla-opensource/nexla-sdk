@@ -1,5 +1,5 @@
 """Request models for sources."""
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from nexla_sdk.models.base import BaseModel
 
 

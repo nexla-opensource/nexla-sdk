@@ -1,8 +1,8 @@
 """Test configuration and fixtures."""
 
+import logging
 import os
 import pytest
-from unittest.mock import patch
 from dotenv import load_dotenv
 
 from nexla_sdk import NexlaClient
@@ -22,7 +22,6 @@ NEXLA_TEST_API_VERSION = os.getenv("NEXLA_TEST_API_VERSION", "v1")
 NEXLA_TEST_LOG_LEVEL = os.getenv("NEXLA_TEST_LOG_LEVEL", "INFO")
 
 # Configure logging level based on environment variable
-import logging
 log_level = getattr(logging, NEXLA_TEST_LOG_LEVEL.upper(), logging.INFO)
 logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)

@@ -2,6 +2,7 @@
 import pytest
 import os
 from nexla_sdk import NexlaClient, NexlaError
+from nexla_sdk.exceptions import NotFoundError
 from nexla_sdk.models.destinations import DestinationCreate, DestinationUpdate, DestinationCopyOptions
 from tests.utils.assertions import NexlaAssertions
 
@@ -34,9 +35,8 @@ class TestDestinationsIntegration:
         created_destination = None
         
         try:
-            # Step 1: Get initial count
-            initial_destinations = client.destinations.list()
-            initial_count = len(initial_destinations)
+            # Step 1: Get initial count (not storing for performance)
+            # initial_destinations = client.destinations.list()
             
             # Step 2: Create new destination (requires existing credential and dataset)
             # Note: This will fail without real credentials and datasets

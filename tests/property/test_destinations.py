@@ -4,8 +4,7 @@ import pytest
 from hypothesis import given, strategies as st, settings, HealthCheck
 from unittest.mock import MagicMock
 
-from nexla_sdk import NexlaClient
-from nexla_sdk.models.destinations import Destination, DestinationCreate, DestinationUpdate
+from nexla_sdk.models.destinations import DestinationCreate, DestinationUpdate
 from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockResponseBuilder
 from tests.utils.assertions import NexlaAssertions

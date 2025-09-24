@@ -1,5 +1,5 @@
 """Lookups resource implementation."""
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Dict, Any, Union
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.lookups.responses import Lookup
 from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate, LookupEntriesUpsert

@@ -4,7 +4,6 @@ import pytest
 import os
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import NotFoundError, ServerError
-from nexla_sdk.models.users.requests import UserCreate, UserUpdate
 
 
 @pytest.mark.integration

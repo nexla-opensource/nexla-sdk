@@ -3,11 +3,9 @@ Nexla API client
 """
 import logging
 import os
-import time
-from typing import Dict, Any, Optional, Type, TypeVar, Union, List, cast
-import base64
+from typing import Dict, Any, Optional, Type, TypeVar, Union, List
 
-from pydantic import BaseModel, ValidationError as PydanticValidationError
+from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import NexlaError, AuthenticationError, ServerError, ValidationError, NotFoundError
 from .auth import TokenAuthHandler

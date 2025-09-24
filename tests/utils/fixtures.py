@@ -1,8 +1,6 @@
 """Test fixtures and mock HTTP client."""
 
 from typing import Dict, Any, Optional, List, Callable, Union
-from unittest.mock import Mock
-import json
 from nexla_sdk.http_client import HttpClientInterface, HttpClientError
 
 
@@ -328,10 +326,10 @@ def create_batch_response(items: List[Dict[str, Any]], batch_id: Optional[str] =
     }
 
 
-def create_test_client(service_key: str = "test-service-key", access_token: str = None) -> 'NexlaClient':
+def create_test_client(service_key: str = "test-service-key", access_token: str = None):
     """Create a test NexlaClient instance with mocked HTTP client."""
     from nexla_sdk import NexlaClient
-    from unittest.mock import MagicMock, patch
+    from unittest.mock import patch
     
     # Create a mock HTTP client
     mock_http_client = MockHTTPClient()

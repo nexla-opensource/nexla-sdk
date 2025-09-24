@@ -1,18 +1,16 @@
 """Unit tests for sources resource."""
 
 import pytest
-from unittest.mock import patch
 from pydantic import ValidationError
 
 from nexla_sdk.exceptions import (
-    AuthenticationError, ServerError, NotFoundError, ValidationError, NexlaError
+    ServerError, NotFoundError
 )
-from nexla_sdk.http_client import HttpClientError
 from nexla_sdk.models.sources.responses import Source, DataSetBrief, RunInfo
 from nexla_sdk.models.sources.requests import SourceCreate, SourceUpdate, SourceCopyOptions
 from tests.utils import (
-    MockResponseBuilder, MockDataFactory, create_http_error, assert_model_valid, 
-    assert_model_list_valid, assert_source_structure
+    MockResponseBuilder, create_http_error, assert_model_valid, 
+    assert_model_list_valid
 )
 
 

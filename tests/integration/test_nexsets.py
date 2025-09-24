@@ -1,7 +1,7 @@
 """Integration tests for nexsets resource."""
 import pytest
 import os
-from nexla_sdk import NexlaClient, NexlaError, NotFoundError
+from nexla_sdk import NexlaClient, NexlaError
 from nexla_sdk.exceptions import NotFoundError
 from nexla_sdk.models.nexsets import NexsetCreate, NexsetUpdate, NexsetCopyOptions
 from tests.utils.assertions import NexlaAssertions

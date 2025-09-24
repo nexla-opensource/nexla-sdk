@@ -37,8 +37,7 @@ import os
 import argparse
 import subprocess
 from pathlib import Path
-import json
-from typing import List, Dict, Any
+from typing import List
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent
@@ -104,9 +103,11 @@ def check_environment():
     
     # Check for dependencies
     try:
-        import pytest
-        import hypothesis
-        import faker
+        import importlib.util
+        required_deps = ['pytest', 'hypothesis', 'faker']
+        for dep in required_deps:
+            if importlib.util.find_spec(dep) is None:
+                raise ImportError(f"Missing {dep}")
         print("✅ All required test dependencies are installed")
     except ImportError as e:
         print(f"❌ Missing test dependencies: {e}")

@@ -1,20 +1,19 @@
 """Unit tests for credentials resource."""
 
 import pytest
-from unittest.mock import patch
 from pydantic import ValidationError
 
 from nexla_sdk.exceptions import (
-    AuthenticationError, ServerError, NotFoundError, ValidationError, NexlaError
+    AuthenticationError, ServerError, NotFoundError, NexlaError
 )
 from nexla_sdk.http_client import HttpClientError
 from nexla_sdk.models.credentials.responses import Credential, ProbeTreeResponse, ProbeSampleResponse
 from nexla_sdk.models.credentials.requests import (
-    CredentialCreate, CredentialUpdate, ProbeTreeRequest, ProbeSampleRequest
+    CredentialCreate, ProbeTreeRequest, ProbeSampleRequest
 )
 from tests.utils import (
-    MockResponseBuilder, MockDataFactory, create_http_error, assert_model_valid, 
-    assert_model_list_valid, assert_credential_structure
+    MockResponseBuilder, create_http_error, assert_model_valid, 
+    assert_model_list_valid
 )
 
 
@@ -295,7 +294,6 @@ class TestCredentialsErrorHandling:
     
     def test_network_error_simulation(self, mock_client, mock_http_client):
         """Test handling of network-level errors."""
-        from nexla_sdk.http_client import HttpClientError
         
         # Arrange - simulate a network error
         network_error = HttpClientError("Connection timeout")

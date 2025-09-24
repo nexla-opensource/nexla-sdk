@@ -6,7 +6,7 @@ from hypothesis import given, strategies as st, settings, HealthCheck
 from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
 from nexla_sdk.models.projects.requests import ProjectCreate, ProjectUpdate, ProjectFlowList, ProjectFlowIdentifier
 from tests.utils.fixtures import create_test_client
-from tests.utils.mock_builders import MockDataFactory, MockResponseBuilder
+from tests.utils.mock_builders import MockDataFactory
 
 
 # Suppress function-scoped fixture warnings for CI

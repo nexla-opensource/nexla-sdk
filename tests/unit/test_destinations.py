@@ -1,11 +1,10 @@
 """Unit tests for destinations resource."""
 import pytest
 from unittest.mock import MagicMock
-from typing import List, Dict, Any
 
 from nexla_sdk import NexlaClient
-from nexla_sdk.models.destinations import Destination, DestinationCreate, DestinationUpdate, DestinationCopyOptions
-from nexla_sdk.exceptions import ServerError, AuthenticationError, ValidationError
+from nexla_sdk.models.destinations import DestinationCreate, DestinationUpdate, DestinationCopyOptions
+from nexla_sdk.exceptions import ServerError
 from nexla_sdk.http_client import HttpClientError
 from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockDataFactory, MockResponseBuilder

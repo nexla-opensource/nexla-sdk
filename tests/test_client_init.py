@@ -2,7 +2,7 @@ import pytest
 from pydantic import BaseModel
 
 from nexla_sdk import NexlaClient
-from nexla_sdk.exceptions import NexlaError, ValidationError
+from nexla_sdk.exceptions import ValidationError
 
 # Mark all tests in this module as unit tests
 pytestmark = pytest.mark.unit

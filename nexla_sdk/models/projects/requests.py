@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional, List
 from pydantic import Field
 from nexla_sdk.models.base import BaseModel
 

@@ -1,12 +1,11 @@
 """Integration tests for lookups resource."""
-import os
 import pytest
-from typing import Optional, List
+from typing import Optional
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.lookups.responses import Lookup
 from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate
-from nexla_sdk.exceptions import NexlaError, ServerError
+from nexla_sdk.exceptions import ServerError
 
 from tests.utils.fixtures import get_test_credentials
 

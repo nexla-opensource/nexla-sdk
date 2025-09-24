@@ -4,7 +4,7 @@ import pytest
 import os
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import NotFoundError, ServerError
-from nexla_sdk.models.teams.requests import TeamCreate, TeamUpdate, TeamMemberRequest, TeamMemberList
+from nexla_sdk.models.teams.requests import TeamCreate, TeamUpdate
 
 
 @pytest.mark.integration
@@ -45,7 +45,7 @@ class TestTeamsIntegration:
         # All returned teams should have member=True
         for team in member_teams:
             assert hasattr(team, 'member')
-            assert team.member == True
+            assert team.member
 
     def test_get_nonexistent_team(self, client):
         """Test getting a team that doesn't exist."""
@@ -186,7 +186,7 @@ class TestTeamsIntegration:
             assert isinstance(team.access_roles, list)
             
             # Common access roles from the API docs
-            valid_roles = ["owner", "admin", "collaborator", "operator", "member"]
+            # valid_roles = ["owner", "admin", "collaborator", "operator", "member"]  # Not used
             
             for role in team.access_roles:
                 assert isinstance(role, str)

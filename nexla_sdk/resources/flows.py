@@ -48,7 +48,6 @@ class FlowsResource(BaseResource):
         Returns:
             Flow response
         """
-        params = {'flows_only': 1} if flows_only else {}
         return super().get(flow_id, expand=False)
     
     def get_by_resource(self, 

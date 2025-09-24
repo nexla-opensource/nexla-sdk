@@ -2,14 +2,12 @@
 
 import pytest
 import time
-from typing import List
 
 from nexla_sdk.exceptions import AuthenticationError, NotFoundError
 from nexla_sdk.models.credentials.responses import Credential
 from nexla_sdk.models.credentials.requests import (
     CredentialCreate, CredentialUpdate, ProbeTreeRequest, ProbeSampleRequest
 )
-from tests.utils import MockDataFactory
 
 
 @pytest.mark.integration

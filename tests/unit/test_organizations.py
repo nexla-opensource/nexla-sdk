@@ -1,6 +1,4 @@
 """Unit tests for the Organizations resource."""
-import pytest
-from unittest.mock import MagicMock
 
 from nexla_sdk.models.organizations.requests import (
     OrganizationCreate,
@@ -9,9 +7,8 @@ from nexla_sdk.models.organizations.requests import (
     OrgMemberDelete,
     OrgMemberActivateDeactivateRequest
 )
-from nexla_sdk.exceptions import ServerError
 from tests.utils.assertions import NexlaAssertions
-from tests.utils.mock_builders import MockResponseBuilder, MockDataFactory
+from tests.utils.mock_builders import MockResponseBuilder
 
 
 class TestOrganizationsResource:

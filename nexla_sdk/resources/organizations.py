@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.common import LogEntry
 from nexla_sdk.models.organizations.responses import Organization, OrgMember, AccountSummary

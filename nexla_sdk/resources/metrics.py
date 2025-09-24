@@ -1,10 +1,10 @@
-from typing import List, Optional, Dict, Any
+from typing import Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.metrics.responses import (
-    AccountMetrics, DashboardMetrics, MetricsResponse,
-    MetricsByRunResponse, ResourceMetricDaily, ResourceMetricsByRun
+    MetricsResponse,
+    MetricsByRunResponse
 )
-from nexla_sdk.models.metrics.enums import ResourceType, UserMetricResourceType
+from nexla_sdk.models.metrics.enums import ResourceType
 
 
 class MetricsResource(BaseResource):

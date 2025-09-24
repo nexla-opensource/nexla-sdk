@@ -1,14 +1,12 @@
 """Unit tests for UsersResource."""
 
 import pytest
-from unittest.mock import Mock, patch
 from nexla_sdk.exceptions import ServerError, NotFoundError
 from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings
 from nexla_sdk.models.users.requests import UserCreate, UserUpdate
 from nexla_sdk.http_client import HttpClientError
 from tests.utils.mock_builders import MockResponseBuilder
 from tests.utils.assertions import NexlaAssertions
-from tests.utils.fixtures import MockHTTPClient
 
 
 class TestUsersUnitTests:
@@ -62,7 +60,7 @@ class TestUsersUnitTests:
         user_data["id"] = 123
         client.http_client.add_response("/users", [user_data])
         
-        users = client.users.list(page=2, per_page=50)
+        client.users.list(page=2, per_page=50)
         
         client.http_client.assert_request_made("GET", "/users", params={"page": 2, "per_page": 50})
 
@@ -184,7 +182,7 @@ class TestUsersUnitTests:
         
         settings = client.users.get_quarantine_settings(123)
         
-        assert settings["enabled"] == True
+        assert settings["enabled"]
         client.http_client.assert_request_made("GET", "/users/123/quarantine_settings")
 
     def test_http_error_handling(self, mock_client):
