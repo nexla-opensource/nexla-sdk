@@ -460,6 +460,19 @@ client.users.create_quarantine_settings(
 )
 ```
 
+## Additional Example Features
+
+The SDK examples cover advanced operations such as:
+
+- Audit logging and compliance tracking
+- User and team permissions management
+- Data transformation and schema handling
+- Metrics collection and monitoring
+- Notification systems integration
+- Quarantine settings for data validation
+
+See the `examples/api/` directory for detailed examples of these operations.
+
 ## Error Handling
 
 The SDK provides specific exception types:
