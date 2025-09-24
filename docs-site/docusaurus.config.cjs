@@ -1,3 +1,4 @@
+const isNode20Plus = Number(process.versions.node.split('.')[0]) >= 20;
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Nexla Python SDK',
@@ -43,7 +44,7 @@ const config = {
   ],
   plugins: [
     // Local search fallback when Algolia env vars are missing
-    !Boolean(process.env.ALGOLIA_APP_ID && process.env.ALGOLIA_API_KEY && process.env.ALGOLIA_INDEX_NAME) && [
+    !Boolean(process.env.ALGOLIA_APP_ID && process.env.ALGOLIA_API_KEY && process.env.ALGOLIA_INDEX_NAME) && isNode20Plus && [
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
         hashed: true,

@@ -2,6 +2,9 @@
   "name": "nexla-sdk-docs",
   "private": true,
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "docusaurus start",
     "build": "docusaurus build",
