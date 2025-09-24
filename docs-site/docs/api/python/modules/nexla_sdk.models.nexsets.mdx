@@ -1,0 +1,157 @@
+---
+id: nexla_sdk.models.nexsets
+title: nexla_sdk.models.nexsets
+slug: /api/python/modules/nexla_sdk/models/nexsets
+description: API for nexla_sdk.models.nexsets
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataSinkSimplified
+
+Defined in `nexla_sdk/models/nexsets/responses.py:10`
+
+Simplified data sink information.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `str`
+- `status`: `Optional`
+- `sink_type`: `Optional`
+
+### Nexset
+
+Defined in `nexla_sdk/models/nexsets/responses.py:20`
+
+Nexset (data set) response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `Optional`
+- `description`: `Optional`
+- `status`: `Optional`
+- `owner`: `Optional`
+- `org`: `Optional`
+- `access_roles`: `Optional`
+- `flow_type`: `Optional`
+- `data_source_id`: `Optional`
+- `data_source`: `Optional`
+- `parent_data_sets`: `List`
+- `data_sinks`: `List`
+- `transform_id`: `Optional`
+- `output_schema`: `Optional`
+- `copied_from_id`: `Optional`
+- `tags`: `List`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### NexsetCopyOptions
+
+Defined in `nexla_sdk/models/nexsets/requests.py:41`
+
+Options for copying a nexset.
+
+Fields:
+
+- `copy_access_controls`: `bool`
+- `owner_id`: `Optional`
+- `org_id`: `Optional`
+
+### NexsetCreate
+
+Defined in `nexla_sdk/models/nexsets/requests.py:7`
+
+Request model for creating a nexset.
+
+Fields:
+
+- `name`: `str`
+- `parent_data_set_id`: `int`
+- `has_custom_transform`: `bool`
+- `transform`: `Optional`
+- `transform_id`: `Optional`
+- `description`: `Optional`
+- `output_schema_annotations`: `Optional`
+- `output_schema_validation_enabled`: `bool`
+- `output_validation_schema`: `Optional`
+- `data_sinks`: `List`
+- `custom_config`: `Optional`
+- `tags`: `List`
+
+### NexsetSample
+
+Defined in `nexla_sdk/models/nexsets/responses.py:43`
+
+Nexset sample record.
+
+Fields:
+
+- `raw_message`: `Dict`
+- `nexla_metadata`: `Optional`
+
+### NexsetStatus
+
+Defined in `nexla_sdk/models/nexsets/enums.py:4`
+
+Nexset status values.
+
+Members:
+
+- `ACTIVE` = `ACTIVE`
+- `PAUSED` = `PAUSED`
+- `DRAFT` = `DRAFT`
+- `DELETED` = `DELETED`
+- `ERROR` = `ERROR`
+- `PROCESSING` = `PROCESSING`
+
+### NexsetUpdate
+
+Defined in `nexla_sdk/models/nexsets/requests.py:26`
+
+Request model for updating a nexset.
+
+Fields:
+
+- `name`: `Optional`
+- `description`: `Optional`
+- `has_custom_transform`: `Optional`
+- `transform`: `Optional`
+- `transform_id`: `Optional`
+- `output_schema_annotations`: `Optional`
+- `output_schema_validation_enabled`: `Optional`
+- `output_validation_schema`: `Optional`
+- `data_sinks`: `Optional`
+- `custom_config`: `Optional`
+- `tags`: `Optional`
+
+### OutputType
+
+Defined in `nexla_sdk/models/nexsets/enums.py:23`
+
+Transform output types.
+
+Members:
+
+- `RECORD` = `record`
+- `ATTRIBUTE` = `attribute`
+- `CUSTOM` = `custom`
+
+### TransformType
+
+Defined in `nexla_sdk/models/nexsets/enums.py:14`
+
+Transform types.
+
+Members:
+
+- `JOLT_STANDARD` = `jolt_standard`
+- `JOLT_CUSTOM` = `jolt_custom`
+- `PYTHON` = `python`
+- `JAVASCRIPT` = `javascript`
+- `SQL` = `sql`
+

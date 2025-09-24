@@ -1,0 +1,46 @@
+---
+id: nexla_sdk.resources.projects
+title: nexla_sdk.resources.projects
+slug: /api/python/modules/nexla_sdk/resources/projects
+description: API for nexla_sdk.resources.projects
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### ProjectsResource
+
+Defined in `nexla_sdk/resources/projects.py:8`
+
+Resource for managing projects.
+
+Methods:
+
+- `add_flows(self, project_id: int, flows: nexla_sdk.models.projects.requests.ProjectFlowList) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:95`
+  - Add flows to project.
+- `create(self, data: nexla_sdk.models.projects.requests.ProjectCreate) -> nexla_sdk.models.projects.responses.Project`
+  - Source: `nexla_sdk/resources/projects.py:44`
+  - Create new project.
+- `delete(self, project_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/projects.py:69`
+  - Delete project.
+- `get(self, project_id: int, expand: bool = False) -> nexla_sdk.models.projects.responses.Project`
+  - Source: `nexla_sdk/resources/projects.py:31`
+  - Get single project by ID.
+- `get_flows(self, project_id: int) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:81`
+  - Get flows in project.
+- `list(self, expand: bool = False, **kwargs) -> List[nexla_sdk.models.projects.responses.Project]`
+  - Source: `nexla_sdk/resources/projects.py:16`
+  - List all projects.
+- `remove_flows(self, project_id: int, flows: Optional[nexla_sdk.models.projects.requests.ProjectFlowList] = None) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:125`
+  - Remove flows from project.
+- `replace_flows(self, project_id: int, flows: nexla_sdk.models.projects.requests.ProjectFlowList) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/projects.py:110`
+  - Replace all flows in project.
+- `update(self, project_id: int, data: nexla_sdk.models.projects.requests.ProjectUpdate) -> nexla_sdk.models.projects.responses.Project`
+  - Source: `nexla_sdk/resources/projects.py:56`
+  - Update project.
+

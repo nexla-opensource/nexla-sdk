@@ -1,0 +1,61 @@
+---
+id: nexla_sdk.models.access.requests
+title: nexla_sdk.models.access.requests
+slug: /api/python/modules/nexla_sdk/models/access/requests
+description: API for nexla_sdk.models.access.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AccessorsRequest
+
+Defined in `nexla_sdk/models/access/requests.py:38`
+
+Request model for accessor operations.
+
+Fields:
+
+- `accessors`: `List` — List of accessor requests
+
+### OrgAccessorRequest
+
+Defined in `nexla_sdk/models/access/requests.py:25`
+
+Request model for ORG type accessor.
+
+Fields:
+
+- `type`: `Literal`
+- `id`: `Optional` — Unique ID of the organization
+- `client_identifier`: `Optional` — Client identifier for the organization
+- `email_domain`: `Optional` — Email domain for the organization
+- `access_roles`: `List` — List of access roles
+
+### TeamAccessorRequest
+
+Defined in `nexla_sdk/models/access/requests.py:17`
+
+Request model for TEAM type accessor.
+
+Fields:
+
+- `type`: `Literal`
+- `id`: `Optional` — Unique ID of the team
+- `name`: `Optional` — Name of the team
+- `access_roles`: `List` — List of access roles
+
+### UserAccessorRequest
+
+Defined in `nexla_sdk/models/access/requests.py:8`
+
+Request model for USER type accessor.
+
+Fields:
+
+- `type`: `Literal`
+- `id`: `Optional` — Unique ID of the user
+- `email`: `Optional` — Email of the user
+- `org_id`: `Optional` — Organization ID for cross-org access
+- `access_roles`: `List` — List of access roles
+

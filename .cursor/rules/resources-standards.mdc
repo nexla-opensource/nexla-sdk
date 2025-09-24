@@ -1,0 +1,105 @@
+---
+globs: nexla_sdk/resources/*.py
+---
+
+# Resource Standards for Nexla SDK
+
+## Base Resource Pattern
+- **ALWAYS** inherit from `BaseResource` in [base_resource.py](mdc:nexla_sdk/resources/base_resource.py)
+- Initialize with client instance: `super().__init__(client)`
+- Set `self._path` and `self._model_class` in `__init__`
+- Use the base resource's HTTP methods for consistency
+
+## Resource Configuration
+- Set `self._path` to the API endpoint path (e.g., `"/data_sources"`)
+- Set `self._model_class` to the response model class for automatic parsing
+- Example:
+```python
+class SourcesResource(BaseResource):
+    def __init__(self, client):
+        super().__init__(client)
+        self._path = "/data_sources"
+        self._model_class = Source
+```
+
+## Standard CRUD Operations
+Implement these standard methods where applicable:
+- `list(**kwargs)` - Get collection of resources with optional filtering
+- `get(resource_id, expand=False)` - Get single resource by ID
+- `create(data)` - Create new resource
+- `update(resource_id, data)` - Update existing resource
+- `delete(resource_id)` - Delete resource
+- `activate(resource_id)` - Activate resource (if supported)
+- `pause(resource_id)` - Pause resource (if supported)
+- `copy(resource_id, options=None)` - Copy resource (if supported)
+
+## Method Patterns
+- Use descriptive method names that match API endpoints
+- Return appropriate model instances using `self._parse_response()`
+- Handle pagination using `self.paginate()` method
+- Support common parameters like `access_role`, `page`, `per_page`
+
+## HTTP Requests
+- Use `self._make_request()` for all HTTP calls
+- This method automatically handles authentication via the client
+- Example:
+```python
+response = self._make_request('GET', f"{self._path}/{resource_id}")
+return self._parse_response(response)
+```
+
+## Response Parsing
+- Use `self._parse_response()` to convert API responses to model instances
+- This method uses the `_model_class` if set
+- For custom parsing, override or specify model class:
+```python
+return self._parse_response(response, CustomModel)
+```
+
+## Error Handling
+- Let base resource handle HTTP errors automatically
+- Custom exceptions are raised by the client's request method
+- Focus on business logic, not error mapping
+
+## Type Hints
+- Use proper return types: `List[ModelClass]`, `Optional[ModelClass]`
+- Type method parameters appropriately
+- Use `Union` types when methods can return different types
+- Example:
+```python
+def get(self, resource_id: int, expand: bool = False) -> ModelClass:
+```
+
+## Documentation
+- Document all public methods with docstrings
+- Include parameter descriptions and return value info
+- Provide usage examples for complex operations
+- Document any special behavior or limitations
+
+## Specialized Operations
+- Implement domain-specific methods as needed
+- Use descriptive names that match API functionality
+- Examples: `get_samples()`, `probe_tree()`, `get_members()`
+- Follow the same patterns as standard CRUD operations
+
+## Authentication
+- Authentication is handled automatically by the client
+- Don't implement auth logic in resource classes
+- Use `self._make_request()` for all API calls
+
+## Access Control Operations
+- Use inherited methods for access control:
+  - `get_accessors(resource_id)` - Get access rules
+  - `add_accessors(resource_id, accessors)` - Add access rules
+  - `replace_accessors(resource_id, accessors)` - Replace all access rules
+  - `delete_accessors(resource_id, accessors)` - Delete access rules
+
+## Pagination Support
+- Use `self.paginate()` method for paginated results
+- Support `page` and `per_page` parameters in list methods
+- Return `Paginator` instances for large result sets
+
+## Consistent Naming
+- Use snake_case for method names
+- Match API endpoint naming where possible
+- Use clear, descriptive parameter names

@@ -1,0 +1,77 @@
+---
+id: nexla_sdk.models.flows
+title: nexla_sdk.models.flows
+slug: /api/python/modules/nexla_sdk/models/flows
+description: API for nexla_sdk.models.flows
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### FlowCopyOptions
+
+Defined in `nexla_sdk/models/flows/requests.py:5`
+
+Options for copying a flow.
+
+Fields:
+
+- `reuse_data_credentials`: `bool`
+- `copy_access_controls`: `bool`
+- `copy_dependent_data_flows`: `bool`
+- `owner_id`: `Optional`
+- `org_id`: `Optional`
+
+### FlowElements
+
+Defined in `nexla_sdk/models/flows/responses.py:22`
+
+Flow elements containing all resources.
+
+Fields:
+
+- `code_containers`: `List`
+- `data_sources`: `List`
+- `data_sets`: `List`
+- `data_sinks`: `List`
+- `data_credentials`: `List`
+- `shared_data_sets`: `List`
+- `orgs`: `List`
+- `users`: `List`
+- `projects`: `List`
+
+### FlowMetrics
+
+Defined in `nexla_sdk/models/flows/responses.py:12`
+
+Flow metrics information.
+
+Fields:
+
+- `origin_node_id`: `int`
+- `records`: `int`
+- `size`: `int`
+- `errors`: `int`
+- `reporting_date`: `datetime`
+- `run_id`: `int`
+
+### FlowResponse
+
+Defined in `nexla_sdk/models/flows/responses.py:35`
+
+Flow response model.
+
+Fields:
+
+- `flows`: `List`
+- `code_containers`: `Optional`
+- `data_sources`: `Optional`
+- `data_sets`: `Optional`
+- `data_sinks`: `Optional`
+- `data_credentials`: `Optional`
+- `shared_data_sets`: `Optional`
+- `orgs`: `Optional`
+- `users`: `Optional`
+- `projects`: `Optional`
+- `metrics`: `Optional`
+

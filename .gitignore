@@ -136,4 +136,60 @@ dmypy.json
 cython_debug/
 
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Log files
+*.log
+logs/
+
+# Environment files
+.env.local
+.env.production
+.env.staging
+.env.development
+.env.test
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Node.js
+.node/
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Documentation site
+docs_venv/
+docs-site/docs_venv/
+docs-site/.docusaurus/
+docs-site/build/
+
+# OpenAPI
 openapi/
+
+# Project-specific files
+CLAUDE.md
+digest.txt
+plugin-redoc-0.yaml
+
+# Sample directory
+create_flow_sample/

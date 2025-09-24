@@ -1,0 +1,31 @@
+---
+id: nexla_sdk.telemetry
+title: nexla_sdk.telemetry
+slug: /api/python/modules/nexla_sdk/telemetry
+description: API for nexla_sdk.telemetry
+keywords: [Nexla, SDK, Python, API]
+---
+
+Centralized OpenTelemetry utilities for the Nexla SDK.
+
+This module isolates optional OpenTelemetry usage so the SDK works
+without any OpenTelemetry packages installed. If tracing is disabled
+or OpenTelemetry isn't available, a no-op tracer is provided.
+
+## Functions
+
+### `get_tracer(trace_enabled: bool)`
+
+Source: `nexla_sdk/telemetry.py:54`
+
+Return an OpenTelemetry tracer if available and enabled, otherwise a no-op tracer.
+
+### `is_tracing_configured() -> bool`
+
+Source: `nexla_sdk/telemetry.py:79`
+
+Heuristically detect if OpenTelemetry tracing is configured globally.
+
+Returns True when a non-noop tracer provider is set or when common
+OTEL exporter-related environment variables are present.
+

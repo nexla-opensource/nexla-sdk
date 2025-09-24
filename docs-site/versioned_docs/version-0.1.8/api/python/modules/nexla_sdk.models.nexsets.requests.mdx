@@ -1,0 +1,65 @@
+---
+id: nexla_sdk.models.nexsets.requests
+title: nexla_sdk.models.nexsets.requests
+slug: /api/python/modules/nexla_sdk/models/nexsets/requests
+description: API for nexla_sdk.models.nexsets.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+Request models for nexsets.
+
+## Classes
+
+### NexsetCopyOptions
+
+Defined in `nexla_sdk/models/nexsets/requests.py:41`
+
+Options for copying a nexset.
+
+Fields:
+
+- `copy_access_controls`: `bool`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
+
+### NexsetCreate
+
+Defined in `nexla_sdk/models/nexsets/requests.py:7`
+
+Request model for creating a nexset.
+
+Fields:
+
+- `name`: `str`
+- `parent_data_set_id`: `int`
+- `has_custom_transform`: `bool`
+- `transform`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `transform_id`: `typing.Optional[int]`
+- `description`: `typing.Optional[str]`
+- `output_schema_annotations`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `output_schema_validation_enabled`: `bool`
+- `output_validation_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_sinks`: `typing.List[typing.Union[int, typing.Dict[str, typing.Any]]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+
+### NexsetUpdate
+
+Defined in `nexla_sdk/models/nexsets/requests.py:26`
+
+Request model for updating a nexset.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `has_custom_transform`: `typing.Optional[bool]`
+- `transform`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `transform_id`: `typing.Optional[int]`
+- `output_schema_annotations`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `output_schema_validation_enabled`: `typing.Optional[bool]`
+- `output_validation_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_sinks`: `typing.Optional[typing.List[typing.Union[int, typing.Dict[str, typing.Any]]]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.Optional[typing.List[str]]`
+

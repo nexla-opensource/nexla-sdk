@@ -1,0 +1,148 @@
+---
+id: nexla_sdk.models.users
+title: nexla_sdk.models.users
+slug: /api/python/modules/nexla_sdk/models/users
+description: API for nexla_sdk.models.users
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AccountSummary
+
+Defined in `nexla_sdk/models/users/responses.py:42`
+
+User account summary.
+
+Fields:
+
+- `data_sources`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_sets`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_sinks`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_maps`: `typing.Dict[str, typing.Dict[str, int]]`
+
+### DefaultOrg
+
+Defined in `nexla_sdk/models/users/responses.py:7`
+
+User's default organization.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+
+### OrgMembership
+
+Defined in `nexla_sdk/models/users/responses.py:13`
+
+Organization membership details.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `is_admin`: `typing.Optional[bool]`
+- `org_membership_status`: `str`
+- `api_key`: `typing.Optional[str]`
+
+### User
+
+Defined in `nexla_sdk/models/users/responses.py:22`
+
+User response model.
+
+Fields:
+
+- `id`: `int`
+- `email`: `str`
+- `full_name`: `str`
+- `super_user`: `typing.Optional[bool]`
+- `impersonated`: `bool`
+- `default_org`: `DefaultOrg`
+- `user_tier`: `typing.Optional[str]`
+- `status`: `str`
+- `account_locked`: `bool`
+- `org_memberships`: `typing.List[nexla_sdk.models.users.responses.OrgMembership]`
+- `api_key`: `typing.Optional[str]`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### UserCreate
+
+Defined in `nexla_sdk/models/users/requests.py:6`
+
+Request model for creating a user.
+
+Fields:
+
+- `full_name`: `str`
+- `email`: `str`
+- `default_org_id`: `typing.Optional[int]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
+
+### UserExpanded
+
+Defined in `nexla_sdk/models/users/responses.py:50`
+
+User with expanded account summary.
+
+Fields:
+
+- `id`: `int`
+- `email`: `str`
+- `full_name`: `str`
+- `super_user`: `typing.Optional[bool]`
+- `impersonated`: `bool`
+- `default_org`: `DefaultOrg`
+- `user_tier`: `typing.Optional[str]`
+- `status`: `str`
+- `account_locked`: `bool`
+- `org_memberships`: `typing.List[nexla_sdk.models.users.responses.OrgMembership]`
+- `api_key`: `typing.Optional[str]`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `account_summary`: `typing.Optional[nexla_sdk.models.users.responses.AccountSummary]`
+
+### UserSettings
+
+Defined in `nexla_sdk/models/users/responses.py:55`
+
+User settings.
+
+Fields:
+
+- `id`: `str`
+- `owner`: `typing.Dict[str, typing.Any]`
+- `org`: `typing.Dict[str, typing.Any]`
+- `user_settings_type`: `str`
+- `settings`: `typing.Dict[str, typing.Any]`
+
+### UserUpdate
+
+Defined in `nexla_sdk/models/users/requests.py:19`
+
+Request model for updating a user.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `password_confirmation`: `typing.Optional[str]`
+- `password_current`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
+

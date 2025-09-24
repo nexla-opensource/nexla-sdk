@@ -1,29 +1,121 @@
-"""
-Nexla SDK for Python
+"""Nexla Python SDK for data integration and automation."""
 
-A Python SDK for interacting with the Nexla API.
+# Package version
+try:
+    from importlib.metadata import version, PackageNotFoundError  # Python 3.8+
+except Exception:  # pragma: no cover
+    version = None
+    PackageNotFoundError = Exception
 
-Example:
-    from nexla_sdk import NexlaClient
-    
-    client = NexlaClient(service_key="your-service-key")
-    flows = client.flows.list()
-"""
+try:  # Prefer distribution name for accurate version resolution
+    __version__ = version("nexla-sdk") if version else "unknown"
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"
 
-from .client import NexlaClient
-from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError, NexlaValidationError, NexlaClientError, NexlaNotFoundError
-from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
+# Import main client
+from nexla_sdk.client import NexlaClient
 
-__version__ = "0.1.0"
+# Import resources
+from nexla_sdk.resources import (
+    CredentialsResource,
+    FlowsResource,
+    SourcesResource,
+    DestinationsResource,
+    NexsetsResource,
+    LookupsResource,
+    UsersResource,
+    OrganizationsResource,
+    TeamsResource,
+    ProjectsResource,
+    NotificationsResource,
+    MetricsResource,
+)
+
+# Import common models
+from nexla_sdk.models import (
+    BaseModel,
+    Owner,
+    Organization,
+    Connector,
+    LogEntry,
+    FlowNode,
+)
+
+# Import exceptions
+from nexla_sdk.exceptions import (
+    NexlaError,
+    AuthenticationError,
+    AuthorizationError,
+    NotFoundError,
+    ValidationError,
+    RateLimitError,
+    ServerError,
+    ResourceConflictError,
+    CredentialError,
+    FlowError,
+    TransformError,
+)
+
+# Import enums
+from nexla_sdk.models.enums import (
+    AccessRole,
+    ResourceStatus,
+    ResourceType,
+    NotificationLevel,
+    NotificationChannel,
+    UserTier,
+    UserStatus,
+    OrgMembershipStatus,
+    ConnectorCategory,
+)
+
 __all__ = [
-    "NexlaClient",
-    "NexlaError",
-    "NexlaAuthError",
-    "NexlaAPIError",
-    "NexlaValidationError",
-    "NexlaClientError",
-    "NexlaNotFoundError",
-    "HttpClientInterface",
-    "RequestsHttpClient",
-    "HttpClientError"
-] 
+    # Client
+    'NexlaClient',
+    
+    # Resources
+    'CredentialsResource',
+    'FlowsResource',
+    'SourcesResource',
+    'DestinationsResource',
+    'NexsetsResource',
+    'LookupsResource',
+    'UsersResource',
+    'OrganizationsResource',
+    'TeamsResource',
+    'ProjectsResource',
+    'NotificationsResource',
+    'MetricsResource',
+    
+    # Models
+    'BaseModel',
+    'Owner',
+    'Organization',
+    'Connector',
+    'LogEntry',
+    'FlowNode',
+    
+    # Exceptions
+    'NexlaError',
+    'AuthenticationError',
+    'AuthorizationError',
+    'NotFoundError',
+    'ValidationError',
+    'RateLimitError',
+    'ServerError',
+    'ResourceConflictError',
+    'CredentialError',
+    'FlowError',
+    'TransformError',
+    
+    # Enums
+    'AccessRole',
+    'ResourceStatus',
+    'ResourceType',
+    'NotificationLevel',
+    'NotificationChannel',
+    'UserTier',
+    'UserStatus',
+    'OrgMembershipStatus',
+    'ConnectorCategory',
+]

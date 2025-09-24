@@ -1,0 +1,100 @@
+---
+globs: examples/*.py,examples/**/*.py
+---
+
+# Examples Standards for Nexla SDK
+
+## Example Structure
+- Place all examples in the `examples/` directory
+- Use clear, descriptive filenames: `basic_usage.py`, `flow_management.py`
+- Include comprehensive docstrings explaining what each example does
+- Make examples self-contained and runnable
+
+## Authentication Pattern
+- Always show both authentication methods (service key and access token)
+- Use environment variables for credentials with clear documentation
+- Include error handling for missing credentials
+- Example pattern:
+```python
+import os
+from nexla_sdk import NexlaClient
+
+# Option 1: Service key (recommended)
+service_key = os.getenv("NEXLA_SERVICE_KEY")
+if service_key:
+    client = NexlaClient(service_key=service_key)
+else:
+    # Option 2: Access token
+    access_token = os.getenv("NEXLA_ACCESS_TOKEN")
+    if access_token:
+        client = NexlaClient(access_token=access_token)
+    else:
+        raise ValueError("Please set NEXLA_SERVICE_KEY or NEXLA_ACCESS_TOKEN")
+```
+
+## Error Handling
+- Always include proper error handling with specific exception types
+- Show how to handle common API errors
+- Provide helpful error messages
+- Example:
+```python
+try:
+    flows = client.flows.list()
+except NexlaAuthError as e:
+    print(f"Authentication failed: {e}")
+except NexlaAPIError as e:
+    print(f"API error: {e}")
+```
+
+## Documentation
+- Include a clear description at the top of each example
+- Document any prerequisites or setup requirements
+- Explain expected output or behavior
+- Include usage instructions
+
+## Code Quality
+- Follow all Python standards from [python-standards.mdc](mdc:.cursor/rules/python-standards.mdc)
+- Use type hints where appropriate
+- Keep examples focused and concise
+- Include meaningful variable names
+
+## Common Patterns
+- Show real-world usage scenarios
+- Demonstrate error handling
+- Include examples of different API operations
+- Show how to work with paginated results
+- Demonstrate proper resource cleanup when needed
+
+## Example Template
+```python
+"""
+Example: [Brief description]
+
+This example demonstrates [detailed explanation].
+
+Prerequisites:
+- Set NEXLA_SERVICE_KEY or NEXLA_ACCESS_TOKEN environment variable
+- [Any other requirements]
+
+Usage:
+python examples/example_name.py
+"""
+
+import os
+from nexla_sdk import NexlaClient, NexlaAuthError, NexlaAPIError
+
+def main():
+    # Initialize client
+    client = NexlaClient(service_key=os.getenv("NEXLA_SERVICE_KEY"))
+    
+    try:
+        # Your example code here
+        pass
+    except NexlaAuthError as e:
+        print(f"Authentication failed: {e}")
+    except NexlaAPIError as e:
+        print(f"API error: {e}")
+
+if __name__ == "__main__":
+    main()
+```

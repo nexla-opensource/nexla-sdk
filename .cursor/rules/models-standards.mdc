@@ -1,0 +1,78 @@
+---
+globs: nexla_sdk/models/*.py,nexla_sdk/models/*/*.py
+---
+
+# Model Standards for Nexla SDK
+
+## Base Model Pattern
+- **ALWAYS** inherit from `BaseModel` in [base.py](mdc:nexla_sdk/models/base.py)
+- Use Pydantic BaseModel for all model classes
+- Leverage Pydantic's automatic validation and serialization
+- Use `model_validate()` for creating instances from dictionaries
+
+## Field Definitions
+- Use type hints for all fields
+- Use `Optional[Type]` for nullable fields
+- Use `Field(default=None)` for optional fields with custom defaults
+- Use `Field(default_factory=list)` for mutable defaults
+- Example pattern:
+```python
+from pydantic import Field
+from nexla_sdk.models.base import BaseModel
+
+class MyModel(BaseModel):
+    id: Optional[int] = None
+    name: str
+    created_at: Optional[datetime] = None
+    items: List[str] = Field(default_factory=list)
+    tags: List[str] = Field(default_factory=list)
+```
+
+## Validation and Conversion
+- Use `@field_validator` for custom field validation
+- Use `@model_validator` for model-level validation
+- Handle datetime parsing automatically via Pydantic
+- Support both camelCase and snake_case field names with aliases
+- Example:
+```python
+@field_validator('tags', mode='before')
+@classmethod
+def validate_tags(cls, v):
+    if v is None:
+        return []
+    return v
+```
+
+## Serialization
+- Use inherited Pydantic methods for serialization
+- `model_dump()` for dictionary conversion
+- `model_dump_json()` for JSON serialization
+- `model_validate()` for creating instances from data
+
+## Model Configuration
+- Use `model_config = ConfigDict()` for Pydantic v2 configuration
+- Set `extra="allow"` to ignore unknown fields from API responses
+- Set `populate_by_name=True` to support field aliases
+- Set `use_enum_values=True` for enum serialization
+
+## Nested Models
+- Define nested models as separate Pydantic models
+- Use proper type hints for nested structures
+- Support automatic conversion from dicts to nested models via Pydantic
+
+## Enums
+- Place enums in appropriate `enums.py` files
+- Use string enums for API compatibility: `class Status(str, Enum)`
+- Example from [sources/enums.py](mdc:nexla_sdk/models/sources/enums.py)
+
+## File Organization
+- Group related models by domain (credentials, destinations, flows, etc.)
+- Use `requests.py` for request models
+- Use `responses.py` for response models
+- Export models in `__init__.py` files
+
+## Common Patterns
+- Use `common.py` for shared types and utilities
+- Keep models focused on data structure, not business logic
+- Support both creation from API responses and manual instantiation
+- Use `Field(alias="...")` for API field name mapping

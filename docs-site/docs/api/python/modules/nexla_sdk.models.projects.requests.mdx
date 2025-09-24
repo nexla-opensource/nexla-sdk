@@ -1,0 +1,56 @@
+---
+id: nexla_sdk.models.projects.requests
+title: nexla_sdk.models.projects.requests
+slug: /api/python/modules/nexla_sdk/models/projects/requests
+description: API for nexla_sdk.models.projects.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### ProjectCreate
+
+Defined in `nexla_sdk/models/projects/requests.py:12`
+
+Request model for creating a project.
+
+Fields:
+
+- `name`: `str`
+- `description`: `Optional`
+- `data_flows`: `List`
+
+### ProjectFlowIdentifier
+
+Defined in `nexla_sdk/models/projects/requests.py:6`
+
+Flow identifier for project.
+
+Fields:
+
+- `data_source_id`: `Optional`
+- `data_set_id`: `Optional`
+
+### ProjectFlowList
+
+Defined in `nexla_sdk/models/projects/requests.py:26`
+
+Request model for managing project flows.
+
+Fields:
+
+- `data_flows`: `Optional`
+- `flows`: `Optional`
+
+### ProjectUpdate
+
+Defined in `nexla_sdk/models/projects/requests.py:19`
+
+Request model for updating a project.
+
+Fields:
+
+- `name`: `Optional`
+- `description`: `Optional`
+- `data_flows`: `Optional`
+

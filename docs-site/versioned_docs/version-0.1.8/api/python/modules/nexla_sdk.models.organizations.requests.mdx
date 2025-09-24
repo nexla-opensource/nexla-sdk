@@ -1,0 +1,125 @@
+---
+id: nexla_sdk.models.organizations.requests
+title: nexla_sdk.models.organizations.requests
+slug: /api/python/modules/nexla_sdk/models/organizations/requests
+description: API for nexla_sdk.models.organizations.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### OrgMemberActivateDeactivateRequest
+
+Defined in `nexla_sdk/models/organizations/requests.py:71`
+
+Request model for activating/deactivating org members.
+
+Fields:
+
+- `members`: `typing.List[typing.Dict[str, typing.Any]]`
+
+### OrgMemberCreateRequest
+
+Defined in `nexla_sdk/models/organizations/requests.py:12`
+
+Request model for creating an org member.
+
+Fields:
+
+- `full_name`: `str`
+- `email`: `str`
+- `admin`: `bool`
+
+### OrgMemberDelete
+
+Defined in `nexla_sdk/models/organizations/requests.py:66`
+
+Request model for deleting org members.
+
+Fields:
+
+- `members`: `typing.List[nexla_sdk.models.organizations.requests.OrgMemberDeleteRequest]`
+
+### OrgMemberDeleteRequest
+
+Defined in `nexla_sdk/models/organizations/requests.py:59`
+
+Request model for deleting a single org member.
+
+Fields:
+
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `delegate_owner_id`: `typing.Optional[int]`
+
+### OrgMemberList
+
+Defined in `nexla_sdk/models/organizations/requests.py:54`
+
+Request model for updating org members.
+
+Fields:
+
+- `members`: `typing.List[nexla_sdk.models.organizations.requests.OrgMemberUpdate]`
+
+### OrgMemberUpdate
+
+Defined in `nexla_sdk/models/organizations/requests.py:45`
+
+Request model for updating org member.
+
+Fields:
+
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `full_name`: `typing.Optional[str]`
+- `admin`: `typing.Optional[bool]`
+- `access_role`: `typing.Optional[str]`
+
+### OrgOwnerRequest
+
+Defined in `nexla_sdk/models/organizations/requests.py:6`
+
+Request model for specifying an org owner.
+
+Fields:
+
+- `full_name`: `str`
+- `email`: `str`
+
+### OrganizationCreate
+
+Defined in `nexla_sdk/models/organizations/requests.py:19`
+
+Request model for creating an organization.
+
+Fields:
+
+- `name`: `str`
+- `email_domain`: `str`
+- `owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `owner_id`: `typing.Optional[int]`
+- `description`: `typing.Optional[str]`
+- `billing_owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `billing_owner_id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `account_tier_id`: `typing.Optional[int]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.organizations.requests.OrgMemberCreateRequest]]`
+
+### OrganizationUpdate
+
+Defined in `nexla_sdk/models/organizations/requests.py:33`
+
+Request model for updating an organization.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `owner_id`: `typing.Optional[int]`
+- `billing_owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `billing_owner_id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.organizations.requests.OrgMemberCreateRequest]]`
+

@@ -1,0 +1,65 @@
+---
+id: nexla_sdk.models.nexsets.requests
+title: nexla_sdk.models.nexsets.requests
+slug: /api/python/modules/nexla_sdk/models/nexsets/requests
+description: API for nexla_sdk.models.nexsets.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+Request models for nexsets.
+
+## Classes
+
+### NexsetCopyOptions
+
+Defined in `nexla_sdk/models/nexsets/requests.py:41`
+
+Options for copying a nexset.
+
+Fields:
+
+- `copy_access_controls`: `bool`
+- `owner_id`: `Optional`
+- `org_id`: `Optional`
+
+### NexsetCreate
+
+Defined in `nexla_sdk/models/nexsets/requests.py:7`
+
+Request model for creating a nexset.
+
+Fields:
+
+- `name`: `str`
+- `parent_data_set_id`: `int`
+- `has_custom_transform`: `bool`
+- `transform`: `Optional`
+- `transform_id`: `Optional`
+- `description`: `Optional`
+- `output_schema_annotations`: `Optional`
+- `output_schema_validation_enabled`: `bool`
+- `output_validation_schema`: `Optional`
+- `data_sinks`: `List`
+- `custom_config`: `Optional`
+- `tags`: `List`
+
+### NexsetUpdate
+
+Defined in `nexla_sdk/models/nexsets/requests.py:26`
+
+Request model for updating a nexset.
+
+Fields:
+
+- `name`: `Optional`
+- `description`: `Optional`
+- `has_custom_transform`: `Optional`
+- `transform`: `Optional`
+- `transform_id`: `Optional`
+- `output_schema_annotations`: `Optional`
+- `output_schema_validation_enabled`: `Optional`
+- `output_validation_schema`: `Optional`
+- `data_sinks`: `Optional`
+- `custom_config`: `Optional`
+- `tags`: `Optional`
+

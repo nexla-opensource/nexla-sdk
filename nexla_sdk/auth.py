@@ -5,8 +5,8 @@ import logging
 import time
 from typing import Dict, Any, Optional, Union
 
-from .exceptions import NexlaError, NexlaAuthError, NexlaAPIError
-from .http import HttpClientInterface, RequestsHttpClient, HttpClientError
+from .exceptions import NexlaError, AuthenticationError
+from .http_client import HttpClientInterface, RequestsHttpClient, HttpClientError
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +17,8 @@ class TokenAuthHandler:
     
     Supports two authentication flows as per Nexla API documentation:
     
-    1. **Service Key Flow**: Uses service keys to obtain session tokens via POST to 
-       /token endpoint with "Authorization: Basic <Service-Key>". Automatically 
+    1. **Service Key Flow**: Uses service keys to obtain session tokens via POST to
+       /token endpoint with `Authorization: Basic <Service-Key>`. Automatically
        refreshes tokens before expiry using /token/refresh endpoint.
        
     2. **Direct Token Flow**: Uses pre-obtained access tokens directly. These tokens
@@ -35,7 +35,7 @@ class TokenAuthHandler:
     def __init__(self,
                  service_key: Optional[str] = None,
                  access_token: Optional[str] = None,
-                 api_url: str = "https://dataops.nexla.io/nexla-api",
+                 base_url: str = "https://dataops.nexla.io/nexla-api",
                  api_version: str = "v1",
                  token_refresh_margin: int = 3600,
                  http_client: Optional[HttpClientInterface] = None):
@@ -45,13 +45,13 @@ class TokenAuthHandler:
         Args:
             service_key: Nexla service key for authentication (mutually exclusive with access_token)
             access_token: Nexla access token for direct authentication (mutually exclusive with service_key)
-            api_url: Nexla API URL
+            base_url: Nexla API base URL
             api_version: API version to use
-            token_refresh_margin: Seconds before token expiry to trigger refresh (default: 10 minutes)
+            token_refresh_margin: Seconds before token expiry to trigger refresh
             http_client: HTTP client implementation (defaults to RequestsHttpClient)
         """
         self.service_key = service_key
-        self.api_url = api_url.rstrip('/')
+        self.api_url = base_url.rstrip('/')
         self.api_version = api_version
         self.token_refresh_margin = token_refresh_margin
         self.http_client = http_client or RequestsHttpClient()
@@ -62,11 +62,9 @@ class TokenAuthHandler:
             self._access_token = access_token
             self._token_expiry = time.time() + 86400
         else:
-            # Service key authentication
             self._access_token = None
             self._token_expiry = 0
             self._using_direct_token = False
-            self.obtain_session_token()
 
     def get_access_token(self) -> str:
         """
@@ -76,10 +74,10 @@ class TokenAuthHandler:
             Current access token
             
         Raises:
-            NexlaAuthError: If no valid token is available
+            AuthenticationError: If no valid token is available
         """
         if not self._access_token:
-            raise NexlaAuthError("No access token available. Authentication required.")
+            raise AuthenticationError("No access token available. Authentication required.")
         return self._access_token
 
     def obtain_session_token(self) -> None:
@@ -87,13 +85,13 @@ class TokenAuthHandler:
         Obtains a session token using the service key
         
         Raises:
-            NexlaAuthError: If authentication fails or no service key available
+            AuthenticationError: If authentication fails or no service key available
         """
         if self._using_direct_token:
-            raise NexlaAuthError("Cannot obtain session token when using direct access token. Service key required.")
+            raise AuthenticationError("Cannot obtain session token when using direct access token. Service key required.")
             
         if not self.service_key:
-            raise NexlaAuthError("Service key required to obtain session token.")
+            raise AuthenticationError("Service key required to obtain session token.")
             
         url = f"{self.api_url}/token"
         headers = {
@@ -113,7 +111,7 @@ class TokenAuthHandler:
             
         except HttpClientError as e:
             if getattr(e, 'status_code', None) == 401:
-                raise NexlaAuthError("Authentication failed. Check your service key.") from e
+                raise AuthenticationError("Authentication failed. Check your service key.") from e
             
             error_msg = f"Failed to obtain session token: {e}"
             error_data = getattr(e, 'response', {})
@@ -124,7 +122,7 @@ class TokenAuthHandler:
                 elif "error" in error_data:
                     error_msg = f"Authentication error: {error_data['error']}"
                     
-            raise NexlaAPIError(
+            raise NexlaError(
                 error_msg, 
                 status_code=getattr(e, 'status_code', None), 
                 response=error_data
@@ -135,65 +133,14 @@ class TokenAuthHandler:
 
     def refresh_session_token(self) -> None:
         """
-        Refreshes the session token before it expires
-        
-        Works for both service key tokens and direct access tokens since all valid
-        tokens are refreshable according to Nexla API documentation.
-        
-        Raises:
-            NexlaAuthError: If token refresh fails or no token available
+        Refresh token (compat shim).
+        - Direct tokens cannot be refreshed.
+        - Service key mode re-obtains a new token via /token.
         """
-        if not self._access_token:
-            if self._using_direct_token:
-                raise NexlaAuthError("No access token available for refresh")
-            else:
-                self.obtain_session_token()
-                return
-        
-        url = f"{self.api_url}/token/refresh"
-        headers = {
-            "Authorization": f"Bearer {self._access_token}",
-            "Accept": f"application/vnd.nexla.api.{self.api_version}+json",
-            "Content-Length": "0"
-        }
-        
-        try:
-            token_data = self.http_client.request("POST", url, headers=headers)
-            self._access_token = token_data.get("access_token")
-            # Calculate expiry time (current time + expires_in seconds)
-            expires_in = token_data.get("expires_in", 3600)
-            self._token_expiry = time.time() + expires_in
-            
-            logger.debug("Session token refreshed successfully")
-            
-        except HttpClientError as e:
-            if getattr(e, 'status_code', None) == 401:
-                if self._using_direct_token:
-                    # Direct token is invalid, can't obtain a new one
-                    raise NexlaAuthError("Token refresh failed - access token is invalid or expired") from e
-                else:
-                    # Service key token refresh failed, try obtaining a new token
-                    logger.warning("Token refresh failed with 401, obtaining new session token")
-                    self.obtain_session_token()
-                    return
-                
-            error_msg = f"Failed to refresh session token: {e}"
-            error_data = getattr(e, 'response', {})
-            
-            if error_data:
-                if "message" in error_data:
-                    error_msg = f"Token refresh error: {error_data['message']}"
-                elif "error" in error_data:
-                    error_msg = f"Token refresh error: {error_data['error']}"
-                    
-            raise NexlaAPIError(
-                error_msg, 
-                status_code=getattr(e, 'status_code', None), 
-                response=error_data
-            ) from e
-            
-        except Exception as e:
-            raise NexlaError(f"Failed to refresh session token: {e}") from e
+        if self._using_direct_token:
+            raise AuthenticationError("Direct access tokens cannot be refreshed")
+        # For service key, re-obtain a token via /token
+        self.obtain_session_token()
 
     def ensure_valid_token(self) -> str:
         """
@@ -203,21 +150,21 @@ class TokenAuthHandler:
             Current valid access token
             
         Raises:
-            NexlaAuthError: If no token is available or refresh fails
+            AuthenticationError: If no token is available or refresh fails
         """
         if not self._access_token:
             if self._using_direct_token:
-                raise NexlaAuthError("No access token available")
-            else:
-                # Obtain new token using service key
+                raise AuthenticationError("No access token available")
+            # Obtain new token using service key lazily
+            self.obtain_session_token()
+            return self._access_token
+
+        # For service key, if nearing expiry, obtain a fresh token via /token
+        if not self._using_direct_token:
+            current_time = time.time()
+            if (self._token_expiry - current_time) < self.token_refresh_margin:
                 self.obtain_session_token()
-                return self._access_token
-        
-        # Check if token needs refresh (applies to both service key and direct tokens)
-        current_time = time.time()
-        if (self._token_expiry - current_time) < self.token_refresh_margin:
-            self.refresh_session_token()
-                
+
         return self._access_token
         
     def execute_authenticated_request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
@@ -234,8 +181,8 @@ class TokenAuthHandler:
             API response as a dictionary or None for 204 No Content responses
             
         Raises:
-            NexlaAuthError: If authentication fails
-            NexlaAPIError: If the API returns an error
+                    AuthenticationError: If authentication fails
+        ServerError: If the API returns an error
         """
         # Get a valid token
         access_token = self.ensure_valid_token()
@@ -245,23 +192,17 @@ class TokenAuthHandler:
         
         try:
             return self.http_client.request(method, url, headers=headers, **kwargs)
-            
+
         except HttpClientError as e:
             if getattr(e, 'status_code', None) == 401:
-                # If authentication failed, try refreshing the token
-                logger.warning("Request failed with 401, refreshing session token and retrying")
-                try:
-                    self.refresh_session_token()  # Refresh token (works for both service key and direct tokens)
-                    
-                    # Update headers with new token
+                # On 401: if service key mode, obtain new token and retry once
+                if not self._using_direct_token:
+                    logger.warning("401 received; obtaining new session token and retrying once")
+                    self.obtain_session_token()
                     headers["Authorization"] = f"Bearer {self.get_access_token()}"
-                    
-                    # Retry the request with the new token
                     return self.http_client.request(method, url, headers=headers, **kwargs)
-                    
-                except NexlaAuthError:
-                    # If refresh fails, re-raise the original authentication error
-                    raise NexlaAuthError("Authentication failed and token refresh unsuccessful") from e
-            
+                # Direct token cannot be refreshed
+                raise AuthenticationError("Authentication failed (access token invalid or expired)") from e
+
             # For other errors, let the caller handle them
             raise

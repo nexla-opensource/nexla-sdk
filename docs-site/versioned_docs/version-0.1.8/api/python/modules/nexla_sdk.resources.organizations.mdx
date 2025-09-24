@@ -1,0 +1,70 @@
+---
+id: nexla_sdk.resources.organizations
+title: nexla_sdk.resources.organizations
+slug: /api/python/modules/nexla_sdk/resources/organizations
+description: API for nexla_sdk.resources.organizations
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### OrganizationsResource
+
+Defined in `nexla_sdk/resources/organizations.py:14`
+
+Resource for managing organizations.
+
+Methods:
+
+- `activate_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberActivateDeactivateRequest) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:157`
+  - Activate members in an organization.
+- `create(self, data: nexla_sdk.models.organizations.requests.OrganizationCreate) -> nexla_sdk.models.organizations.responses.Organization`
+  - Source: `nexla_sdk/resources/organizations.py:47`
+  - Create a new organization. Note: This is an admin-only operation.
+- `deactivate_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberActivateDeactivateRequest) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:142`
+  - Deactivate members in an organization.
+- `delete(self, org_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/organizations.py:72`
+  - Delete organization.
+- `delete_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberDelete) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/organizations.py:128`
+  - Remove members from organization.
+- `get(self, org_id: int, expand: bool = False) -> nexla_sdk.models.organizations.responses.Organization`
+  - Source: `nexla_sdk/resources/organizations.py:34`
+  - Get single organization by ID.
+- `get_account_summary(self, org_id: int) -> nexla_sdk.models.organizations.responses.AccountSummary`
+  - Source: `nexla_sdk/resources/organizations.py:172`
+  - Get account summary statistics for an organization.
+- `get_audit_log(self, org_id: int, **params) -> List[nexla_sdk.models.common.LogEntry]`
+  - Source: `nexla_sdk/resources/organizations.py:197`
+  - Get audit log for an organization.
+- `get_auth_settings(self, org_id: int) -> List[Dict[str, Any]]`
+  - Source: `nexla_sdk/resources/organizations.py:228`
+  - Get authentication settings for organization.
+- `get_current_account_summary(self) -> nexla_sdk.models.organizations.responses.AccountSummary`
+  - Source: `nexla_sdk/resources/organizations.py:186`
+  - Get account summary for the current organization based on auth token.
+- `get_members(self, org_id: int) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:84`
+  - Get all members in organization.
+- `get_resource_audit_log(self, org_id: int, resource_type: str, **params) -> List[nexla_sdk.models.common.LogEntry]`
+  - Source: `nexla_sdk/resources/organizations.py:212`
+  - Get audit log for a specific resource type within an organization.
+- `list(self, **kwargs) -> List[nexla_sdk.models.organizations.responses.Organization]`
+  - Source: `nexla_sdk/resources/organizations.py:22`
+  - List all organizations.
+- `replace_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberList) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:113`
+  - Replace all members in organization.
+- `update(self, org_id: int, data: nexla_sdk.models.organizations.requests.OrganizationUpdate) -> nexla_sdk.models.organizations.responses.Organization`
+  - Source: `nexla_sdk/resources/organizations.py:59`
+  - Update organization.
+- `update_auth_setting(self, org_id: int, auth_setting_id: int, enabled: bool) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/organizations.py:241`
+  - Enable/disable authentication configuration.
+- `update_members(self, org_id: int, members: nexla_sdk.models.organizations.requests.OrgMemberList) -> List[nexla_sdk.models.organizations.responses.OrgMember]`
+  - Source: `nexla_sdk/resources/organizations.py:98`
+  - Add or update members in organization.
+

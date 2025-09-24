@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Purpose: training, indexing, answering
+Contact: {{CONTACT_EMAIL}}
+

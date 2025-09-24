@@ -1,0 +1,77 @@
+---
+id: nexla_sdk.models.flows
+title: nexla_sdk.models.flows
+slug: /api/python/modules/nexla_sdk/models/flows
+description: API for nexla_sdk.models.flows
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### FlowCopyOptions
+
+Defined in `nexla_sdk/models/flows/requests.py:5`
+
+Options for copying a flow.
+
+Fields:
+
+- `reuse_data_credentials`: `bool`
+- `copy_access_controls`: `bool`
+- `copy_dependent_data_flows`: `bool`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
+
+### FlowElements
+
+Defined in `nexla_sdk/models/flows/responses.py:22`
+
+Flow elements containing all resources.
+
+Fields:
+
+- `code_containers`: `typing.List[typing.Dict[str, typing.Any]]`
+- `data_sources`: `typing.List[nexla_sdk.models.sources.responses.Source]`
+- `data_sets`: `typing.List[nexla_sdk.models.nexsets.responses.Nexset]`
+- `data_sinks`: `typing.List[nexla_sdk.models.destinations.responses.Destination]`
+- `data_credentials`: `typing.List[nexla_sdk.models.credentials.responses.Credential]`
+- `shared_data_sets`: `typing.List[typing.Dict[str, typing.Any]]`
+- `orgs`: `typing.List[typing.Dict[str, typing.Any]]`
+- `users`: `typing.List[typing.Dict[str, typing.Any]]`
+- `projects`: `typing.List[typing.Dict[str, typing.Any]]`
+
+### FlowMetrics
+
+Defined in `nexla_sdk/models/flows/responses.py:12`
+
+Flow metrics information.
+
+Fields:
+
+- `origin_node_id`: `int`
+- `records`: `int`
+- `size`: `int`
+- `errors`: `int`
+- `reporting_date`: `datetime`
+- `run_id`: `int`
+
+### FlowResponse
+
+Defined in `nexla_sdk/models/flows/responses.py:35`
+
+Flow response model.
+
+Fields:
+
+- `flows`: `typing.List[nexla_sdk.models.common.FlowNode]`
+- `code_containers`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `data_sources`: `typing.Optional[typing.List[nexla_sdk.models.sources.responses.Source]]`
+- `data_sets`: `typing.Optional[typing.List[nexla_sdk.models.nexsets.responses.Nexset]]`
+- `data_sinks`: `typing.Optional[typing.List[nexla_sdk.models.destinations.responses.Destination]]`
+- `data_credentials`: `typing.Optional[typing.List[nexla_sdk.models.credentials.responses.Credential]]`
+- `shared_data_sets`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `orgs`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `users`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `projects`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `metrics`: `typing.Optional[typing.List[nexla_sdk.models.flows.responses.FlowMetrics]]`
+

@@ -1,0 +1,82 @@
+---
+id: nexla_sdk.models.lookups
+title: nexla_sdk.models.lookups
+slug: /api/python/modules/nexla_sdk/models/lookups
+description: API for nexla_sdk.models.lookups
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### Lookup
+
+Defined in `nexla_sdk/models/lookups/responses.py:8`
+
+Lookup (data map) response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `map_primary_key`: `str`
+- `owner`: `Owner`
+- `org`: `Organization`
+- `access_roles`: `typing.List[str]`
+- `public`: `bool`
+- `managed`: `bool`
+- `data_type`: `str`
+- `emit_data_default`: `bool`
+- `use_versioning`: `bool`
+- `data_format`: `typing.Optional[str]`
+- `data_sink_id`: `typing.Optional[int]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
+- `data_set_id`: `typing.Optional[int]`
+- `map_entry_count`: `typing.Optional[int]`
+- `map_entry_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### LookupCreate
+
+Defined in `nexla_sdk/models/lookups/requests.py:6`
+
+Request model for creating a lookup.
+
+Fields:
+
+- `name`: `str`
+- `data_type`: `str`
+- `map_primary_key`: `str`
+- `description`: `typing.Optional[str]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
+- `emit_data_default`: `bool`
+- `data_map`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `tags`: `typing.List[str]`
+
+### LookupEntriesUpsert
+
+Defined in `nexla_sdk/models/lookups/requests.py:28`
+
+Request model for upserting lookup entries.
+
+Fields:
+
+- `entries`: `typing.List[typing.Dict[str, typing.Any]]`
+
+### LookupUpdate
+
+Defined in `nexla_sdk/models/lookups/requests.py:18`
+
+Request model for updating a lookup.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `map_primary_key`: `typing.Optional[str]`
+- `data_defaults`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `emit_data_default`: `typing.Optional[bool]`
+- `tags`: `typing.Optional[typing.List[str]]`
+

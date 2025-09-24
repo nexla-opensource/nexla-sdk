@@ -1,0 +1,21 @@
+# Commands used to scaffold and generate docs
+
+# Scaffold (manual files due to missing Node locally)
+# npx create-docusaurus@latest docs-site classic --typescript --package-manager npm
+
+# Install dependencies
+npm install
+
+# Generate API docs from source
+pip install -e ..
+python3 scripts/gen_api_docs.py
+
+# Local dev
+npm run start
+
+# Build
+npm run build
+
+# Versioning
+npm run docusaurus -- docs:version 0.1.8
+

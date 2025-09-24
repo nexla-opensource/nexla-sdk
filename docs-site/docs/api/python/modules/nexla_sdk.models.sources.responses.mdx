@@ -1,0 +1,77 @@
+---
+id: nexla_sdk.models.sources.responses
+title: nexla_sdk.models.sources.responses
+slug: /api/python/modules/nexla_sdk/models/sources/responses
+description: API for nexla_sdk.models.sources.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataSetBrief
+
+Defined in `nexla_sdk/models/sources/responses.py:9`
+
+Brief dataset information.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `Optional`
+- `description`: `Optional`
+- `version`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### RunInfo
+
+Defined in `nexla_sdk/models/sources/responses.py:21`
+
+Run information.
+
+Fields:
+
+- `id`: `int`
+- `created_at`: `datetime`
+
+### Source
+
+Defined in `nexla_sdk/models/sources/responses.py:27`
+
+Data source response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `status`: `str`
+- `source_type`: `str`
+- `connector_type`: `Optional`
+- `owner`: `Optional`
+- `org`: `Optional`
+- `access_roles`: `Optional`
+- `managed`: `Optional`
+- `auto_generated`: `Optional`
+- `connector`: `Optional`
+- `description`: `Optional`
+- `ingest_method`: `Optional`
+- `source_format`: `Optional`
+- `source_config`: `Optional`
+- `poll_schedule`: `Optional`
+- `code_container_id`: `Optional`
+- `data_credentials_id`: `Optional`
+- `data_credentials`: `Optional`
+- `data_sets`: `List`
+- `api_keys`: `List`
+- `run_ids`: `List`
+- `copied_from_id`: `Optional`
+- `flow_type`: `Optional`
+- `has_template`: `Optional`
+- `vendor_endpoint`: `Optional`
+- `vendor`: `Optional`
+- `tags`: `List`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+

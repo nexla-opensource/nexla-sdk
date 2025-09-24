@@ -1,0 +1,83 @@
+---
+id: nexla_sdk.models.destinations.responses
+title: nexla_sdk.models.destinations.responses
+slug: /api/python/modules/nexla_sdk/models/destinations/responses
+description: API for nexla_sdk.models.destinations.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataMapInfo
+
+Defined in `nexla_sdk/models/destinations/responses.py:22`
+
+Basic data map information for destination.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `public`: `bool`
+- `created_at`: `datetime`
+- `updated_at`: `datetime`
+
+### DataSetInfo
+
+Defined in `nexla_sdk/models/destinations/responses.py:10`
+
+Basic dataset information for destination.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `Optional`
+- `status`: `Optional`
+- `output_schema`: `Optional`
+- `version`: `Optional`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### Destination
+
+Defined in `nexla_sdk/models/destinations/responses.py:34`
+
+Destination (data sink) response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `status`: `str`
+- `sink_type`: `str`
+- `connector_type`: `Optional`
+- `owner`: `Optional`
+- `org`: `Optional`
+- `access_roles`: `Optional`
+- `managed`: `Optional`
+- `connector`: `Optional`
+- `description`: `Optional`
+- `data_set_id`: `Optional`
+- `data_map_id`: `Optional`
+- `data_source_id`: `Optional`
+- `sink_format`: `Optional`
+- `sink_config`: `Optional`
+- `sink_schedule`: `Optional`
+- `in_memory`: `bool`
+- `data_set`: `Optional`
+- `data_map`: `Optional`
+- `data_credentials_id`: `Optional`
+- `data_credentials`: `Optional`
+- `copied_from_id`: `Optional`
+- `flow_type`: `Optional`
+- `has_template`: `Optional`
+- `vendor_endpoint`: `Optional`
+- `vendor`: `Optional`
+- `tags`: `List`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+

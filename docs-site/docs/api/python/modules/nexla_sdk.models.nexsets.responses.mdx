@@ -1,0 +1,63 @@
+---
+id: nexla_sdk.models.nexsets.responses
+title: nexla_sdk.models.nexsets.responses
+slug: /api/python/modules/nexla_sdk/models/nexsets/responses
+description: API for nexla_sdk.models.nexsets.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### DataSinkSimplified
+
+Defined in `nexla_sdk/models/nexsets/responses.py:10`
+
+Simplified data sink information.
+
+Fields:
+
+- `id`: `int`
+- `owner_id`: `int`
+- `org_id`: `int`
+- `name`: `str`
+- `status`: `Optional`
+- `sink_type`: `Optional`
+
+### Nexset
+
+Defined in `nexla_sdk/models/nexsets/responses.py:20`
+
+Nexset (data set) response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `Optional`
+- `description`: `Optional`
+- `status`: `Optional`
+- `owner`: `Optional`
+- `org`: `Optional`
+- `access_roles`: `Optional`
+- `flow_type`: `Optional`
+- `data_source_id`: `Optional`
+- `data_source`: `Optional`
+- `parent_data_sets`: `List`
+- `data_sinks`: `List`
+- `transform_id`: `Optional`
+- `output_schema`: `Optional`
+- `copied_from_id`: `Optional`
+- `tags`: `List`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### NexsetSample
+
+Defined in `nexla_sdk/models/nexsets/responses.py:43`
+
+Nexset sample record.
+
+Fields:
+
+- `raw_message`: `Dict`
+- `nexla_metadata`: `Optional`
+

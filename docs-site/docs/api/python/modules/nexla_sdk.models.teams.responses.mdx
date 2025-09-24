@@ -1,0 +1,42 @@
+---
+id: nexla_sdk.models.teams.responses
+title: nexla_sdk.models.teams.responses
+slug: /api/python/modules/nexla_sdk/models/teams/responses
+description: API for nexla_sdk.models.teams.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### Team
+
+Defined in `nexla_sdk/models/teams/responses.py:15`
+
+Team response model.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `str`
+- `owner`: `Owner`
+- `org`: `Organization`
+- `member`: `bool`
+- `members`: `List`
+- `access_roles`: `List`
+- `tags`: `List`
+- `created_at`: `Optional`
+- `updated_at`: `Optional`
+
+### TeamMember
+
+Defined in `nexla_sdk/models/teams/responses.py:8`
+
+Team member information.
+
+Fields:
+
+- `id`: `int`
+- `email`: `str`
+- `admin`: `bool`
+
