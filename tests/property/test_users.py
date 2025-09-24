@@ -1,5 +1,6 @@
 """Property-based tests for UsersResource."""
 
+from datetime import date
 from hypothesis import given, strategies as st, assume
 from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings, OrgMembership
 from nexla_sdk.models.users.requests import UserCreate, UserUpdate
@@ -204,12 +205,12 @@ class TestUsersPropertyTests:
         assert all(isinstance(setting, UserSettings) for setting in settings)
 
     @given(
-        from_date=st.dates(min_value=st.datetime(2020, 1, 1).date(), 
-                          max_value=st.datetime(2025, 12, 31).date()).map(str),
-        to_date=st.one_of(st.none(), 
-                         st.dates(min_value=st.datetime(2020, 1, 1).date(), 
-                                 max_value=st.datetime(2025, 12, 31).date()).map(str)),
-        org_id=st.one_of(st.none(), st.integers(min_value=1, max_value=1000))
+        from_date=st.dates(min_value=date(2020, 1, 1), max_value=date(2025, 12, 31)).map(str),
+        to_date=st.one_of(
+            st.none(),
+            st.dates(min_value=date(2020, 1, 1), max_value=date(2025, 12, 31)).map(str),
+        ),
+        org_id=st.one_of(st.none(), st.integers(min_value=1, max_value=1000)),
     )
     def test_account_metrics_with_various_parameters(self, mock_client, from_date, 
                                                     to_date, org_id):
@@ -241,12 +242,12 @@ class TestUsersPropertyTests:
 
     @given(
         resource_type=st.sampled_from(["SOURCE", "SINK"]),
-        from_date=st.dates(min_value=st.datetime(2020, 1, 1).date(), 
-                          max_value=st.datetime(2025, 12, 31).date()).map(str),
-        to_date=st.one_of(st.none(), 
-                         st.dates(min_value=st.datetime(2020, 1, 1).date(), 
-                                 max_value=st.datetime(2025, 12, 31).date()).map(str)),
-        org_id=st.one_of(st.none(), st.integers(min_value=1, max_value=1000))
+        from_date=st.dates(min_value=date(2020, 1, 1), max_value=date(2025, 12, 31)).map(str),
+        to_date=st.one_of(
+            st.none(),
+            st.dates(min_value=date(2020, 1, 1), max_value=date(2025, 12, 31)).map(str),
+        ),
+        org_id=st.one_of(st.none(), st.integers(min_value=1, max_value=1000)),
     )
     def test_daily_metrics_with_various_parameters(self, mock_client, resource_type, 
                                                   from_date, to_date, org_id):

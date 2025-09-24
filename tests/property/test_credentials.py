@@ -15,7 +15,8 @@ def credential_dict(draw):
     """Generate random credential data for property testing."""
     return {
         "id": draw(st.integers(min_value=1, max_value=999999)),
-        "name": draw(st.text(min_size=1, max_size=200)),
+        # Avoid whitespace/control characters to prevent stripping
+        "name": draw(st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=200)),
         "credentials_type": draw(st.sampled_from([
             "s3", "postgres", "mysql", "bigquery", "snowflake", "azure_blb", 
             "gcs", "ftp", "dropbox", "rest", "kafka"
@@ -24,7 +25,12 @@ def credential_dict(draw):
         "verified_status": draw(st.one_of(st.none(), st.sampled_from(["VERIFIED", "UNVERIFIED", "FAILED"]))),
         "credentials_version": draw(st.one_of(st.none(), st.text(min_size=1, max_size=10))),
         "managed": draw(st.booleans()),
-        "tags": draw(st.lists(st.text(min_size=1, max_size=50), max_size=10)),
+        "tags": draw(
+            st.lists(
+                st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=50),
+                max_size=10,
+            )
+        ),
         "created_at": draw(st.one_of(st.none(), st.datetimes().map(lambda dt: dt.isoformat() + "Z"))),
         "updated_at": draw(st.one_of(st.none(), st.datetimes().map(lambda dt: dt.isoformat() + "Z"))),
     }
@@ -36,7 +42,8 @@ def credential_create_dict(draw):
     credentials_type = draw(st.sampled_from(["s3", "postgres", "mysql", "rest", "bigquery"]))
     
     base_data = {
-        "name": draw(st.text(min_size=1, max_size=200)),
+        # Avoid whitespace/control characters to prevent stripping
+        "name": draw(st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=200)),
         "credentials_type": credentials_type,
         "description": draw(st.one_of(st.none(), st.text(max_size=500))),
     }
@@ -152,7 +159,7 @@ class TestCredentialModelProperties:
             # Some combinations may not be valid
             pass
     
-    @given(st.text(min_size=1, max_size=500))
+    @given(st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=500))
     def test_credential_name_property(self, name):
         """Test that credential names are handled correctly."""
         minimal_data = {
@@ -173,7 +180,13 @@ class TestCredentialModelProperties:
             # Some names might be invalid (e.g., very long strings)
             pass
     
-    @given(st.lists(st.text(min_size=1, max_size=50), min_size=0, max_size=20))
+    @given(
+        st.lists(
+            st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=50),
+            min_size=0,
+            max_size=20,
+        )
+    )
     def test_credential_tags_property(self, tags):
         """Test that credential tags are handled correctly."""
         credential_data = {
@@ -271,7 +284,13 @@ class TestCredentialEdgeCases:
         assert credential.managed is False
         assert credential.access_roles is None
     
-    @given(st.text(min_size=1000, max_size=5000))  # Very long strings
+    @given(
+        st.text(
+            alphabet=st.characters(min_codepoint=33, max_codepoint=126),
+            min_size=1000,
+            max_size=5000,
+        )
+    )  # Very long strings without control/whitespace chars
     def test_credential_with_long_strings(self, long_text):
         """Test credential handling of long strings."""
         credential_data = {

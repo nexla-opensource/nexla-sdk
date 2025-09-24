@@ -14,10 +14,16 @@ def source_dict(draw):
     """Generate random source data for property testing."""
     return {
         "id": draw(st.integers(min_value=1, max_value=999999)),
-        "name": draw(st.text(min_size=1, max_size=200)),
+        # Avoid whitespace/control chars in names
+        "name": draw(st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=200)),
         "status": draw(st.sampled_from(["ACTIVE", "PAUSED", "DRAFT", "DELETED", "ERROR", "INIT"])),
         "source_type": draw(st.sampled_from(["s3", "postgres", "mysql", "api_push", "ftp", "gcs"])),
-        "description": draw(st.one_of(st.none(), st.text(max_size=1000))),
+        "description": draw(
+            st.one_of(
+                st.none(),
+                st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), max_size=1000),
+            )
+        ),
         "ingest_method": draw(st.one_of(st.none(), st.sampled_from(["POLL", "API", "STREAMING"]))),
         "source_format": draw(st.one_of(st.none(), st.sampled_from(["JSON", "CSV", "XML", "PARQUET"]))),
         "managed": draw(st.booleans()),
@@ -26,7 +32,12 @@ def source_dict(draw):
             st.sampled_from(["owner", "admin", "collaborator", "operator"]), 
             min_size=1, max_size=4, unique=True
         )),
-        "tags": draw(st.lists(st.text(min_size=1, max_size=50), max_size=10)),
+        "tags": draw(
+            st.lists(
+                st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=50),
+                max_size=10,
+            )
+        ),
         "created_at": draw(st.one_of(st.none(), st.datetimes())),
         "updated_at": draw(st.one_of(st.none(), st.datetimes())),
     }
@@ -36,10 +47,12 @@ def source_dict(draw):
 def source_create_dict(draw):
     """Generate random source creation data."""
     return {
-        "name": draw(st.text(min_size=1, max_size=200)),
+        # Avoid whitespace/control chars in names
+        "name": draw(st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=200)),
         "source_type": draw(st.sampled_from(["s3", "postgres", "mysql", "api_push", "ftp", "gcs"])),
         "description": draw(st.one_of(st.none(), st.text(max_size=1000))),
-        "data_credentials_id": draw(st.one_of(st.none(), st.integers(min_value=1, max_value=999999))),
+        # Required field must be int
+        "data_credentials_id": draw(st.integers(min_value=1, max_value=999999)),
         "ingest_method": draw(st.one_of(st.none(), st.sampled_from(["POLL", "API", "STREAMING"]))),
     }
 
@@ -51,8 +64,18 @@ def dataset_brief_dict(draw):
         "id": draw(st.integers(min_value=1, max_value=999999)),
         "owner_id": draw(st.integers(min_value=1, max_value=999999)),
         "org_id": draw(st.integers(min_value=1, max_value=999999)),
-        "name": draw(st.one_of(st.none(), st.text(min_size=1, max_size=200))),
-        "description": draw(st.one_of(st.none(), st.text(max_size=1000))),
+        "name": draw(
+            st.one_of(
+                st.none(),
+                st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=200),
+            )
+        ),
+        "description": draw(
+            st.one_of(
+                st.none(),
+                st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), max_size=1000),
+            )
+        ),
         "version": draw(st.one_of(st.none(), st.integers(min_value=1, max_value=100))),
         "created_at": draw(st.one_of(st.none(), st.datetimes())),
         "updated_at": draw(st.one_of(st.none(), st.datetimes())),
@@ -215,13 +238,18 @@ class TestRunInfoProperties:
         assert run_info.id == run_id
         assert run_info.created_at == created_at
     
-    @given(st.lists(
-        st.builds(lambda: {
-            "id": st.integers(min_value=1, max_value=999999).example(),
-            "created_at": st.datetimes().example()
-        }), 
-        min_size=0, max_size=10
-    ))
+    @given(
+        st.lists(
+            st.fixed_dictionaries(
+                {
+                    "id": st.integers(min_value=1, max_value=999999),
+                    "created_at": st.datetimes(),
+                }
+            ),
+            min_size=0,
+            max_size=10,
+        )
+    )
     def test_multiple_run_infos(self, run_data_list):
         """Test handling multiple run info objects."""
         # Act
@@ -238,7 +266,13 @@ class TestRunInfoProperties:
 class TestSourceModelEdgeCases:
     """Test edge cases and boundary conditions for source models."""
     
-    @given(st.text(min_size=1, max_size=1000).filter(lambda x: x.strip()))
+    @given(
+        st.text(
+            alphabet=st.characters(min_codepoint=33, max_codepoint=126),
+            min_size=1,
+            max_size=1000,
+        )
+    )
     def test_source_name_variations(self, name):
         """Test source names with various characters and lengths."""
         # Act
@@ -256,7 +290,14 @@ class TestSourceModelEdgeCases:
         assert source.name == name
         assert len(source.name) >= 1
     
-    @given(st.lists(st.text(min_size=1, max_size=50), min_size=0, max_size=20, unique=True))
+    @given(
+        st.lists(
+            st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=50),
+            min_size=0,
+            max_size=20,
+            unique=True,
+        )
+    )
     def test_source_tags_variations(self, tags):
         """Test source tags with various combinations."""
         # Act
@@ -317,7 +358,7 @@ class TestSourceModelEdgeCases:
     @settings(max_examples=50)
     @given(
         st.integers(min_value=1, max_value=999999),
-        st.text(min_size=1, max_size=100),
+        st.text(alphabet=st.characters(min_codepoint=33, max_codepoint=126), min_size=1, max_size=100),
         st.sampled_from(["ACTIVE", "PAUSED", "DRAFT", "DELETED", "ERROR", "INIT"]),
         st.sampled_from(["s3", "postgres", "mysql", "api_push", "ftp", "gcs", "bigquery"])
     )

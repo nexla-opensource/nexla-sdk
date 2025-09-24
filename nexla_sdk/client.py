@@ -302,15 +302,23 @@ class NexlaClient:
             elif "error" in error_data:
                 error_msg = f"API error: {error_data['error']}"
         
-        # Extract resource information from path
-        resource_type = "unknown"
+        # Extract resource information (prefer server-provided fields, fallback to path)
+        resource_type = None
         resource_id = None
-        if path:
-            path_parts = path.strip('/').split('/')
-            if len(path_parts) >= 1:
-                resource_type = path_parts[0]
-            if len(path_parts) >= 2 and path_parts[1].isdigit():
-                resource_id = path_parts[1]
+        if isinstance(error_data, dict):
+            resource_type = error_data.get("resource_type") or None
+            resource_id = error_data.get("resource_id") or None
+        if not resource_type or not resource_id:
+            # Fallback to parsing the path
+            if path:
+                path_parts = path.strip('/').split('/')
+                if not resource_type and len(path_parts) >= 1:
+                    resource_type = path_parts[0]
+                if not resource_id and len(path_parts) >= 2 and path_parts[1].isdigit():
+                    resource_id = path_parts[1]
+        # Final defaults
+        if not resource_type:
+            resource_type = "unknown"
         
         # Build context
         context = {

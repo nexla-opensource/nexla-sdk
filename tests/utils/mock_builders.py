@@ -430,22 +430,25 @@ class MockResponseBuilder:
         """Build a probe tree response."""
         base = {
             "status": "ok",
+            "message": "Tree probe completed",
             "connection_type": connection_type,
-            "tree": [
-                {
-                    "name": "folder1",
-                    "type": "folder",
-                    "path": "/folder1",
-                    "children": [
-                        {
-                            "name": "file1.csv",
-                            "type": "file",
-                            "path": "/folder1/file1.csv",
-                            "size": 1024
-                        }
-                    ]
-                }
-            ]
+            "object": {
+                "tree": [
+                    {
+                        "name": "folder1",
+                        "type": "folder",
+                        "path": "/folder1",
+                        "children": [
+                            {
+                                "name": "file1.csv",
+                                "type": "file",
+                                "path": "/folder1/file1.csv",
+                                "size": 1024
+                            }
+                        ]
+                    }
+                ]
+            }
         }
         base.update(overrides)
         return base
@@ -455,17 +458,20 @@ class MockResponseBuilder:
         """Build a probe sample response."""
         base = {
             "status": "ok",
+            "message": "Sample probe completed",
             "connection_type": connection_type,
-            "sample_data": [
-                {"id": 1, "name": "Sample Row 1", "value": 100},
-                {"id": 2, "name": "Sample Row 2", "value": 200}
-            ],
-            "schema": {
-                "fields": [
-                    {"name": "id", "type": "integer"},
-                    {"name": "name", "type": "string"},
-                    {"name": "value", "type": "integer"}
-                ]
+            "output": {
+                "sample_data": [
+                    {"id": 1, "name": "Sample Row 1", "value": 100},
+                    {"id": 2, "name": "Sample Row 2", "value": 200}
+                ],
+                "schema": {
+                    "fields": [
+                        {"name": "id", "type": "integer"},
+                        {"name": "name", "type": "string"},
+                        {"name": "value", "type": "integer"}
+                    ]
+                }
             }
         }
         base.update(overrides)

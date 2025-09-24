@@ -4,7 +4,9 @@ import pytest
 from pydantic import ValidationError
 
 from nexla_sdk.exceptions import (
-    ServerError, NotFoundError
+    ServerError,
+    NotFoundError,
+    ValidationError as SDKValidationError,
 )
 from nexla_sdk.models.sources.responses import Source, DataSetBrief, RunInfo
 from nexla_sdk.models.sources.requests import SourceCreate, SourceUpdate, SourceCopyOptions
@@ -331,7 +333,7 @@ class TestSourcesErrorHandling:
         mock_http_client.add_response("/data_sources", error)
         
         # Act & Assert
-        with pytest.raises(ServerError) as exc_info:
+        with pytest.raises(SDKValidationError) as exc_info:
             mock_client.sources.create({"invalid": "data"})
         
         assert exc_info.value.status_code == 400
@@ -345,7 +347,8 @@ class TestSourcesErrorHandling:
         mock_http_client.add_response(f"/data_sources/{source_id}", error)
         
         # Act & Assert
-        with pytest.raises(ServerError) as exc_info:
+        from nexla_sdk.exceptions import AuthorizationError
+        with pytest.raises(AuthorizationError) as exc_info:
             mock_client.sources.update(source_id, {"name": "New Name"})
         
         assert exc_info.value.status_code == 403

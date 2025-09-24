@@ -4,7 +4,14 @@ import pytest
 from pydantic import ValidationError
 
 from nexla_sdk.exceptions import (
-    AuthenticationError, ServerError, NotFoundError, NexlaError
+    AuthenticationError,
+    ServerError,
+    NotFoundError,
+    NexlaError,
+    AuthorizationError,
+    ValidationError as SDKValidationError,
+    ResourceConflictError,
+    RateLimitError,
 )
 from nexla_sdk.http_client import HttpClientError
 from nexla_sdk.models.credentials.responses import Credential, ProbeTreeResponse, ProbeSampleResponse
@@ -275,11 +282,11 @@ class TestCredentialsErrorHandling:
         assert exc_info.value.status_code == 500
     
     @pytest.mark.parametrize("status_code,expected_exception", [
-        (400, ServerError),
-        (403, ServerError),
+        (400, SDKValidationError),
+        (403, AuthorizationError),
         (404, NotFoundError),
-        (409, ServerError),
-        (429, ServerError),
+        (409, ResourceConflictError),
+        (429, RateLimitError),
         (500, ServerError),
     ])
     def test_various_http_errors_during_list(self, mock_client, mock_http_client, status_code, expected_exception):

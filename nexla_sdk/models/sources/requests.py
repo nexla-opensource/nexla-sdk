@@ -7,7 +7,7 @@ class SourceCreate(BaseModel):
     """Request model for creating a source."""
     name: str
     source_type: str
-    data_credentials_id: int
+    data_credentials_id: Optional[int] = None
     description: Optional[str] = None
 
     # For Core Connectors
