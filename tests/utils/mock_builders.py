@@ -874,6 +874,59 @@ class MockDataFactory:
         flow_kwargs = {k: v for k, v in kwargs.items() if k != "include_elements"}
         base.update(flow_kwargs)
         return base
+    
+    def create_mock_flow_metrics(self, **kwargs) -> Dict[str, Any]:
+        """Create mock flow metrics data.
+        
+        Matches the FlowMetrics model from nexla_sdk.models.flows.responses.
+        """
+        return {
+            "origin_node_id": kwargs.get("origin_node_id", self.fake.random_int(1, 10000)),
+            "records": kwargs.get("records", self.fake.random_int(100, 10000)),
+            "size": kwargs.get("size", self.fake.random_int(1000, 1000000)),
+            "errors": kwargs.get("errors", self.fake.random_int(0, 100)),
+            "reporting_date": kwargs.get("reporting_date", self.fake.date_time(tzinfo=timezone.utc).isoformat()),
+            "run_id": kwargs.get("run_id", self.fake.random_int(1, 10000))
+        }
+    
+    def create_mock_flow_node(self, max_depth: int = 3, current_depth: int = 0, **kwargs) -> Dict[str, Any]:
+        """Create mock flow node data with optional nested children.
+        
+        Args:
+            max_depth: Maximum depth of nested children
+            current_depth: Current depth in the tree (used internally for recursion)
+            **kwargs: Additional override fields
+        """
+        node_id = kwargs.get("id", self.fake.random_int(1, 10000))
+        
+        base = {
+            "id": node_id,
+            "origin_node_id": kwargs.get("origin_node_id", self.fake.random_int(1, 10000)),
+            "parent_node_id": kwargs.get("parent_node_id", None if current_depth == 0 else self.fake.random_int(1, 10000)),
+            "data_source_id": kwargs.get("data_source_id", self.fake.random_int(1, 10000) if self.fake.boolean() else None),
+            "data_set_id": kwargs.get("data_set_id", self.fake.random_int(1, 10000) if self.fake.boolean() else None),
+            "data_sink_id": kwargs.get("data_sink_id", self.fake.random_int(1, 10000) if self.fake.boolean() else None),
+            "status": kwargs.get("status", self.fake.random_element(["ACTIVE", "PAUSED", "ERROR"])),
+            "project_id": kwargs.get("project_id", self.fake.random_int(1, 1000) if self.fake.boolean() else None),
+            "flow_type": kwargs.get("flow_type", self.fake.random_element(["batch", "streaming"])),
+            "ingestion_mode": kwargs.get("ingestion_mode", "POLL"),
+            "name": kwargs.get("name", f"Flow Node {self.fake.random_int(1, 100)}"),
+            "description": kwargs.get("description", self.fake.sentence() if self.fake.boolean() else None),
+            "children": []
+        }
+        
+        # Add children if not at max depth
+        if current_depth < max_depth and self.fake.boolean(chance_of_getting_true=60):
+            num_children = self.fake.random_int(1, 2)  # 1-2 children per node
+            for _ in range(num_children):
+                child = self.create_mock_flow_node(
+                    max_depth=max_depth, 
+                    current_depth=current_depth + 1,
+                    parent_node_id=node_id
+                )
+                base["children"].append(child)
+        
+        return base
 
 
 # Utility functions for list generation

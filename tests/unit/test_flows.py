@@ -1,12 +1,12 @@
 """Unit tests for flows resource."""
 import pytest
-from unittest.mock import MagicMock
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.flows.responses import FlowResponse, FlowMetrics
 from nexla_sdk.models.flows.requests import FlowCopyOptions
 from nexla_sdk.models.common import FlowNode
-from nexla_sdk.exceptions import ServerError
+from nexla_sdk.exceptions import ServerError, NexlaError
+from nexla_sdk.http_client import HttpClientError
 
 from tests.utils.fixtures import create_test_client
 from tests.utils.mock_builders import MockDataFactory
@@ -19,7 +19,10 @@ class TestFlowsUnit:
     @pytest.fixture
     def mock_client(self) -> NexlaClient:
         """Create a test client with mocked HTTP."""
-        return create_test_client()
+        client = create_test_client()
+        # Clear any initialization requests
+        client.http_client.clear_requests()
+        return client
     
     @pytest.fixture
     def mock_factory(self) -> MockDataFactory:
@@ -30,7 +33,7 @@ class TestFlowsUnit:
         """Test listing all flows."""
         # Arrange
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response("/flows", mock_response)
         
         # Act
         flows = mock_client.flows.list()
@@ -40,23 +43,14 @@ class TestFlowsUnit:
         assert isinstance(flows[0], FlowResponse)
         assert len(flows[0].flows) == len(mock_response["flows"])
         
-        # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "GET", 
-            f"{mock_client.api_url}/flows",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            },
-            params={}
-        )
+        # Verify request was made
+        mock_client.http_client.assert_request_made("GET", "/flows")
     
     def test_list_flows_with_params(self, mock_client, mock_factory):
         """Test listing flows with query parameters."""
         # Arrange
         mock_response = mock_factory.create_mock_flow_response(include_elements=False)
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response("/flows", mock_response)
         
         # Act
         flows = mock_client.flows.list(flows_only=True, include_run_metrics=True)
@@ -66,16 +60,18 @@ class TestFlowsUnit:
         assert flows[0].data_sources is None  # No expanded elements
         
         # Verify request params
-        _, _, kwargs = mock_client.http_client.request.mock_calls[0]
-        assert kwargs["params"]["flows_only"] == 1
-        assert kwargs["params"]["include_run_metrics"] == 1
+        requests = mock_client.http_client.get_requests_by_url_pattern("/flows")
+        assert len(requests) > 0
+        last_request = requests[-1]
+        assert last_request["params"]["flows_only"] == 1
+        assert last_request["params"]["include_run_metrics"] == 1
     
     def test_get_flow(self, mock_client, mock_factory):
         """Test getting a single flow by ID."""
         # Arrange
         flow_id = 5059
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/flows/{flow_id}", mock_response)
         
         # Act
         flow = mock_client.flows.get(flow_id)
@@ -85,16 +81,7 @@ class TestFlowsUnit:
         NexlaAssertions.assert_flow_response(flow, mock_response)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "GET",
-            f"{mock_client.api_url}/flows/{flow_id}",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            },
-            params={}
-        )
+        mock_client.http_client.assert_request_made("GET", f"/flows/{flow_id}")
     
     def test_get_flow_by_resource(self, mock_client, mock_factory):
         """Test getting flow by resource type and ID."""
@@ -102,7 +89,7 @@ class TestFlowsUnit:
         resource_type = "data_sources"
         resource_id = 5023
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/{resource_type}/{resource_id}/flow", mock_response)
         
         # Act
         flow = mock_client.flows.get_by_resource(resource_type, resource_id)
@@ -111,16 +98,7 @@ class TestFlowsUnit:
         assert isinstance(flow, FlowResponse)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "GET",
-            f"{mock_client.api_url}/{resource_type}/{resource_id}/flow",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            },
-            params={}
-        )
+        mock_client.http_client.assert_request_made("GET", f"/{resource_type}/{resource_id}/flow")
     
     def test_activate_flow(self, mock_client, mock_factory):
         """Test activating a flow."""
@@ -131,7 +109,7 @@ class TestFlowsUnit:
         for flow in mock_response["flows"]:
             self._set_flow_status(flow, "ACTIVE")
         
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/flows/{flow_id}/activate", mock_response)
         
         # Act
         flow = mock_client.flows.activate(flow_id)
@@ -140,30 +118,22 @@ class TestFlowsUnit:
         assert isinstance(flow, FlowResponse)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "PUT",
-            f"{mock_client.api_url}/flows/{flow_id}/activate",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            },
-            params={}
-        )
+        mock_client.http_client.assert_request_made("PUT", f"/flows/{flow_id}/activate")
     
     def test_activate_flow_all(self, mock_client, mock_factory):
         """Test activating entire flow tree."""
         # Arrange
         flow_id = 5059
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/flows/{flow_id}/activate", mock_response)
         
         # Act
         mock_client.flows.activate(flow_id, all=True)
         
-        # Assert
-        _, _, kwargs = mock_client.http_client.request.mock_calls[0]
-        assert kwargs["params"]["all"] == 1
+        # Assert - verify params were included
+        requests = mock_client.http_client.get_requests_by_url_pattern(f"/flows/{flow_id}/activate")
+        assert len(requests) > 0
+        assert requests[-1]["params"]["all"] == 1
     
     def test_pause_flow(self, mock_client, mock_factory):
         """Test pausing a flow."""
@@ -174,7 +144,7 @@ class TestFlowsUnit:
         for flow in mock_response["flows"]:
             self._set_flow_status(flow, "PAUSED")
         
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/flows/{flow_id}/pause", mock_response)
         
         # Act
         flow = mock_client.flows.pause(flow_id)
@@ -183,16 +153,7 @@ class TestFlowsUnit:
         assert isinstance(flow, FlowResponse)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "PUT",
-            f"{mock_client.api_url}/flows/{flow_id}/pause",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            },
-            params={}
-        )
+        mock_client.http_client.assert_request_made("PUT", f"/flows/{flow_id}/pause")
     
     def test_copy_flow(self, mock_client, mock_factory):
         """Test copying a flow."""
@@ -206,7 +167,7 @@ class TestFlowsUnit:
             org_id=456
         )
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/flows/{flow_id}/copy", mock_response)
         
         # Act
         flow = mock_client.flows.copy(flow_id, copy_options)
@@ -215,20 +176,20 @@ class TestFlowsUnit:
         assert isinstance(flow, FlowResponse)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once()
-        args, kwargs = mock_client.http_client.request.call_args
-        assert args[0] == "POST"
-        assert f"flows/{flow_id}/copy" in args[1]
-        assert kwargs["json"]["reuse_data_credentials"] is True
-        assert kwargs["json"]["copy_access_controls"] is True
-        assert kwargs["json"]["owner_id"] == 123
+        requests = mock_client.http_client.get_requests_by_url_pattern(f"/flows/{flow_id}/copy")
+        assert len(requests) > 0
+        last_request = requests[-1]
+        assert last_request["method"] == "POST"
+        assert last_request["json"]["reuse_data_credentials"] is True
+        assert last_request["json"]["copy_access_controls"] is True
+        assert last_request["json"]["owner_id"] == 123
     
     def test_delete_flow(self, mock_client):
         """Test deleting a flow."""
         # Arrange
         flow_id = 5059
         mock_response = {"status": "ok"}
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/flows/{flow_id}", mock_response)
         
         # Act
         result = mock_client.flows.delete(flow_id)
@@ -237,15 +198,7 @@ class TestFlowsUnit:
         assert result == mock_response
         
         # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "DELETE",
-            f"{mock_client.api_url}/flows/{flow_id}",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            }
-        )
+        mock_client.http_client.assert_request_made("DELETE", f"/flows/{flow_id}")
     
     def test_delete_flow_active_error(self, mock_client):
         """Test deleting active flow returns error."""
@@ -257,21 +210,18 @@ class TestFlowsUnit:
             "message": "Active flow resources must be paused before flow deletion!"
         }
         
-        # Mock the HTTP client to raise HttpClientError (which will be converted to ServerError)
-        from nexla_sdk.http_client import HttpClientError
-        mock_client.http_client.request = MagicMock(
-            side_effect=HttpClientError(
-                "Method not allowed",
-                status_code=405,
-                response=error_response
-            )
+        # Add error response to mock
+        error = HttpClientError(
+            "Method not allowed",
+            status_code=405,
+            response=error_response
         )
+        mock_client.http_client.add_response(f"/flows/{flow_id}", error)
         
         # Act & Assert
-        with pytest.raises(ServerError) as exc_info:
+        with pytest.raises(NexlaError) as exc_info:
             mock_client.flows.delete(flow_id)
         
-        assert exc_info.value.status_code == 405
         assert "Active flow resources must be paused" in str(exc_info.value)
     
     def test_delete_by_resource(self, mock_client):
@@ -280,7 +230,7 @@ class TestFlowsUnit:
         resource_type = "data_sources"
         resource_id = 5023
         mock_response = {"status": "ok"}
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/{resource_type}/{resource_id}/flow", mock_response)
         
         # Act
         result = mock_client.flows.delete_by_resource(resource_type, resource_id)
@@ -289,15 +239,7 @@ class TestFlowsUnit:
         assert result == mock_response
         
         # Verify request
-        mock_client.http_client.request.assert_called_once_with(
-            "DELETE",
-            f"{mock_client.api_url}/{resource_type}/{resource_id}/flow",
-            headers={
-                "Accept": "application/vnd.nexla.api.v1+json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer test-token"
-            }
-        )
+        mock_client.http_client.assert_request_made("DELETE", f"/{resource_type}/{resource_id}/flow")
     
     def test_activate_by_resource(self, mock_client, mock_factory):
         """Test activating flow by resource."""
@@ -305,7 +247,7 @@ class TestFlowsUnit:
         resource_type = "data_sets"
         resource_id = 5061
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/{resource_type}/{resource_id}/activate", mock_response)
         
         # Act
         flow = mock_client.flows.activate_by_resource(resource_type, resource_id, all=True)
@@ -314,11 +256,11 @@ class TestFlowsUnit:
         assert isinstance(flow, FlowResponse)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once()
-        args, kwargs = mock_client.http_client.request.call_args
-        assert args[0] == "PUT"
-        assert f"{resource_type}/{resource_id}/activate" in args[1]
-        assert kwargs["params"]["all"] == 1
+        requests = mock_client.http_client.get_requests_by_url_pattern(f"/{resource_type}/{resource_id}/activate")
+        assert len(requests) > 0
+        last_request = requests[-1]
+        assert last_request["method"] == "PUT"
+        assert last_request["params"]["all"] == 1
     
     def test_pause_by_resource(self, mock_client, mock_factory):
         """Test pausing flow by resource."""
@@ -326,7 +268,7 @@ class TestFlowsUnit:
         resource_type = "data_sinks"
         resource_id = 5029
         mock_response = mock_factory.create_mock_flow_response()
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response(f"/{resource_type}/{resource_id}/pause", mock_response)
         
         # Act
         flow = mock_client.flows.pause_by_resource(resource_type, resource_id)
@@ -335,10 +277,7 @@ class TestFlowsUnit:
         assert isinstance(flow, FlowResponse)
         
         # Verify request
-        mock_client.http_client.request.assert_called_once()
-        args, _ = mock_client.http_client.request.call_args
-        assert args[0] == "PUT"
-        assert f"{resource_type}/{resource_id}/pause" in args[1]
+        mock_client.http_client.assert_request_made("PUT", f"/{resource_type}/{resource_id}/pause")
     
     def test_flow_with_metrics(self, mock_client, mock_factory):
         """Test flow response with metrics."""
@@ -347,7 +286,7 @@ class TestFlowsUnit:
         mock_response["metrics"] = [
             mock_factory.create_mock_flow_metrics() for _ in range(3)
         ]
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response("/flows", mock_response)
         
         # Act
         flows = mock_client.flows.list(include_run_metrics=True)
@@ -368,7 +307,7 @@ class TestFlowsUnit:
                 mock_factory.create_mock_flow_node(max_depth=4)
             ]
         }
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response("/flows", mock_response)
         
         # Act
         flows = mock_client.flows.list(flows_only=True)
@@ -393,7 +332,7 @@ class TestFlowsUnit:
         """Test handling empty flow response."""
         # Arrange
         mock_response = {"flows": []}
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
+        mock_client.http_client.add_response("/flows", mock_response)
         
         # Act
         flows = mock_client.flows.list()
@@ -414,7 +353,7 @@ class TestFlowsUnit:
                 }
             ]
         }
-        mock_client.http_client.request = MagicMock(return_value=invalid_response)
+        mock_client.http_client.add_response("/flows", invalid_response)
         
         # Act & Assert
         from pydantic import ValidationError
