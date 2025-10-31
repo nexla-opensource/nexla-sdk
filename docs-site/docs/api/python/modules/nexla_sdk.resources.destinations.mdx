@@ -17,27 +17,27 @@ Resource for managing destinations (data sinks).
 Methods:
 
 - `activate(self, sink_id: int) -> nexla_sdk.models.destinations.responses.Destination`
-  - Source: `nexla_sdk/resources/destinations.py:77`
+  - Source: `nexla_sdk/resources/destinations.py:89`
   - Activate destination.
 - `copy(self, sink_id: int, options: Optional[nexla_sdk.models.destinations.requests.DestinationCopyOptions] = None) -> nexla_sdk.models.destinations.responses.Destination`
-  - Source: `nexla_sdk/resources/destinations.py:101`
+  - Source: `nexla_sdk/resources/destinations.py:113`
   - Copy a destination.
 - `create(self, data: nexla_sdk.models.destinations.requests.DestinationCreate) -> nexla_sdk.models.destinations.responses.Destination`
-  - Source: `nexla_sdk/resources/destinations.py:40`
+  - Source: `nexla_sdk/resources/destinations.py:49`
   - Create new destination.
 - `delete(self, sink_id: int) -> Dict[str, Any]`
-  - Source: `nexla_sdk/resources/destinations.py:65`
+  - Source: `nexla_sdk/resources/destinations.py:77`
   - Delete destination.
 - `get(self, sink_id: int, expand: bool = False) -> nexla_sdk.models.destinations.responses.Destination`
-  - Source: `nexla_sdk/resources/destinations.py:27`
+  - Source: `nexla_sdk/resources/destinations.py:33`
   - Get single destination by ID.
 - `list(self, **kwargs) -> List[nexla_sdk.models.destinations.responses.Destination]`
   - Source: `nexla_sdk/resources/destinations.py:15`
-  - List all destinations.
+  - List destinations with optional filters.
 - `pause(self, sink_id: int) -> nexla_sdk.models.destinations.responses.Destination`
-  - Source: `nexla_sdk/resources/destinations.py:89`
+  - Source: `nexla_sdk/resources/destinations.py:101`
   - Pause destination.
 - `update(self, sink_id: int, data: nexla_sdk.models.destinations.requests.DestinationUpdate) -> nexla_sdk.models.destinations.responses.Destination`
-  - Source: `nexla_sdk/resources/destinations.py:52`
+  - Source: `nexla_sdk/resources/destinations.py:64`
   - Update destination.
 

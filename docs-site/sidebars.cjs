@@ -34,7 +34,8 @@ const sidebars = {
       items: [
         'guides/connect-to-top-integrations',
         'guides/create-and-monitor-pipeline',
-        'guides/transformations-schema-mapping'
+        'guides/transformations-schema-mapping',
+        'guides/coverage'
       ]
     },
     {

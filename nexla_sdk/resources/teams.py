@@ -14,13 +14,19 @@ class TeamsResource(BaseResource):
     
     def list(self, **kwargs) -> List[Team]:
         """
-        List all teams.
+        List teams with optional filters.
         
         Args:
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of teams
+
+        Examples:
+            client.teams.list(page=2, per_page=50)
         """
         return super().list(**kwargs)
     
@@ -34,6 +40,9 @@ class TeamsResource(BaseResource):
         
         Returns:
             Team instance
+        
+        Examples:
+            client.teams.get(101)
         """
         return super().get(team_id, expand)
     
@@ -46,6 +55,9 @@ class TeamsResource(BaseResource):
         
         Returns:
             Created team
+        
+        Examples:
+            team = client.teams.create(TeamCreate(name="Data Ops"))
         """
         return super().create(data)
     

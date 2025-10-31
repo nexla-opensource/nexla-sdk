@@ -22,21 +22,21 @@ Fields:
 - `map_primary_key`: `str`
 - `owner`: `Owner`
 - `org`: `Organization`
-- `access_roles`: `List`
+- `access_roles`: `typing.List[str]`
 - `public`: `bool`
 - `managed`: `bool`
 - `data_type`: `str`
 - `emit_data_default`: `bool`
 - `use_versioning`: `bool`
-- `data_format`: `Optional`
-- `data_sink_id`: `Optional`
-- `data_defaults`: `Dict`
-- `data_set_id`: `Optional`
-- `map_entry_count`: `Optional`
-- `map_entry_schema`: `Optional`
-- `tags`: `List`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `data_format`: `typing.Optional[str]`
+- `data_sink_id`: `typing.Optional[int]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
+- `data_set_id`: `typing.Optional[int]`
+- `map_entry_count`: `typing.Optional[int]`
+- `map_entry_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 ### LookupCreate
 
@@ -49,11 +49,11 @@ Fields:
 - `name`: `str`
 - `data_type`: `str`
 - `map_primary_key`: `str`
-- `description`: `Optional`
-- `data_defaults`: `Dict`
+- `description`: `typing.Optional[str]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
 - `emit_data_default`: `bool`
-- `data_map`: `Optional`
-- `tags`: `List`
+- `data_map`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `tags`: `typing.List[str]`
 
 ### LookupEntriesUpsert
 
@@ -63,7 +63,7 @@ Request model for upserting lookup entries.
 
 Fields:
 
-- `entries`: `List`
+- `entries`: `typing.List[typing.Dict[str, typing.Any]]`
 
 ### LookupUpdate
 
@@ -73,10 +73,10 @@ Request model for updating a lookup.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `map_primary_key`: `Optional`
-- `data_defaults`: `Optional`
-- `emit_data_default`: `Optional`
-- `tags`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `map_primary_key`: `typing.Optional[str]`
+- `data_defaults`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `emit_data_default`: `typing.Optional[bool]`
+- `tags`: `typing.Optional[typing.List[str]]`
 

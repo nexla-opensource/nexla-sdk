@@ -14,13 +14,19 @@ class NexsetsResource(BaseResource):
     
     def list(self, **kwargs) -> List[Nexset]:
         """
-        List all nexsets.
+        List nexsets with optional filters.
         
         Args:
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of nexsets
+
+        Examples:
+            client.nexsets.list(page=1, per_page=50)
         """
         return super().list(**kwargs)
     
@@ -34,6 +40,9 @@ class NexsetsResource(BaseResource):
         
         Returns:
             Nexset instance
+        
+        Examples:
+            client.nexsets.get(789)
         """
         return super().get(set_id, expand)
     
@@ -46,6 +55,9 @@ class NexsetsResource(BaseResource):
         
         Returns:
             Created nexset
+        
+        Examples:
+            new_set = client.nexsets.create(NexsetCreate(name="My Dataset", ...))
         """
         return super().create(data)
     
@@ -142,3 +154,8 @@ class NexsetsResource(BaseResource):
         """
         data = options.to_dict() if options else {}
         return super().copy(set_id, data)
+
+    def docs_recommendation(self, set_id: int) -> Dict[str, Any]:
+        """Generate AI suggestion for Nexset documentation."""
+        path = f"{self._path}/{set_id}/docs/recommendation"
+        return self._make_request('POST', path)

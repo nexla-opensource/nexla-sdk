@@ -1,5 +1,5 @@
 from nexla_sdk.models.organizations.responses import (
-    Organization, OrgMember, OrgTier, AccountSummary
+    Organization, OrgMember, OrgTier, AccountSummary, CustodianUser
 )
 from nexla_sdk.models.organizations.requests import (
     OrganizationCreate,
@@ -11,6 +11,9 @@ from nexla_sdk.models.organizations.requests import (
     OrgMemberDelete,
     OrgMemberActivateDeactivateRequest
 )
+from nexla_sdk.models.organizations.custodians import (
+    OrgCustodianRef, OrgCustodiansPayload,
+)
 
 __all__ = [
     # Responses
@@ -18,6 +21,7 @@ __all__ = [
     'OrgMember',
     'OrgTier',
     'AccountSummary',
+    'CustodianUser',
     # Requests
     'OrganizationCreate',
     'OrganizationUpdate',
@@ -27,4 +31,7 @@ __all__ = [
     'OrgMemberDeleteRequest',
     'OrgMemberDelete',
     'OrgMemberActivateDeactivateRequest',
+    # Custodians
+    'OrgCustodianRef',
+    'OrgCustodiansPayload',
 ]

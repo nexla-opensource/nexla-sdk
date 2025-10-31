@@ -166,6 +166,27 @@ class TokenAuthHandler:
                 self.obtain_session_token()
 
         return self._access_token
+    
+    def logout(self) -> None:
+        """
+        Ends the current session and invalidates the NexlaSessionToken.
+        Calls POST /token/logout and clears local token if successful.
+        """
+        url = f"{self.api_url}/token/logout"
+        headers = {
+            "Accept": f"application/vnd.nexla.api.{self.api_version}+json",
+            "Authorization": f"Bearer {self._access_token}" if self._access_token else ""
+        }
+        try:
+            # Best-effort logout; ignore response body
+            self.http_client.request("POST", url, headers=headers)
+        except HttpClientError:
+            # Still clear local token to avoid reuse
+            pass
+        finally:
+            # Invalidate local token regardless
+            self._access_token = None
+            self._token_expiry = 0
         
     def execute_authenticated_request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
         """

@@ -38,11 +38,14 @@ Methods:
   - Source: `nexla_sdk/auth.py:145`
   - Ensures a valid session token is available, refreshing if necessary
 - `execute_authenticated_request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Optional[Dict[str, Any]]`
-  - Source: `nexla_sdk/auth.py:170`
+  - Source: `nexla_sdk/auth.py:191`
   - Execute a request with authentication handling
 - `get_access_token(self) -> str`
   - Source: `nexla_sdk/auth.py:69`
   - Get the current access token
+- `logout(self) -> None`
+  - Source: `nexla_sdk/auth.py:170`
+  - Ends the current session and invalidates the NexlaSessionToken.
 - `obtain_session_token(self) -> None`
   - Source: `nexla_sdk/auth.py:83`
   - Obtains a session token using the service key

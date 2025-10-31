@@ -14,13 +14,19 @@ class DestinationsResource(BaseResource):
     
     def list(self, **kwargs) -> List[Destination]:
         """
-        List all destinations.
+        List destinations with optional filters.
         
         Args:
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of destinations
+
+        Examples:
+            client.destinations.list(page=1, per_page=20, access_role="owner")
         """
         return super().list(**kwargs)
     
@@ -34,6 +40,9 @@ class DestinationsResource(BaseResource):
         
         Returns:
             Destination instance
+        
+        Examples:
+            client.destinations.get(321)
         """
         return super().get(sink_id, expand)
     
@@ -46,6 +55,9 @@ class DestinationsResource(BaseResource):
         
         Returns:
             Created destination
+        
+        Examples:
+            new_sink = client.destinations.create(DestinationCreate(name="My Sink", connector=...))
         """
         return super().create(data)
     

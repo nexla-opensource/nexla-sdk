@@ -16,10 +16,10 @@ User account summary.
 
 Fields:
 
-- `data_sources`: `Dict`
-- `data_sets`: `Dict`
-- `data_sinks`: `Dict`
-- `data_maps`: `Dict`
+- `data_sources`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_sets`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_sinks`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_maps`: `typing.Dict[str, typing.Dict[str, int]]`
 
 ### DefaultOrg
 
@@ -42,9 +42,9 @@ Fields:
 
 - `id`: `int`
 - `name`: `str`
-- `is_admin`: `Optional`
+- `is_admin`: `typing.Optional[bool]`
 - `org_membership_status`: `str`
-- `api_key`: `Optional`
+- `api_key`: `typing.Optional[str]`
 
 ### User
 
@@ -57,18 +57,18 @@ Fields:
 - `id`: `int`
 - `email`: `str`
 - `full_name`: `str`
-- `super_user`: `Optional`
+- `super_user`: `typing.Optional[bool]`
 - `impersonated`: `bool`
 - `default_org`: `DefaultOrg`
-- `user_tier`: `Optional`
+- `user_tier`: `typing.Optional[str]`
 - `status`: `str`
 - `account_locked`: `bool`
-- `org_memberships`: `List`
-- `api_key`: `Optional`
-- `email_verified_at`: `Optional`
-- `tos_signed_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `org_memberships`: `typing.List[nexla_sdk.models.users.responses.OrgMembership]`
+- `api_key`: `typing.Optional[str]`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 ### UserCreate
 
@@ -80,13 +80,13 @@ Fields:
 
 - `full_name`: `str`
 - `email`: `str`
-- `default_org_id`: `Optional`
-- `status`: `Optional`
-- `user_tier_id`: `Optional`
-- `user_tier`: `Optional`
-- `password`: `Optional`
-- `tos_signed_at`: `Optional`
-- `admin`: `Union`
+- `default_org_id`: `typing.Optional[int]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
 
 ### UserExpanded
 
@@ -99,19 +99,19 @@ Fields:
 - `id`: `int`
 - `email`: `str`
 - `full_name`: `str`
-- `super_user`: `Optional`
+- `super_user`: `typing.Optional[bool]`
 - `impersonated`: `bool`
 - `default_org`: `DefaultOrg`
-- `user_tier`: `Optional`
+- `user_tier`: `typing.Optional[str]`
 - `status`: `str`
 - `account_locked`: `bool`
-- `org_memberships`: `List`
-- `api_key`: `Optional`
-- `email_verified_at`: `Optional`
-- `tos_signed_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
-- `account_summary`: `Optional`
+- `org_memberships`: `typing.List[nexla_sdk.models.users.responses.OrgMembership]`
+- `api_key`: `typing.Optional[str]`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `account_summary`: `typing.Optional[nexla_sdk.models.users.responses.AccountSummary]`
 
 ### UserSettings
 
@@ -122,10 +122,10 @@ User settings.
 Fields:
 
 - `id`: `str`
-- `owner`: `Dict`
-- `org`: `Dict`
+- `owner`: `typing.Dict[str, typing.Any]`
+- `org`: `typing.Dict[str, typing.Any]`
 - `user_settings_type`: `str`
-- `settings`: `Dict`
+- `settings`: `typing.Dict[str, typing.Any]`
 
 ### UserUpdate
 
@@ -135,14 +135,14 @@ Request model for updating a user.
 
 Fields:
 
-- `name`: `Optional`
-- `email`: `Optional`
-- `status`: `Optional`
-- `user_tier_id`: `Optional`
-- `user_tier`: `Optional`
-- `password`: `Optional`
-- `password_confirmation`: `Optional`
-- `password_current`: `Optional`
-- `tos_signed_at`: `Optional`
-- `admin`: `Union`
+- `name`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `password_confirmation`: `typing.Optional[str]`
+- `password_current`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
 

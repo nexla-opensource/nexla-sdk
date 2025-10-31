@@ -19,15 +19,15 @@ Fields:
 - `id`: `int`
 - `owner`: `Owner`
 - `org`: `Organization`
-- `access_roles`: `List`
+- `access_roles`: `typing.List[str]`
 - `level`: `str`
 - `resource_id`: `int`
 - `resource_type`: `str`
 - `message_id`: `int`
 - `message`: `str`
-- `read_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `read_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 ### NotificationChannelSetting
 
@@ -41,7 +41,7 @@ Fields:
 - `owner_id`: `int`
 - `org_id`: `int`
 - `channel`: `str`
-- `config`: `Dict`
+- `config`: `typing.Dict[str, typing.Any]`
 
 ### NotificationChannelSettingCreate
 
@@ -52,7 +52,7 @@ Request model for creating notification channel setting.
 Fields:
 
 - `channel`: `str`
-- `config`: `Dict`
+- `config`: `typing.Dict[str, typing.Any]`
 
 ### NotificationChannelSettingUpdate
 
@@ -62,8 +62,8 @@ Request model for updating notification channel setting.
 
 Fields:
 
-- `channel`: `Optional`
-- `config`: `Optional`
+- `channel`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
 
 ### NotificationCount
 
@@ -97,8 +97,8 @@ Fields:
 - `category`: `str`
 - `event_type`: `str`
 - `resource_type`: `str`
-- `config`: `Dict`
-- `priority`: `Optional`
+- `config`: `typing.Dict[str, typing.Any]`
+- `priority`: `typing.Optional[int]`
 
 ### NotificationSettingCreate
 
@@ -110,11 +110,11 @@ Fields:
 
 - `channel`: `str`
 - `notification_type_id`: `int`
-- `status`: `Optional`
-- `config`: `Dict`
-- `notification_resource_type`: `Optional`
-- `resource_id`: `Optional`
-- `notification_channel_setting_id`: `Optional`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Dict[str, typing.Any]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
 
 ### NotificationSettingUpdate
 
@@ -124,14 +124,14 @@ Request model for updating notification setting.
 
 Fields:
 
-- `channel`: `Optional`
-- `status`: `Optional`
-- `config`: `Optional`
-- `notification_resource_type`: `Optional`
-- `resource_id`: `Optional`
-- `checked`: `Optional`
-- `notification_channel_setting_id`: `Optional`
-- `notification_type_id`: `Optional`
+- `channel`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `checked`: `typing.Optional[bool]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
+- `notification_type_id`: `typing.Optional[int]`
 
 ### NotificationType
 

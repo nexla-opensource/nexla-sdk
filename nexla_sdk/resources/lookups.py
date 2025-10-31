@@ -15,13 +15,19 @@ class LookupsResource(BaseResource):
     
     def list(self, **kwargs) -> List[Lookup]:
         """
-        List all lookups.
+        List lookups with optional filters.
         
         Args:
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of lookups
+
+        Examples:
+            client.lookups.list(page=1, per_page=50)
         """
         return super().list(**kwargs)
     
@@ -35,6 +41,9 @@ class LookupsResource(BaseResource):
         
         Returns:
             Lookup instance
+        
+        Examples:
+            client.lookups.get(55)
         """
         return super().get(data_map_id, expand)
     
@@ -47,6 +56,9 @@ class LookupsResource(BaseResource):
         
         Returns:
             Created lookup
+        
+        Examples:
+            client.lookups.create(LookupCreate(name="status-map", ...))
         """
         return super().create(data)
     

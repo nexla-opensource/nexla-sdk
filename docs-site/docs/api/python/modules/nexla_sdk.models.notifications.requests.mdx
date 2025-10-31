@@ -17,7 +17,7 @@ Request model for creating notification channel setting.
 Fields:
 
 - `channel`: `str`
-- `config`: `Dict`
+- `config`: `typing.Dict[str, typing.Any]`
 
 ### NotificationChannelSettingUpdate
 
@@ -27,8 +27,8 @@ Request model for updating notification channel setting.
 
 Fields:
 
-- `channel`: `Optional`
-- `config`: `Optional`
+- `channel`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
 
 ### NotificationSettingCreate
 
@@ -40,11 +40,11 @@ Fields:
 
 - `channel`: `str`
 - `notification_type_id`: `int`
-- `status`: `Optional`
-- `config`: `Dict`
-- `notification_resource_type`: `Optional`
-- `resource_id`: `Optional`
-- `notification_channel_setting_id`: `Optional`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Dict[str, typing.Any]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
 
 ### NotificationSettingUpdate
 
@@ -54,12 +54,12 @@ Request model for updating notification setting.
 
 Fields:
 
-- `channel`: `Optional`
-- `status`: `Optional`
-- `config`: `Optional`
-- `notification_resource_type`: `Optional`
-- `resource_id`: `Optional`
-- `checked`: `Optional`
-- `notification_channel_setting_id`: `Optional`
-- `notification_type_id`: `Optional`
+- `channel`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `checked`: `typing.Optional[bool]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
+- `notification_type_id`: `typing.Optional[int]`
 

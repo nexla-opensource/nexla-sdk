@@ -43,7 +43,8 @@ from nexla_sdk.models.users import (
     UserCreate, UserUpdate
 )
 from nexla_sdk.models.organizations import (
-    OrgMember, OrgTier, OrganizationUpdate, OrgMemberUpdate, OrgMemberList, OrgMemberDelete
+    OrgMember, OrgTier, OrganizationUpdate, OrgMemberUpdate, OrgMemberList, OrgMemberDelete,
+    OrgCustodianRef, OrgCustodiansPayload, CustodianUser,
 )
 from nexla_sdk.models.teams import (
     Team, TeamMember, TeamCreate, TeamUpdate, TeamMemberRequest, TeamMemberList
@@ -57,6 +58,44 @@ from nexla_sdk.models.notifications import (
 )
 from nexla_sdk.models.metrics import (
     AccountMetrics, DashboardMetrics, MetricsResponse, MetricsByRunResponse, ResourceMetricDaily, ResourceMetricsByRun
+)
+from nexla_sdk.models.code_containers import (
+    CodeContainer, CodeContainerCreate, CodeContainerUpdate,
+)
+from nexla_sdk.models.transforms import (
+    Transform, TransformCreate, TransformUpdate,
+)
+from nexla_sdk.models.attribute_transforms import (
+    AttributeTransform, AttributeTransformCreate, AttributeTransformUpdate,
+)
+from nexla_sdk.models.async_tasks import (
+    AsyncTask, AsyncTaskCreate, AsyncTaskResult, DownloadLink,
+)
+from nexla_sdk.models.approval_requests import (
+    ApprovalRequest, ApprovalDecision,
+)
+from nexla_sdk.models.runtimes import (
+    Runtime, RuntimeCreate, RuntimeUpdate,
+)
+from nexla_sdk.models.marketplace import (
+    MarketplaceDomain, MarketplaceDomainsItem, CustodianUser,
+    MarketplaceDomainCreate, MarketplaceDomainsItemCreate, CustodiansPayload,
+)
+from nexla_sdk.models.org_auth_configs import (
+    AuthConfig, AuthConfigPayload,
+)
+from nexla_sdk.models.genai import (
+    GenAiConfig, GenAiOrgSetting, ActiveConfigView,
+    GenAiConfigPayload, GenAiConfigCreatePayload, GenAiOrgSettingPayload,
+)
+from nexla_sdk.models.self_signup import (
+    SelfSignupRequest, BlockedDomain,
+)
+from nexla_sdk.models.doc_containers import (
+    DocContainer,
+)
+from nexla_sdk.models.data_schemas import (
+    DataSchema,
 )
 
 __all__ = [
@@ -167,6 +206,9 @@ __all__ = [
     'OrgMemberUpdate',
     'OrgMemberList',
     'OrgMemberDelete',
+    'OrgCustodianRef',
+    'OrgCustodiansPayload',
+    'CustodianUser',
     
     # Team models
     'Team',
@@ -202,4 +244,43 @@ __all__ = [
     'ResourceMetricsByRun',
     'MetricsResponse',
     'MetricsByRunResponse',
+    
+    # Code containers
+    'CodeContainer', 'CodeContainerCreate', 'CodeContainerUpdate',
+    
+    # Transforms
+    'Transform', 'TransformCreate', 'TransformUpdate',
+    
+    # Attribute transforms
+    'AttributeTransform', 'AttributeTransformCreate', 'AttributeTransformUpdate',
+    
+    # Async tasks
+    'AsyncTask', 'AsyncTaskCreate', 'AsyncTaskResult', 'DownloadLink',
+    
+    # Approval requests
+    'ApprovalRequest', 'ApprovalDecision',
+    
+    # Runtimes
+    'Runtime', 'RuntimeCreate', 'RuntimeUpdate',
+    
+    # Marketplace
+    'MarketplaceDomainCreate',
+    'MarketplaceDomainsItemCreate',
+    'CustodiansPayload',
+    'MarketplaceDomain', 'MarketplaceDomainsItem', 'CustodianUser',
+    
+    # Org auth configs
+    'AuthConfig', 'AuthConfigPayload',
+    
+    # GenAI
+    'GenAiConfigPayload',
+    'GenAiConfigCreatePayload',
+    'GenAiOrgSettingPayload',
+    'GenAiConfig', 'GenAiOrgSetting', 'ActiveConfigView',
+    
+    # Self-signup
+    'SelfSignupRequest', 'BlockedDomain',
+    
+    # Doc containers / Data schemas
+    'DocContainer', 'DataSchema',
 ]

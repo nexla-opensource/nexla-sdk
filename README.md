@@ -473,6 +473,140 @@ The SDK examples cover advanced operations such as:
 
 See the `examples/api/` directory for detailed examples of these operations.
 
+## New Resources and Usage
+
+The SDK includes additional helpers beyond core flows/sources/sinks:
+
+### Code Containers, Transforms, Attribute Transforms
+
+```python
+# List code containers
+containers = client.code_containers.list()
+
+# Create a reusable record transform (aliased via /transforms)
+from nexla_sdk.models.transforms import TransformCreate, TransformCodeOp
+create_payload = TransformCreate(
+    name="Uppercase Names",
+    output_type="record",
+    reusable=True,
+    code_type="jolt_custom",
+    code_encoding="none",
+    code=[TransformCodeOp(operation="nexla.custom", spec={
+        "language": "python",
+        "encoding": "base64",
+        "script": "ZGVmIHRyYW5zZm9ybShpbnB1dCwgbWV0YWRhdGEsIGFyZ3MpOiByZXR1cm4gaW5wdXQ=",
+    })],
+)
+transform = client.transforms.create(create_payload)
+
+# Attribute transforms
+attr_transforms = client.attribute_transforms.list()
+```
+
+### Async Tasks
+
+```python
+from nexla_sdk.models.async_tasks import AsyncTaskCreate
+
+# Start an async task
+task = client.async_tasks.create(AsyncTaskCreate(type="EXPORT_DATA", args={"data_set_id": 123}))
+
+# Poll status
+status = client.async_tasks.get(task.id)
+
+# Fetch result (if available)
+result = client.async_tasks.result(task.id)
+
+# Download artifact link (may return str or DownloadLink)
+link = client.async_tasks.download_link(task.id)
+```
+
+### Approval Requests
+
+```python
+pending = client.approval_requests.list_pending()
+if pending:
+    approved = client.approval_requests.approve(pending[0].id)
+```
+
+### Runtimes
+
+```python
+from nexla_sdk.models.runtimes import RuntimeCreate
+
+rt = client.runtimes.create(RuntimeCreate(name="python-3-11", language="python", version="3.11"))
+client.runtimes.activate(rt.id)
+client.runtimes.pause(rt.id)
+```
+
+### Marketplace
+
+```python
+domains = client.marketplace.list_domains()
+if domains:
+    items = client.marketplace.list_domain_items(domains[0].id)
+```
+
+### Org Auth Configs
+
+```python
+auth_configs = client.org_auth_configs.list()
+if auth_configs:
+    cfg = client.org_auth_configs.get(auth_configs[0].id)
+```
+
+### GenAI
+
+```python
+configs = client.genai.list_configs()
+active = client.genai.show_active_config(gen_ai_usage="rag")
+```
+
+### Self Signup (Admin)
+
+```python
+requests = client.self_signup.list_requests()
+blocked = client.self_signup.list_blocked_domains()
+```
+
+### Doc Containers and Data Schemas
+
+```python
+doc_audit = client.doc_containers.get_audit_log(doc_container_id=1001)
+schema_audit = client.data_schemas.get_audit_log(schema_id=5001)
+```
+
+## Coverage Matrix
+
+Mapping of major OpenAPI areas to SDK resources. All requests set `Accept: application/vnd.nexla.api.v1+json` and default base URL `https://dataops.nexla.io/nexla-api`.
+
+- Session Management
+  - Login/Logout: handled by client auth; `NexlaClient.logout()` ends session
+- Flows: `client.flows` — list/get/get_by_resource/activate/pause/copy/delete; docs_recommendation; get_logs; get_metrics
+- Sources: `client.sources` — CRUD/activate/pause/copy
+- Destinations (Data Sinks): `client.destinations` — CRUD/activate/pause/copy
+- Nexsets (Data Sets): `client.nexsets` — CRUD/activate/pause/samples/copy/docs_recommendation
+- Credentials: `client.credentials` — CRUD/probe/probe_tree/probe_sample (async/request_id)
+- Data Maps (Lookups): `client.lookups` — CRUD; entries get/upsert/delete
+- Users: `client.users` — CRUD/settings/quarantine/metrics/audit_log/transfer
+- Organizations: `client.organizations` — CRUD/members/account metrics/audit log/auth settings/custodians
+- Teams: `client.teams` — CRUD/members
+- Projects: `client.projects` — CRUD/flows add/replace/remove/search/get
+- Notifications: `client.notifications` — list/delete/count/mark read/unread; channel/settings CRUD
+- Metrics: `client.metrics` — resource daily/by-run; flow logs/metrics; rate limits
+- Code Containers: `client.code_containers` — CRUD/copy/public list (accessors/audit via BaseResource)
+- Transforms: `client.transforms` — CRUD/copy/public list
+- Attribute Transforms: `client.attribute_transforms` — CRUD/public list
+- Async Tasks: `client.async_tasks` — list/create/get/delete/rerun/result/download_link/types/explain_arguments
+- Approval Requests: `client.approval_requests` — list_pending/list_requested/approve/reject
+- Runtimes: `client.runtimes` — CRUD/activate/pause
+- Marketplace: `client.marketplace` — domains CRUD; items list/create; custodians add/update/remove
+- Org Auth Configs: `client.org_auth_configs` — list/all/get/create/update/delete
+- GenAI Configurations/Org Settings: `client.genai` — configs CRUD; org settings CRUD; active_config
+- Doc Containers: `client.doc_containers` — audit_log; (access control via BaseResource helpers)
+- Data Schemas: `client.data_schemas` — audit_log; (access control via BaseResource helpers)
+- Webhooks: not included as a dedicated helper yet (use direct HTTP with API key per spec)
+
 ## Error Handling
 
 The SDK provides specific exception types:

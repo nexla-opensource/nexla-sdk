@@ -50,6 +50,21 @@ Each resource type has its own manager with standard CRUD operations:
 - **`client.metrics`** - Performance metrics
 - **`client.lookups`** - Lookup table operations
 
+Advanced and new resource managers:
+
+- **`client.code_containers`** - Manage code containers
+- **`client.transforms`** - Manage reusable transforms
+- **`client.attribute_transforms`** - Manage attribute-level transforms
+- **`client.async_tasks`** - Create and monitor async tasks
+- **`client.approval_requests`** - Approve/reject pending operations
+- **`client.runtimes`** - Configure and control runtimes
+- **`client.marketplace`** - Marketplace domains and items
+- **`client.org_auth_configs`** - Organization-wide auth configs
+- **`client.genai`** - GenAI configs and org settings
+- **`client.self_signup`** - Self-signup configuration
+- **`client.doc_containers`** - Document containers (audit/access)
+- **`client.data_schemas`** - Data schemas (audit/access)
+
 ### Standard Operations
 Most resource managers support these operations:
 
@@ -160,4 +175,3 @@ This ensures the documentation always reflects the current codebase and includes
 :::info Auto-Generated Content
 This documentation is automatically generated from the source code. For the most current information, always refer to the latest SDK version.
 :::
-

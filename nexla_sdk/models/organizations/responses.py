@@ -63,3 +63,10 @@ class AccountSummary(BaseModel):
     data_sources: Dict[str, int]
     data_sets: Dict[str, Dict[str, int]]
     data_sinks: Dict[str, int]
+
+
+class CustodianUser(BaseModel):
+    """Simplified user view for organization custodians endpoints."""
+    id: int
+    email: Optional[str] = None
+    full_name: Optional[str] = None

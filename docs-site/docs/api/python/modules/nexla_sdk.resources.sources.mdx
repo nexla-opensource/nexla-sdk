@@ -17,27 +17,27 @@ Resource for managing data sources.
 Methods:
 
 - `activate(self, source_id: int) -> nexla_sdk.models.sources.responses.Source`
-  - Source: `nexla_sdk/resources/sources.py:77`
+  - Source: `nexla_sdk/resources/sources.py:93`
   - Activate source.
 - `copy(self, source_id: int, options: Optional[nexla_sdk.models.sources.requests.SourceCopyOptions] = None) -> nexla_sdk.models.sources.responses.Source`
-  - Source: `nexla_sdk/resources/sources.py:101`
+  - Source: `nexla_sdk/resources/sources.py:117`
   - Copy a source.
 - `create(self, data: nexla_sdk.models.sources.requests.SourceCreate) -> nexla_sdk.models.sources.responses.Source`
-  - Source: `nexla_sdk/resources/sources.py:40`
+  - Source: `nexla_sdk/resources/sources.py:53`
   - Create new source.
 - `delete(self, source_id: int) -> Dict[str, Any]`
-  - Source: `nexla_sdk/resources/sources.py:65`
+  - Source: `nexla_sdk/resources/sources.py:81`
   - Delete source.
 - `get(self, source_id: int, expand: bool = False) -> nexla_sdk.models.sources.responses.Source`
-  - Source: `nexla_sdk/resources/sources.py:27`
+  - Source: `nexla_sdk/resources/sources.py:37`
   - Get single source by ID.
 - `list(self, **kwargs) -> List[nexla_sdk.models.sources.responses.Source]`
   - Source: `nexla_sdk/resources/sources.py:15`
-  - List all sources.
+  - List sources with optional filters.
 - `pause(self, source_id: int) -> nexla_sdk.models.sources.responses.Source`
-  - Source: `nexla_sdk/resources/sources.py:89`
+  - Source: `nexla_sdk/resources/sources.py:105`
   - Pause source.
 - `update(self, source_id: int, data: nexla_sdk.models.sources.requests.SourceUpdate) -> nexla_sdk.models.sources.responses.Source`
-  - Source: `nexla_sdk/resources/sources.py:52`
+  - Source: `nexla_sdk/resources/sources.py:68`
   - Update source.
 
