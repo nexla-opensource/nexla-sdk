@@ -20,8 +20,8 @@ Fields:
 
 - `reuse_data_credentials`: `bool`
 - `copy_access_controls`: `bool`
-- `owner_id`: `Optional`
-- `org_id`: `Optional`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
 
 ### SourceCreate
 
@@ -33,12 +33,12 @@ Fields:
 
 - `name`: `str`
 - `source_type`: `str`
-- `data_credentials_id`: `int`
-- `description`: `Optional`
-- `source_config`: `Optional`
-- `vendor_endpoint_id`: `Optional`
-- `ingest_method`: `Optional`
-- `template_config`: `Optional`
+- `data_credentials_id`: `typing.Optional[int]`
+- `description`: `typing.Optional[str]`
+- `source_config`: `typing.Optional[typing.Dict]`
+- `vendor_endpoint_id`: `typing.Optional[int]`
+- `ingest_method`: `typing.Optional[str]`
+- `template_config`: `typing.Optional[typing.Dict]`
 
 ### SourceUpdate
 
@@ -48,8 +48,8 @@ Request model for updating a source.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `source_config`: `Optional`
-- `data_credentials_id`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `source_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
 

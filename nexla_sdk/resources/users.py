@@ -15,14 +15,21 @@ class UsersResource(BaseResource):
     
     def list(self, expand: bool = False, **kwargs) -> List[User]:
         """
-        List all users.
+        List users with optional filters.
         
         Args:
             expand: Include expanded information
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of users
+        
+        Examples:
+            client.users.list(page=1, per_page=50)
+            client.users.list(expand=True)
         """
         if expand:
             response = self._make_request('GET', f"{self._path}?expand=1", params=kwargs)
@@ -40,6 +47,10 @@ class UsersResource(BaseResource):
         
         Returns:
             User object
+        
+        Examples:
+            client.users.get(42)
+            client.users.get(42, expand=True)
         """
         if expand:
             path = f"{self._path}/{user_id}?expand=1"
@@ -57,6 +68,9 @@ class UsersResource(BaseResource):
         
         Returns:
             Created user
+        
+        Examples:
+            client.users.create(UserCreate(email="user@example.com", name="Jane"))
         """
         return super().create(data)
     
@@ -84,7 +98,7 @@ class UsersResource(BaseResource):
             Response with status
         """
         return super().delete(user_id)
-    
+
     def get_settings(self) -> List[UserSettings]:
         """
         Get current user's settings.
@@ -95,6 +109,11 @@ class UsersResource(BaseResource):
         path = "/user_settings"
         response = self._make_request('GET', path)
         return [UserSettings(**item) for item in response]
+
+    def get_current(self) -> Dict[str, Any]:
+        """Get info on current user (includes org memberships and current org info)."""
+        path = "/users/current"
+        return self._make_request('GET', path)
     
     def get_quarantine_settings(self, user_id: int) -> Dict[str, Any]:
         """
@@ -159,6 +178,14 @@ class UsersResource(BaseResource):
         """
         path = f"{self._path}/{user_id}/quarantine_settings"
         return self._make_request('DELETE', path)
+
+    def get_audit_log(self, user_id: int, **params) -> List[Dict[str, Any]]:
+        """Get audit log for a user."""
+        path = f"{self._path}/{user_id}/audit_log"
+        response = self._make_request('GET', path, params=params)
+        if isinstance(response, list):
+            return response
+        return []
     
     def get_transferable_resources(self, user_id: int, org_id: int) -> Dict[str, Any]:
         """

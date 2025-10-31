@@ -21,16 +21,16 @@ Fields:
 - `org`: `Organization`
 - `name`: `str`
 - `description`: `str`
-- `access_roles`: `List`
-- `data_flows`: `List`
-- `flows`: `List`
-- `client_identifier`: `Optional`
-- `client_url`: `Optional`
-- `flows_count`: `Optional`
-- `tags`: `List`
-- `copied_from_id`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `access_roles`: `typing.List[str]`
+- `data_flows`: `typing.List[nexla_sdk.models.projects.responses.ProjectDataFlow]`
+- `flows`: `typing.List[nexla_sdk.models.projects.responses.ProjectDataFlow]`
+- `client_identifier`: `typing.Optional[str]`
+- `client_url`: `typing.Optional[str]`
+- `flows_count`: `typing.Optional[int]`
+- `tags`: `typing.List[str]`
+- `copied_from_id`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 ### ProjectCreate
 
@@ -41,8 +41,8 @@ Request model for creating a project.
 Fields:
 
 - `name`: `str`
-- `description`: `Optional`
-- `data_flows`: `List`
+- `description`: `typing.Optional[str]`
+- `data_flows`: `typing.List[nexla_sdk.models.projects.requests.ProjectFlowIdentifier]`
 
 ### ProjectDataFlow
 
@@ -54,13 +54,13 @@ Fields:
 
 - `id`: `int`
 - `project_id`: `int`
-- `data_source_id`: `Optional`
-- `data_set_id`: `Optional`
-- `data_sink_id`: `Optional`
-- `name`: `Optional`
-- `description`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `data_source_id`: `typing.Optional[int]`
+- `data_set_id`: `typing.Optional[int]`
+- `data_sink_id`: `typing.Optional[int]`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 ### ProjectFlowIdentifier
 
@@ -70,8 +70,8 @@ Flow identifier for project.
 
 Fields:
 
-- `data_source_id`: `Optional`
-- `data_set_id`: `Optional`
+- `data_source_id`: `typing.Optional[int]`
+- `data_set_id`: `typing.Optional[int]`
 
 ### ProjectFlowList
 
@@ -81,8 +81,8 @@ Request model for managing project flows.
 
 Fields:
 
-- `data_flows`: `Optional`
-- `flows`: `Optional`
+- `data_flows`: `typing.Optional[typing.List[nexla_sdk.models.projects.requests.ProjectFlowIdentifier]]`
+- `flows`: `typing.Optional[typing.List[int]]`
 
 ### ProjectUpdate
 
@@ -92,7 +92,7 @@ Request model for updating a project.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `data_flows`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `data_flows`: `typing.Optional[typing.List[nexla_sdk.models.projects.requests.ProjectFlowIdentifier]]`
 

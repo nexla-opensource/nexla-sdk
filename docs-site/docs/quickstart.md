@@ -244,7 +244,7 @@ show_dashboard()
 ## 🛠️ Error Handling Example
 
 ```python
-from nexla_sdk.exceptions import NexlaAPIError, AuthenticationError
+from nexla_sdk.exceptions import NexlaError, AuthenticationError
 
 def safe_api_call():
     """Example of proper error handling"""
@@ -259,7 +259,7 @@ def safe_api_call():
         print("   • Verify the key is active")
         print("   • Ensure you have proper permissions")
         
-    except NexlaAPIError as e:
+    except NexlaError as e:
         print(f"❌ API Error (Status {e.status_code}): {e.message}")
         print("   • Check your network connection")
         print("   • Verify the API endpoint")
@@ -291,4 +291,3 @@ Ready for more? Here's where to go next:
 :::tip Pro Tip
 Start with the dashboard example above to get an overview of your Nexla environment, then dive into specific resource management based on your needs!
 :::
-

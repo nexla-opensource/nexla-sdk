@@ -41,7 +41,7 @@ Request model for accessor operations.
 
 Fields:
 
-- `accessors`: `List` — List of accessor requests
+- `accessors`: `typing.List[typing.Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]` — List of accessor requests
 
 Methods:
 
@@ -54,14 +54,14 @@ Methods:
 
 ### AccountMetrics
 
-Defined in `nexla_sdk/models/metrics/responses.py:6`
+Defined in `nexla_sdk/models/metrics/responses.py:5`
 
 Account utilization metrics.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `List`
+- `metrics`: `typing.List[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -74,16 +74,422 @@ Methods:
 
 ### AccountSummary
 
-Defined in `nexla_sdk/models/organizations/responses.py:60`
+Defined in `nexla_sdk/models/users/responses.py:42`
 
-Organization account summary statistics.
+User account summary.
 
 Fields:
 
-- `org_id`: `int`
-- `data_sources`: `Dict`
-- `data_sets`: `Dict`
-- `data_sinks`: `Dict`
+- `data_sources`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_sets`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_sinks`: `typing.Dict[str, typing.Dict[str, int]]`
+- `data_maps`: `typing.Dict[str, typing.Dict[str, int]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### ActiveConfigView
+
+Defined in `nexla_sdk/models/genai/responses.py:26`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `gen_ai_usage`: `typing.Optional[str]`
+- `active_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### ApprovalDecision
+
+Defined in `nexla_sdk/models/approval_requests/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `approved`: `bool`
+- `reason`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### ApprovalRequest
+
+Defined in `nexla_sdk/models/approval_requests/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `status`: `typing.Optional[str]`
+- `request_type`: `typing.Optional[str]`
+- `requester_id`: `typing.Optional[int]`
+- `resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `reason`: `typing.Optional[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AsyncTask
+
+Defined in `nexla_sdk/models/async_tasks/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `type`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `started_at`: `typing.Optional[datetime.datetime]`
+- `finished_at`: `typing.Optional[datetime.datetime]`
+- `result`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `error`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AsyncTaskCreate
+
+Defined in `nexla_sdk/models/async_tasks/requests.py:6`
+
+Generic async task payload wrapper aligned with OpenAPI AsyncTaskPayload.
+
+Fields:
+    type: The task type (e.g., BulkDeleteNotifications)
+    priority: Optional task priority
+    arguments: Arguments for the task
+
+Fields:
+
+- `type`: `str`
+- `priority`: `typing.Optional[int]`
+- `arguments`: `typing.Dict[str, typing.Any]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AsyncTaskResult
+
+Defined in `nexla_sdk/models/async_tasks/responses.py:19`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `task_id`: `typing.Optional[int]`
+- `result`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AttributeTransform
+
+Defined in `nexla_sdk/models/attribute_transforms/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `resource_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `access_roles`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `runtime_data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `description`: `typing.Optional[str]`
+- `code_type`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `data_sets`: `typing.Optional[typing.List[int]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AttributeTransformCreate
+
+Defined in `nexla_sdk/models/attribute_transforms/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `output_type`: `str`
+- `reusable`: `bool`
+- `code_type`: `str`
+- `code_encoding`: `str`
+- `code`: `str`
+- `description`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AttributeTransformUpdate
+
+Defined in `nexla_sdk/models/attribute_transforms/requests.py:21`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `code_type`: `typing.Optional[str]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AuthConfig
+
+Defined in `nexla_sdk/models/org_auth_configs/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `uid`: `typing.Optional[str]`
+- `protocol`: `typing.Optional[str]`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `global_`: `typing.Optional[bool]`
+- `auto_create_users_enabled`: `typing.Optional[bool]`
+- `name_identifier_format`: `typing.Optional[str]`
+- `nexla_base_url`: `typing.Optional[str]`
+- `service_entity_id`: `typing.Optional[str]`
+- `assertion_consumer_url`: `typing.Optional[str]`
+- `logout_url`: `typing.Optional[str]`
+- `metadata_url`: `typing.Optional[str]`
+- `idp_entity_id`: `typing.Optional[str]`
+- `idp_sso_target_url`: `typing.Optional[str]`
+- `idp_slo_target_url`: `typing.Optional[str]`
+- `idp_cert`: `typing.Optional[str]`
+- `security_settings`: `typing.Optional[str]`
+- `oidc_domain`: `typing.Optional[str]`
+- `oidc_keys_url_key`: `typing.Optional[str]`
+- `oidc_token_verify_url`: `typing.Optional[str]`
+- `oidc_id_claims`: `typing.Optional[str]`
+- `oidc_access_claims`: `typing.Optional[str]`
+- `client_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### AuthConfigPayload
+
+Defined in `nexla_sdk/models/org_auth_configs/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `typing.Optional[int]`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
+- `uid`: `typing.Optional[str]`
+- `protocol`: `typing.Optional[str]`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `global_`: `typing.Optional[bool]`
+- `enabled_by_default`: `typing.Optional[bool]`
+- `auto_create_users_enabled`: `typing.Optional[bool]`
+- `name_identifier_format`: `typing.Optional[str]`
+- `nexla_base_url`: `typing.Optional[str]`
+- `service_entity_id`: `typing.Optional[str]`
+- `assertion_consumer_url`: `typing.Optional[str]`
+- `idp_entity_id`: `typing.Optional[str]`
+- `idp_sso_target_url`: `typing.Optional[str]`
+- `idp_slo_target_url`: `typing.Optional[str]`
+- `idp_cert`: `typing.Optional[str]`
+- `security_settings`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `metadata`: `typing.Optional[str]`
+- `oidc_domain`: `typing.Optional[str]`
+- `oidc_keys_url_key`: `typing.Optional[str]`
+- `oidc_id_claims`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `oidc_access_claims`: `typing.Optional[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -107,6 +513,154 @@ Features:
 - Provides JSON serialization methods
 - Validates data types automatically
 - Easy logging and printing support
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### BlockedDomain
+
+Defined in `nexla_sdk/models/self_signup/responses.py:17`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `domain`: `str`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### CodeContainer
+
+Defined in `nexla_sdk/models/code_containers/responses.py:12`
+
+Pydantic model for Code Container responses.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `resource_type`: `typing.Optional[str]`
+- `ai_function_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `public`: `typing.Optional[bool]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `access_roles`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `runtime_data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `description`: `typing.Optional[str]`
+- `code_type`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.code_containers.responses.CodeOperation]]`
+- `managed`: `typing.Optional[bool]`
+- `data_sets`: `typing.Optional[typing.List[int]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### CodeContainerCreate
+
+Defined in `nexla_sdk/models/code_containers/requests.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `output_type`: `str`
+- `reusable`: `bool`
+- `code_type`: `str`
+- `code_encoding`: `str`
+- `code`: `typing.List[nexla_sdk.models.code_containers.responses.CodeOperation]`
+- `description`: `typing.Optional[str]`
+- `public`: `typing.Optional[bool]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+- `ai_function_type`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### CodeContainerUpdate
+
+Defined in `nexla_sdk/models/code_containers/requests.py:25`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `code_type`: `typing.Optional[str]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.code_containers.responses.CodeOperation]]`
+- `description`: `typing.Optional[str]`
+- `public`: `typing.Optional[bool]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+- `ai_function_type`: `typing.Optional[str]`
 
 Methods:
 
@@ -168,24 +722,24 @@ Fields:
 - `id`: `int`
 - `name`: `str`
 - `credentials_type`: `str`
-- `owner`: `Optional`
-- `org`: `Optional`
-- `access_roles`: `Optional`
-- `verified_status`: `Optional`
-- `connector`: `Optional`
-- `description`: `Optional`
-- `credentials_version`: `Optional`
-- `api_keys`: `Optional`
-- `credentials_non_secure_data`: `Optional`
-- `verified_at`: `Optional`
-- `copied_from_id`: `Optional`
-- `template_config`: `Optional`
-- `vendor`: `Optional`
-- `auth_template`: `Optional`
-- `referenced_resource_ids`: `Optional`
-- `tags`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `owner`: `typing.Optional[nexla_sdk.models.common.Owner]`
+- `org`: `typing.Optional[nexla_sdk.models.common.Organization]`
+- `access_roles`: `typing.Optional[typing.List[str]]`
+- `verified_status`: `typing.Optional[str]`
+- `connector`: `typing.Optional[nexla_sdk.models.common.Connector]`
+- `description`: `typing.Optional[str]`
+- `credentials_version`: `typing.Optional[str]`
+- `api_keys`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `credentials_non_secure_data`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `verified_at`: `typing.Optional[datetime.datetime]`
+- `copied_from_id`: `typing.Optional[int]`
+- `template_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `vendor`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `auth_template`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `referenced_resource_ids`: `typing.Optional[typing.Dict[str, typing.List[int]]]`
+- `tags`: `typing.Optional[typing.List[str]]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 - `managed`: `bool`
 
 Methods:
@@ -207,11 +761,11 @@ Fields:
 
 - `name`: `str`
 - `credentials_type`: `str`
-- `description`: `Optional`
-- `auth_template_id`: `Optional`
-- `vendor_id`: `Optional`
-- `template_config`: `Optional`
-- `credentials`: `Optional`
+- `description`: `typing.Optional[str]`
+- `auth_template_id`: `typing.Optional[int]`
+- `vendor_id`: `typing.Optional[int]`
+- `template_config`: `typing.Optional[typing.Dict]`
+- `credentials`: `typing.Optional[typing.Dict]`
 
 Methods:
 
@@ -291,9 +845,57 @@ Request model for updating a credential.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `credentials`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### CustodianUser
+
+Defined in `nexla_sdk/models/organizations/responses.py:68`
+
+Simplified user view for organization custodians endpoints.
+
+Fields:
+
+- `id`: `int`
+- `email`: `typing.Optional[str]`
+- `full_name`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### CustodiansPayload
+
+Defined in `nexla_sdk/models/marketplace/requests.py:12`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `custodians`: `typing.List[nexla_sdk.models.marketplace.requests.CustodianRef]`
 
 Methods:
 
@@ -306,14 +908,14 @@ Methods:
 
 ### DashboardMetrics
 
-Defined in `nexla_sdk/models/metrics/responses.py:20`
+Defined in `nexla_sdk/models/metrics/responses.py:19`
 
 24-hour dashboard metrics.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `Dict`
+- `metrics`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -350,6 +952,34 @@ Methods:
   - Source: `nexla_sdk/models/base.py:52`
   - Convert model to JSON string.
 
+### DataSchema
+
+Defined in `nexla_sdk/models/data_schemas/responses.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
 ### DataSetBrief
 
 Defined in `nexla_sdk/models/sources/responses.py:9`
@@ -361,11 +991,11 @@ Fields:
 - `id`: `int`
 - `owner_id`: `int`
 - `org_id`: `int`
-- `name`: `Optional`
-- `description`: `Optional`
-- `version`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `version`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -386,12 +1016,12 @@ Fields:
 
 - `id`: `int`
 - `name`: `str`
-- `description`: `Optional`
-- `status`: `Optional`
-- `output_schema`: `Optional`
-- `version`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `description`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `output_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `version`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -414,8 +1044,8 @@ Fields:
 - `owner_id`: `int`
 - `org_id`: `int`
 - `name`: `str`
-- `status`: `Optional`
-- `sink_type`: `Optional`
+- `status`: `typing.Optional[str]`
+- `sink_type`: `typing.Optional[nexla_sdk.models.destinations.enums.DestinationType]`
 
 Methods:
 
@@ -458,32 +1088,32 @@ Fields:
 - `name`: `str`
 - `status`: `str`
 - `sink_type`: `str`
-- `connector_type`: `Optional`
-- `owner`: `Optional`
-- `org`: `Optional`
-- `access_roles`: `Optional`
-- `managed`: `Optional`
-- `connector`: `Optional`
-- `description`: `Optional`
-- `data_set_id`: `Optional`
-- `data_map_id`: `Optional`
-- `data_source_id`: `Optional`
-- `sink_format`: `Optional`
-- `sink_config`: `Optional`
-- `sink_schedule`: `Optional`
+- `connector_type`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.common.Owner]`
+- `org`: `typing.Optional[nexla_sdk.models.common.Organization]`
+- `access_roles`: `typing.Optional[typing.List[str]]`
+- `managed`: `typing.Optional[bool]`
+- `connector`: `typing.Optional[nexla_sdk.models.common.Connector]`
+- `description`: `typing.Optional[str]`
+- `data_set_id`: `typing.Optional[int]`
+- `data_map_id`: `typing.Optional[int]`
+- `data_source_id`: `typing.Optional[int]`
+- `sink_format`: `typing.Optional[nexla_sdk.models.destinations.enums.DestinationFormat]`
+- `sink_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `sink_schedule`: `typing.Optional[str]`
 - `in_memory`: `bool`
-- `data_set`: `Optional`
-- `data_map`: `Optional`
-- `data_credentials_id`: `Optional`
-- `data_credentials`: `Optional`
-- `copied_from_id`: `Optional`
-- `flow_type`: `Optional`
-- `has_template`: `Optional`
-- `vendor_endpoint`: `Optional`
-- `vendor`: `Optional`
-- `tags`: `List`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `data_set`: `typing.Optional[nexla_sdk.models.destinations.responses.DataSetInfo]`
+- `data_map`: `typing.Optional[nexla_sdk.models.destinations.responses.DataMapInfo]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `data_credentials`: `typing.Optional[nexla_sdk.models.credentials.responses.Credential]`
+- `copied_from_id`: `typing.Optional[int]`
+- `flow_type`: `typing.Optional[str]`
+- `has_template`: `typing.Optional[bool]`
+- `vendor_endpoint`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `vendor`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -504,8 +1134,8 @@ Fields:
 
 - `reuse_data_credentials`: `bool`
 - `copy_access_controls`: `bool`
-- `owner_id`: `Optional`
-- `org_id`: `Optional`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -528,10 +1158,10 @@ Fields:
 - `sink_type`: `str`
 - `data_credentials_id`: `int`
 - `data_set_id`: `int`
-- `description`: `Optional`
-- `sink_config`: `Optional`
-- `vendor_endpoint_id`: `Optional`
-- `template_config`: `Optional`
+- `description`: `typing.Optional[str]`
+- `sink_config`: `typing.Optional[typing.Dict]`
+- `vendor_endpoint_id`: `typing.Optional[int]`
+- `template_config`: `typing.Optional[typing.Dict]`
 
 Methods:
 
@@ -615,11 +1245,67 @@ Request model for updating a destination.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `sink_config`: `Optional`
-- `data_credentials_id`: `Optional`
-- `data_set_id`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `sink_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `data_set_id`: `typing.Optional[int]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### DocContainer
+
+Defined in `nexla_sdk/models/doc_containers/responses.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### DownloadLink
+
+Defined in `nexla_sdk/models/async_tasks/responses.py:24`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `url`: `str`
+- `expires_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -641,8 +1327,8 @@ Fields:
 - `reuse_data_credentials`: `bool`
 - `copy_access_controls`: `bool`
 - `copy_dependent_data_flows`: `bool`
-- `owner_id`: `Optional`
-- `org_id`: `Optional`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -661,15 +1347,15 @@ Flow elements containing all resources.
 
 Fields:
 
-- `code_containers`: `List`
-- `data_sources`: `List`
-- `data_sets`: `List`
-- `data_sinks`: `List`
-- `data_credentials`: `List`
-- `shared_data_sets`: `List`
-- `orgs`: `List`
-- `users`: `List`
-- `projects`: `List`
+- `code_containers`: `typing.List[typing.Dict[str, typing.Any]]`
+- `data_sources`: `typing.List[nexla_sdk.models.sources.responses.Source]`
+- `data_sets`: `typing.List[nexla_sdk.models.nexsets.responses.Nexset]`
+- `data_sinks`: `typing.List[nexla_sdk.models.destinations.responses.Destination]`
+- `data_credentials`: `typing.List[nexla_sdk.models.credentials.responses.Credential]`
+- `shared_data_sets`: `typing.List[typing.Dict[str, typing.Any]]`
+- `orgs`: `typing.List[typing.Dict[str, typing.Any]]`
+- `users`: `typing.List[typing.Dict[str, typing.Any]]`
+- `projects`: `typing.List[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -714,17 +1400,17 @@ Fields:
 
 - `id`: `int`
 - `origin_node_id`: `int`
-- `parent_node_id`: `Optional`
-- `data_source_id`: `Optional`
-- `data_set_id`: `Optional`
-- `data_sink_id`: `Optional`
-- `status`: `Optional`
-- `project_id`: `Optional`
-- `flow_type`: `Optional`
-- `ingestion_mode`: `Optional`
-- `name`: `Optional`
-- `description`: `Optional`
-- `children`: `Optional`
+- `parent_node_id`: `typing.Optional[int]`
+- `data_source_id`: `typing.Optional[int]`
+- `data_set_id`: `typing.Optional[int]`
+- `data_sink_id`: `typing.Optional[int]`
+- `status`: `typing.Optional[str]`
+- `project_id`: `typing.Optional[int]`
+- `flow_type`: `typing.Optional[str]`
+- `ingestion_mode`: `typing.Optional[str]`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `children`: `typing.Optional[typing.List[nexla_sdk.models.common.FlowNode]]`
 
 Methods:
 
@@ -743,17 +1429,17 @@ Flow response model.
 
 Fields:
 
-- `flows`: `List`
-- `code_containers`: `Optional`
-- `data_sources`: `Optional`
-- `data_sets`: `Optional`
-- `data_sinks`: `Optional`
-- `data_credentials`: `Optional`
-- `shared_data_sets`: `Optional`
-- `orgs`: `Optional`
-- `users`: `Optional`
-- `projects`: `Optional`
-- `metrics`: `Optional`
+- `flows`: `typing.List[nexla_sdk.models.common.FlowNode]`
+- `code_containers`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `data_sources`: `typing.Optional[typing.List[nexla_sdk.models.sources.responses.Source]]`
+- `data_sets`: `typing.Optional[typing.List[nexla_sdk.models.nexsets.responses.Nexset]]`
+- `data_sinks`: `typing.Optional[typing.List[nexla_sdk.models.destinations.responses.Destination]]`
+- `data_credentials`: `typing.Optional[typing.List[nexla_sdk.models.credentials.responses.Credential]]`
+- `shared_data_sets`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `orgs`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `users`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `projects`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `metrics`: `typing.Optional[typing.List[nexla_sdk.models.flows.responses.FlowMetrics]]`
 
 Methods:
 
@@ -775,6 +1461,163 @@ Members:
 - `BATCH` = `batch`
 - `STREAMING` = `streaming`
 - `REAL_TIME` = `real_time`
+
+### GenAiConfig
+
+Defined in `nexla_sdk/models/genai/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `typing.Optional[str]`
+- `provider`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### GenAiConfigCreatePayload
+
+Defined in `nexla_sdk/models/genai/requests.py:16`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `type`: `str`
+- `config`: `typing.Dict[str, typing.Any]`
+- `data_credentials_id`: `int`
+- `description`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### GenAiConfigPayload
+
+Defined in `nexla_sdk/models/genai/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `type`: `typing.Optional[str]`
+- `data_credentials_id`: `typing.Optional[int]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### GenAiOrgSetting
+
+Defined in `nexla_sdk/models/genai/responses.py:16`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `org_id`: `typing.Optional[int]`
+- `gen_ai_usage`: `typing.Optional[str]`
+- `active_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `configs`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### GenAiOrgSettingPayload
+
+Defined in `nexla_sdk/models/genai/requests.py:24`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `org_id`: `typing.Optional[int]`
+- `gen_ai_config_id`: `int`
+- `gen_ai_usage`: `str`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
 
 ### IngestMethod
 
@@ -802,18 +1645,18 @@ Fields:
 - `item_type`: `str`
 - `item_id`: `int`
 - `event`: `str`
-- `change_summary`: `List`
-- `object_changes`: `Dict`
+- `change_summary`: `typing.List[str]`
+- `object_changes`: `typing.Dict[str, typing.List[typing.Any]]`
 - `request_ip`: `str`
 - `request_user_agent`: `str`
 - `request_url`: `str`
-- `user`: `Dict`
+- `user`: `typing.Dict[str, typing.Any]`
 - `org_id`: `int`
 - `owner_id`: `int`
 - `owner_email`: `str`
 - `created_at`: `datetime`
-- `association_resource`: `Optional`
-- `impersonator_id`: `Optional`
+- `association_resource`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `impersonator_id`: `typing.Optional[str]`
 
 Methods:
 
@@ -838,21 +1681,21 @@ Fields:
 - `map_primary_key`: `str`
 - `owner`: `Owner`
 - `org`: `Organization`
-- `access_roles`: `List`
+- `access_roles`: `typing.List[str]`
 - `public`: `bool`
 - `managed`: `bool`
 - `data_type`: `str`
 - `emit_data_default`: `bool`
 - `use_versioning`: `bool`
-- `data_format`: `Optional`
-- `data_sink_id`: `Optional`
-- `data_defaults`: `Dict`
-- `data_set_id`: `Optional`
-- `map_entry_count`: `Optional`
-- `map_entry_schema`: `Optional`
-- `tags`: `List`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `data_format`: `typing.Optional[str]`
+- `data_sink_id`: `typing.Optional[int]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
+- `data_set_id`: `typing.Optional[int]`
+- `map_entry_count`: `typing.Optional[int]`
+- `map_entry_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -874,11 +1717,11 @@ Fields:
 - `name`: `str`
 - `data_type`: `str`
 - `map_primary_key`: `str`
-- `description`: `Optional`
-- `data_defaults`: `Dict`
+- `description`: `typing.Optional[str]`
+- `data_defaults`: `typing.Dict[str, typing.Any]`
 - `emit_data_default`: `bool`
-- `data_map`: `Optional`
-- `tags`: `List`
+- `data_map`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `tags`: `typing.List[str]`
 
 Methods:
 
@@ -897,7 +1740,7 @@ Request model for upserting lookup entries.
 
 Fields:
 
-- `entries`: `List`
+- `entries`: `typing.List[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -916,12 +1759,138 @@ Request model for updating a lookup.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `map_primary_key`: `Optional`
-- `data_defaults`: `Optional`
-- `emit_data_default`: `Optional`
-- `tags`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `map_primary_key`: `typing.Optional[str]`
+- `data_defaults`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `emit_data_default`: `typing.Optional[bool]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### MarketplaceDomain
+
+Defined in `nexla_sdk/models/marketplace/responses.py:8`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `slug`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `org_id`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### MarketplaceDomainCreate
+
+Defined in `nexla_sdk/models/marketplace/requests.py:16`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `org_id`: `typing.Optional[int]`
+- `owner_id`: `typing.Optional[int]`
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `parent_id`: `typing.Optional[int]`
+- `custodians`: `typing.Optional[nexla_sdk.models.marketplace.requests.CustodiansPayload]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### MarketplaceDomainsItem
+
+Defined in `nexla_sdk/models/marketplace/responses.py:18`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `domain_id`: `typing.Optional[int]`
+- `resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### MarketplaceDomainsItemCreate
+
+Defined in `nexla_sdk/models/marketplace/requests.py:25`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `data_set_id`: `int`
 
 Methods:
 
@@ -934,14 +1903,14 @@ Methods:
 
 ### MetricsByRunResponse
 
-Defined in `nexla_sdk/models/metrics/responses.py:50`
+Defined in `nexla_sdk/models/metrics/responses.py:49`
 
 Metrics by run response with pagination.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `Dict`
+- `metrics`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -954,14 +1923,14 @@ Methods:
 
 ### MetricsResponse
 
-Defined in `nexla_sdk/models/metrics/responses.py:44`
+Defined in `nexla_sdk/models/metrics/responses.py:43`
 
 Generic metrics response.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `List`
+- `metrics`: `typing.List[typing.Any]`
 
 Methods:
 
@@ -981,23 +1950,23 @@ Nexset (data set) response model.
 Fields:
 
 - `id`: `int`
-- `name`: `Optional`
-- `description`: `Optional`
-- `status`: `Optional`
-- `owner`: `Optional`
-- `org`: `Optional`
-- `access_roles`: `Optional`
-- `flow_type`: `Optional`
-- `data_source_id`: `Optional`
-- `data_source`: `Optional`
-- `parent_data_sets`: `List`
-- `data_sinks`: `List`
-- `transform_id`: `Optional`
-- `output_schema`: `Optional`
-- `copied_from_id`: `Optional`
-- `tags`: `List`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.common.Owner]`
+- `org`: `typing.Optional[nexla_sdk.models.common.Organization]`
+- `access_roles`: `typing.Optional[typing.List[str]]`
+- `flow_type`: `typing.Optional[str]`
+- `data_source_id`: `typing.Optional[int]`
+- `data_source`: `typing.Optional[nexla_sdk.models.sources.responses.Source]`
+- `parent_data_sets`: `typing.List[nexla_sdk.models.sources.responses.DataSetBrief]`
+- `data_sinks`: `typing.List[nexla_sdk.models.nexsets.responses.DataSinkSimplified]`
+- `transform_id`: `typing.Optional[int]`
+- `output_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -1017,8 +1986,8 @@ Options for copying a nexset.
 Fields:
 
 - `copy_access_controls`: `bool`
-- `owner_id`: `Optional`
-- `org_id`: `Optional`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -1040,15 +2009,15 @@ Fields:
 - `name`: `str`
 - `parent_data_set_id`: `int`
 - `has_custom_transform`: `bool`
-- `transform`: `Optional`
-- `transform_id`: `Optional`
-- `description`: `Optional`
-- `output_schema_annotations`: `Optional`
+- `transform`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `transform_id`: `typing.Optional[int]`
+- `description`: `typing.Optional[str]`
+- `output_schema_annotations`: `typing.Optional[typing.Dict[str, typing.Any]]`
 - `output_schema_validation_enabled`: `bool`
-- `output_validation_schema`: `Optional`
-- `data_sinks`: `List`
-- `custom_config`: `Optional`
-- `tags`: `List`
+- `output_validation_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_sinks`: `typing.List[typing.Union[int, typing.Dict[str, typing.Any]]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
 
 Methods:
 
@@ -1067,8 +2036,8 @@ Nexset sample record.
 
 Fields:
 
-- `raw_message`: `Dict`
-- `nexla_metadata`: `Optional`
+- `raw_message`: `typing.Dict[str, typing.Any]`
+- `nexla_metadata`: `typing.Optional[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -1102,17 +2071,17 @@ Request model for updating a nexset.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `has_custom_transform`: `Optional`
-- `transform`: `Optional`
-- `transform_id`: `Optional`
-- `output_schema_annotations`: `Optional`
-- `output_schema_validation_enabled`: `Optional`
-- `output_validation_schema`: `Optional`
-- `data_sinks`: `Optional`
-- `custom_config`: `Optional`
-- `tags`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `has_custom_transform`: `typing.Optional[bool]`
+- `transform`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `transform_id`: `typing.Optional[int]`
+- `output_schema_annotations`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `output_schema_validation_enabled`: `typing.Optional[bool]`
+- `output_validation_schema`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_sinks`: `typing.Optional[typing.List[typing.Union[int, typing.Dict[str, typing.Any]]]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.Optional[typing.List[str]]`
 
 Methods:
 
@@ -1134,15 +2103,15 @@ Fields:
 - `id`: `int`
 - `owner`: `Owner`
 - `org`: `Organization`
-- `access_roles`: `List`
+- `access_roles`: `typing.List[str]`
 - `level`: `str`
 - `resource_id`: `int`
 - `resource_type`: `str`
 - `message_id`: `int`
 - `message`: `str`
-- `read_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `read_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -1179,7 +2148,7 @@ Fields:
 - `owner_id`: `int`
 - `org_id`: `int`
 - `channel`: `str`
-- `config`: `Dict`
+- `config`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -1199,7 +2168,7 @@ Request model for creating notification channel setting.
 Fields:
 
 - `channel`: `str`
-- `config`: `Dict`
+- `config`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -1218,8 +2187,8 @@ Request model for updating notification channel setting.
 
 Fields:
 
-- `channel`: `Optional`
-- `config`: `Optional`
+- `channel`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -1286,8 +2255,8 @@ Fields:
 - `category`: `str`
 - `event_type`: `str`
 - `resource_type`: `str`
-- `config`: `Dict`
-- `priority`: `Optional`
+- `config`: `typing.Dict[str, typing.Any]`
+- `priority`: `typing.Optional[int]`
 
 Methods:
 
@@ -1308,11 +2277,11 @@ Fields:
 
 - `channel`: `str`
 - `notification_type_id`: `int`
-- `status`: `Optional`
-- `config`: `Dict`
-- `notification_resource_type`: `Optional`
-- `resource_id`: `Optional`
-- `notification_channel_setting_id`: `Optional`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Dict[str, typing.Any]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -1331,14 +2300,14 @@ Request model for updating notification setting.
 
 Fields:
 
-- `channel`: `Optional`
-- `status`: `Optional`
-- `config`: `Optional`
-- `notification_resource_type`: `Optional`
-- `resource_id`: `Optional`
-- `checked`: `Optional`
-- `notification_channel_setting_id`: `Optional`
-- `notification_type_id`: `Optional`
+- `channel`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `notification_resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `checked`: `typing.Optional[bool]`
+- `notification_channel_setting_id`: `typing.Optional[int]`
+- `notification_type_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -1383,11 +2352,11 @@ Request model for ORG type accessor.
 
 Fields:
 
-- `type`: `Literal`
-- `id`: `Optional` — Unique ID of the organization
-- `client_identifier`: `Optional` — Client identifier for the organization
-- `email_domain`: `Optional` — Email domain for the organization
-- `access_roles`: `List` — List of access roles
+- `type`: `typing.Literal[<AccessorType.ORG: 'ORG'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the organization
+- `client_identifier`: `typing.Optional[str]` — Client identifier for the organization
+- `email_domain`: `typing.Optional[str]` — Email domain for the organization
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
 
 Methods:
 
@@ -1406,13 +2375,52 @@ Response model for ORG type accessor.
 
 Fields:
 
-- `type`: `Literal`
-- `id`: `Optional` — Unique ID of the organization
-- `client_identifier`: `Optional` — Client identifier for the organization
-- `email_domain`: `Optional` — Email domain for the organization
-- `access_roles`: `List` — List of access roles
-- `created_at`: `Optional` — Creation timestamp
-- `updated_at`: `Optional` — Last update timestamp
+- `type`: `typing.Literal[<AccessorType.ORG: 'ORG'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the organization
+- `client_identifier`: `typing.Optional[str]` — Client identifier for the organization
+- `email_domain`: `typing.Optional[str]` — Email domain for the organization
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+- `created_at`: `typing.Optional[datetime.datetime]` — Creation timestamp
+- `updated_at`: `typing.Optional[datetime.datetime]` — Last update timestamp
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### OrgCustodianRef
+
+Defined in `nexla_sdk/models/organizations/custodians.py:6`
+
+Reference to a user for organization custodians (by id or email).
+
+Fields:
+
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### OrgCustodiansPayload
+
+Defined in `nexla_sdk/models/organizations/custodians.py:12`
+
+Payload for organization custodians endpoints.
+
+Fields:
+
+- `custodians`: `typing.List[nexla_sdk.models.organizations.custodians.OrgCustodianRef]`
 
 Methods:
 
@@ -1435,7 +2443,7 @@ Fields:
 - `full_name`: `str`
 - `email`: `str`
 - `is_admin`: `bool`
-- `access_role`: `Optional`
+- `access_role`: `typing.Optional[typing.List[str]]`
 - `org_membership_status`: `str`
 - `user_status`: `str`
 
@@ -1448,76 +2456,15 @@ Methods:
   - Source: `nexla_sdk/models/base.py:52`
   - Convert model to JSON string.
 
-### OrgMemberActivateDeactivateRequest
-
-Defined in `nexla_sdk/models/organizations/requests.py:71`
-
-Request model for activating/deactivating org members.
-
-Fields:
-
-- `members`: `List`
-
-Methods:
-
-- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
-  - Source: `nexla_sdk/models/base.py:40`
-  - Convert model to dictionary.
-- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
-  - Source: `nexla_sdk/models/base.py:52`
-  - Convert model to JSON string.
-
-### OrgMemberCreateRequest
-
-Defined in `nexla_sdk/models/organizations/requests.py:12`
-
-Request model for creating an org member.
-
-Fields:
-
-- `full_name`: `str`
-- `email`: `str`
-- `admin`: `bool`
-
-Methods:
-
-- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
-  - Source: `nexla_sdk/models/base.py:40`
-  - Convert model to dictionary.
-- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
-  - Source: `nexla_sdk/models/base.py:52`
-  - Convert model to JSON string.
-
 ### OrgMemberDelete
 
-Defined in `nexla_sdk/models/organizations/requests.py:66`
+Defined in `nexla_sdk/models/organizations/requests.py:65`
 
 Request model for deleting org members.
 
 Fields:
 
-- `members`: `List`
-
-Methods:
-
-- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
-  - Source: `nexla_sdk/models/base.py:40`
-  - Convert model to dictionary.
-- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
-  - Source: `nexla_sdk/models/base.py:52`
-  - Convert model to JSON string.
-
-### OrgMemberDeleteRequest
-
-Defined in `nexla_sdk/models/organizations/requests.py:59`
-
-Request model for deleting a single org member.
-
-Fields:
-
-- `id`: `Optional`
-- `email`: `Optional`
-- `delegate_owner_id`: `Optional`
+- `members`: `typing.List[nexla_sdk.models.organizations.requests.OrgMemberDeleteRequest]`
 
 Methods:
 
@@ -1530,13 +2477,13 @@ Methods:
 
 ### OrgMemberList
 
-Defined in `nexla_sdk/models/organizations/requests.py:54`
+Defined in `nexla_sdk/models/organizations/requests.py:53`
 
 Request model for updating org members.
 
 Fields:
 
-- `members`: `List`
+- `members`: `typing.List[nexla_sdk.models.organizations.requests.OrgMemberUpdate]`
 
 Methods:
 
@@ -1549,17 +2496,17 @@ Methods:
 
 ### OrgMemberUpdate
 
-Defined in `nexla_sdk/models/organizations/requests.py:45`
+Defined in `nexla_sdk/models/organizations/requests.py:44`
 
 Request model for updating org member.
 
 Fields:
 
-- `id`: `Optional`
-- `email`: `Optional`
-- `full_name`: `Optional`
-- `admin`: `Optional`
-- `access_role`: `Optional`
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `full_name`: `typing.Optional[str]`
+- `admin`: `typing.Optional[bool]`
+- `access_role`: `typing.Optional[str]`
 
 Methods:
 
@@ -1580,9 +2527,9 @@ Fields:
 
 - `id`: `int`
 - `name`: `str`
-- `is_admin`: `Optional`
+- `is_admin`: `typing.Optional[bool]`
 - `org_membership_status`: `str`
-- `api_key`: `Optional`
+- `api_key`: `typing.Optional[str]`
 
 Methods:
 
@@ -1618,7 +2565,7 @@ Fields:
 - `record_count_limit`: `int`
 - `record_count_limit_time`: `str`
 - `data_source_count_limit`: `int`
-- `trial_period_days`: `Optional`
+- `trial_period_days`: `typing.Optional[int]`
 
 Methods:
 
@@ -1631,65 +2578,25 @@ Methods:
 
 ### Organization
 
-Defined in `nexla_sdk/models/organizations/responses.py:19`
+Defined in `nexla_sdk/models/common.py:14`
 
-Organization response model.
+Organization details.
 
 Fields:
 
 - `id`: `int`
 - `name`: `str`
-- `email_domain`: `Optional`
-- `access_roles`: `List`
-- `owner`: `Optional`
-- `status`: `Optional`
-- `members_default_access_role`: `Optional`
-- `default_reusable_code_container_access_role`: `Optional`
-- `require_org_admin_to_publish`: `Optional`
-- `require_org_admin_to_subscribe`: `Optional`
-- `enable_nexla_password_login`: `Optional`
-- `description`: `Optional`
-- `email`: `Optional`
-- `client_identifier`: `Optional`
-- `org_webhook_host`: `Optional`
-- `default_cluster_id`: `Optional`
-- `billing_owner`: `Optional`
-- `admins`: `List`
-- `org_tier`: `Optional`
-- `account_tier_display_name`: `Optional`
-- `account_tier_name`: `Optional`
-- `email_domain_verified_at`: `Optional`
-- `name_verified_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
-
-Methods:
-
-- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
-  - Source: `nexla_sdk/models/base.py:40`
-  - Convert model to dictionary.
-- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
-  - Source: `nexla_sdk/models/base.py:52`
-  - Convert model to JSON string.
-
-### OrganizationCreate
-
-Defined in `nexla_sdk/models/organizations/requests.py:19`
-
-Request model for creating an organization.
-
-Fields:
-
-- `name`: `str`
-- `email_domain`: `str`
-- `owner`: `Optional`
-- `owner_id`: `Optional`
-- `description`: `Optional`
-- `billing_owner`: `Optional`
-- `billing_owner_id`: `Optional`
-- `email`: `Optional`
-- `account_tier_id`: `Optional`
-- `members`: `Optional`
+- `email_domain`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `client_identifier`: `typing.Optional[str]`
+- `org_webhook_host`: `typing.Optional[str]`
+- `cluster_id`: `typing.Optional[int]`
+- `new_cluster_id`: `typing.Optional[int]`
+- `cluster_status`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `self_signup`: `typing.Optional[bool]`
+- `features_enabled`: `typing.Optional[typing.List[str]]`
+- `org_tier`: `typing.Optional[typing.Dict[str, typing.Any]]`
 
 Methods:
 
@@ -1702,20 +2609,20 @@ Methods:
 
 ### OrganizationUpdate
 
-Defined in `nexla_sdk/models/organizations/requests.py:33`
+Defined in `nexla_sdk/models/organizations/requests.py:32`
 
 Request model for updating an organization.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `owner`: `Optional`
-- `owner_id`: `Optional`
-- `billing_owner`: `Optional`
-- `billing_owner_id`: `Optional`
-- `email`: `Optional`
-- `members`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `owner_id`: `typing.Optional[int]`
+- `billing_owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `billing_owner_id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.organizations.requests.OrgMemberCreateRequest]]`
 
 Methods:
 
@@ -1749,7 +2656,7 @@ Fields:
 - `id`: `int`
 - `full_name`: `str`
 - `email`: `str`
-- `email_verified_at`: `Optional`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -1768,7 +2675,7 @@ Request for previewing connector content.
 
 Fields:
 
-- `path`: `Optional`
+- `path`: `typing.Optional[str]`
 
 Methods:
 
@@ -1790,7 +2697,7 @@ Fields:
 - `status`: `str`
 - `message`: `str`
 - `connection_type`: `str`
-- `output`: `Dict`
+- `output`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -1810,9 +2717,9 @@ Request for probing storage structure.
 Fields:
 
 - `depth`: `int`
-- `path`: `Optional`
-- `database`: `Optional`
-- `table`: `Optional`
+- `path`: `typing.Optional[str]`
+- `database`: `typing.Optional[str]`
+- `table`: `typing.Optional[str]`
 
 Methods:
 
@@ -1834,7 +2741,7 @@ Fields:
 - `status`: `str`
 - `message`: `str`
 - `connection_type`: `str`
-- `object`: `Dict`
+- `object`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -1858,16 +2765,16 @@ Fields:
 - `org`: `Organization`
 - `name`: `str`
 - `description`: `str`
-- `access_roles`: `List`
-- `data_flows`: `List`
-- `flows`: `List`
-- `client_identifier`: `Optional`
-- `client_url`: `Optional`
-- `flows_count`: `Optional`
-- `tags`: `List`
-- `copied_from_id`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `access_roles`: `typing.List[str]`
+- `data_flows`: `typing.List[nexla_sdk.models.projects.responses.ProjectDataFlow]`
+- `flows`: `typing.List[nexla_sdk.models.projects.responses.ProjectDataFlow]`
+- `client_identifier`: `typing.Optional[str]`
+- `client_url`: `typing.Optional[str]`
+- `flows_count`: `typing.Optional[int]`
+- `tags`: `typing.List[str]`
+- `copied_from_id`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -1887,8 +2794,8 @@ Request model for creating a project.
 Fields:
 
 - `name`: `str`
-- `description`: `Optional`
-- `data_flows`: `List`
+- `description`: `typing.Optional[str]`
+- `data_flows`: `typing.List[nexla_sdk.models.projects.requests.ProjectFlowIdentifier]`
 
 Methods:
 
@@ -1909,13 +2816,13 @@ Fields:
 
 - `id`: `int`
 - `project_id`: `int`
-- `data_source_id`: `Optional`
-- `data_set_id`: `Optional`
-- `data_sink_id`: `Optional`
-- `name`: `Optional`
-- `description`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `data_source_id`: `typing.Optional[int]`
+- `data_set_id`: `typing.Optional[int]`
+- `data_sink_id`: `typing.Optional[int]`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -1934,8 +2841,8 @@ Flow identifier for project.
 
 Fields:
 
-- `data_source_id`: `Optional`
-- `data_set_id`: `Optional`
+- `data_source_id`: `typing.Optional[int]`
+- `data_set_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -1954,8 +2861,8 @@ Request model for managing project flows.
 
 Fields:
 
-- `data_flows`: `Optional`
-- `flows`: `Optional`
+- `data_flows`: `typing.Optional[typing.List[nexla_sdk.models.projects.requests.ProjectFlowIdentifier]]`
+- `flows`: `typing.Optional[typing.List[int]]`
 
 Methods:
 
@@ -1974,9 +2881,9 @@ Request model for updating a project.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `data_flows`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `data_flows`: `typing.Optional[typing.List[nexla_sdk.models.projects.requests.ProjectFlowIdentifier]]`
 
 Methods:
 
@@ -1989,7 +2896,7 @@ Methods:
 
 ### ResourceMetricDaily
 
-Defined in `nexla_sdk/models/metrics/responses.py:26`
+Defined in `nexla_sdk/models/metrics/responses.py:25`
 
 Daily resource metrics.
 
@@ -2011,14 +2918,14 @@ Methods:
 
 ### ResourceMetricsByRun
 
-Defined in `nexla_sdk/models/metrics/responses.py:34`
+Defined in `nexla_sdk/models/metrics/responses.py:33`
 
 Resource metrics grouped by run.
 
 Fields:
 
-- `runId`: `Optional`
-- `lastWritten`: `Optional`
+- `runId`: `typing.Optional[int]`
+- `lastWritten`: `typing.Optional[int]`
 - `dataSetId`: `int`
 - `records`: `int`
 - `size`: `int`
@@ -2051,15 +2958,28 @@ Members:
 
 ### ResourceType
 
-Defined in `nexla_sdk/models/metrics/enums.py:4`
+Defined in `nexla_sdk/models/enums.py:23`
 
-Valid resource types for metrics endpoints.
+Resource types in Nexla.
 
 Members:
 
-- `DATA_SOURCES` = `data_sources`
-- `DATA_SINKS` = `data_sinks`
-- `DATA_SETS` = `data_sets`
+- `ORG` = `ORG`
+- `USER` = `USER`
+- `TEAM` = `TEAM`
+- `DATA_FLOW` = `DATA_FLOW`
+- `CUSTOM_DATA_FLOW` = `CUSTOM_DATA_FLOW`
+- `SOURCE` = `SOURCE`
+- `DATASET` = `DATASET`
+- `SINK` = `SINK`
+- `DATA_MAP` = `DATA_MAP`
+- `DATA_SCHEMA` = `DATA_SCHEMA`
+- `DATA_CREDENTIAL` = `DATA_CREDENTIAL`
+- `PROJECT` = `PROJECT`
+- `CODE_CONTAINER` = `CODE_CONTAINER`
+- `TRANSFORM` = `TRANSFORM`
+- `FLOW` = `FLOW`
+- `PIPELINE` = `PIPELINE`
 
 ### RunInfo
 
@@ -2071,6 +2991,116 @@ Fields:
 
 - `id`: `int`
 - `created_at`: `datetime`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### Runtime
+
+Defined in `nexla_sdk/models/runtimes/responses.py:7`
+
+Response model for Custom Runtime aligned with OpenAPI Runtime schema.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `active`: `typing.Optional[bool]`
+- `dockerpath`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### RuntimeCreate
+
+Defined in `nexla_sdk/models/runtimes/requests.py:6`
+
+Create payload for Custom Runtime matching OpenAPI RuntimePayload.
+
+Fields:
+
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `active`: `typing.Optional[bool]`
+- `dockerpath`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### RuntimeUpdate
+
+Defined in `nexla_sdk/models/runtimes/requests.py:16`
+
+Update payload for Custom Runtime matching OpenAPI RuntimePayload.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `active`: `typing.Optional[bool]`
+- `dockerpath`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### SelfSignupRequest
+
+Defined in `nexla_sdk/models/self_signup/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `status`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `full_name`: `typing.Optional[str]`
+- `invite_id`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -2093,32 +3123,32 @@ Fields:
 - `name`: `str`
 - `status`: `str`
 - `source_type`: `str`
-- `connector_type`: `Optional`
-- `owner`: `Optional`
-- `org`: `Optional`
-- `access_roles`: `Optional`
-- `managed`: `Optional`
-- `auto_generated`: `Optional`
-- `connector`: `Optional`
-- `description`: `Optional`
-- `ingest_method`: `Optional`
-- `source_format`: `Optional`
-- `source_config`: `Optional`
-- `poll_schedule`: `Optional`
-- `code_container_id`: `Optional`
-- `data_credentials_id`: `Optional`
-- `data_credentials`: `Optional`
-- `data_sets`: `List`
-- `api_keys`: `List`
-- `run_ids`: `List`
-- `copied_from_id`: `Optional`
-- `flow_type`: `Optional`
-- `has_template`: `Optional`
-- `vendor_endpoint`: `Optional`
-- `vendor`: `Optional`
-- `tags`: `List`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `connector_type`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.common.Owner]`
+- `org`: `typing.Optional[nexla_sdk.models.common.Organization]`
+- `access_roles`: `typing.Optional[typing.List[str]]`
+- `managed`: `typing.Optional[bool]`
+- `auto_generated`: `typing.Optional[bool]`
+- `connector`: `typing.Optional[nexla_sdk.models.common.Connector]`
+- `description`: `typing.Optional[str]`
+- `ingest_method`: `typing.Optional[str]`
+- `source_format`: `typing.Optional[str]`
+- `source_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `poll_schedule`: `typing.Optional[str]`
+- `code_container_id`: `typing.Optional[int]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `data_credentials`: `typing.Optional[nexla_sdk.models.credentials.responses.Credential]`
+- `data_sets`: `typing.List[nexla_sdk.models.sources.responses.DataSetBrief]`
+- `api_keys`: `typing.List[typing.Dict[str, typing.Any]]`
+- `run_ids`: `typing.List[nexla_sdk.models.sources.responses.RunInfo]`
+- `copied_from_id`: `typing.Optional[int]`
+- `flow_type`: `typing.Optional[str]`
+- `has_template`: `typing.Optional[bool]`
+- `vendor_endpoint`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `vendor`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -2139,8 +3169,8 @@ Fields:
 
 - `reuse_data_credentials`: `bool`
 - `copy_access_controls`: `bool`
-- `owner_id`: `Optional`
-- `org_id`: `Optional`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -2161,12 +3191,12 @@ Fields:
 
 - `name`: `str`
 - `source_type`: `str`
-- `data_credentials_id`: `int`
-- `description`: `Optional`
-- `source_config`: `Optional`
-- `vendor_endpoint_id`: `Optional`
-- `ingest_method`: `Optional`
-- `template_config`: `Optional`
+- `data_credentials_id`: `typing.Optional[int]`
+- `description`: `typing.Optional[str]`
+- `source_config`: `typing.Optional[typing.Dict]`
+- `vendor_endpoint_id`: `typing.Optional[int]`
+- `ingest_method`: `typing.Optional[str]`
+- `template_config`: `typing.Optional[typing.Dict]`
 
 Methods:
 
@@ -2236,10 +3266,10 @@ Request model for updating a source.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `source_config`: `Optional`
-- `data_credentials_id`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `source_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -2264,11 +3294,11 @@ Fields:
 - `owner`: `Owner`
 - `org`: `Organization`
 - `member`: `bool`
-- `members`: `List`
-- `access_roles`: `List`
-- `tags`: `List`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `members`: `typing.List[nexla_sdk.models.teams.responses.TeamMember]`
+- `access_roles`: `typing.List[str]`
+- `tags`: `typing.List[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -2287,10 +3317,10 @@ Request model for TEAM type accessor.
 
 Fields:
 
-- `type`: `Literal`
-- `id`: `Optional` — Unique ID of the team
-- `name`: `Optional` — Name of the team
-- `access_roles`: `List` — List of access roles
+- `type`: `typing.Literal[<AccessorType.TEAM: 'TEAM'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the team
+- `name`: `typing.Optional[str]` — Name of the team
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
 
 Methods:
 
@@ -2309,12 +3339,12 @@ Response model for TEAM type accessor.
 
 Fields:
 
-- `type`: `Literal`
-- `id`: `Optional` — Unique ID of the team
-- `name`: `Optional` — Name of the team
-- `access_roles`: `List` — List of access roles
-- `created_at`: `Optional` — Creation timestamp
-- `updated_at`: `Optional` — Last update timestamp
+- `type`: `typing.Literal[<AccessorType.TEAM: 'TEAM'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the team
+- `name`: `typing.Optional[str]` — Name of the team
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+- `created_at`: `typing.Optional[datetime.datetime]` — Creation timestamp
+- `updated_at`: `typing.Optional[datetime.datetime]` — Last update timestamp
 
 Methods:
 
@@ -2334,8 +3364,8 @@ Request model for creating a team.
 Fields:
 
 - `name`: `str`
-- `description`: `Optional`
-- `members`: `List`
+- `description`: `typing.Optional[str]`
+- `members`: `typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]`
 
 Methods:
 
@@ -2375,7 +3405,7 @@ Request model for team member operations.
 
 Fields:
 
-- `members`: `List`
+- `members`: `typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]`
 
 Methods:
 
@@ -2394,8 +3424,8 @@ Request model for team member.
 
 Fields:
 
-- `id`: `Optional`
-- `email`: `Optional`
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
 - `admin`: `bool`
 
 Methods:
@@ -2415,9 +3445,94 @@ Request model for updating a team.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `members`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### Transform
+
+Defined in `nexla_sdk/models/transforms/responses.py:12`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `resource_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `access_roles`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `runtime_data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `description`: `typing.Optional[str]`
+- `code_type`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.transforms.responses.TransformCodeOp]]`
+- `managed`: `typing.Optional[bool]`
+- `data_sets`: `typing.Optional[typing.List[int]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
+### TransformCreate
+
+Defined in `nexla_sdk/models/transforms/requests.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `output_type`: `str`
+- `reusable`: `bool`
+- `code_type`: `str`
+- `code_encoding`: `str`
+- `code`: `typing.List[nexla_sdk.models.transforms.responses.TransformCodeOp]`
+- `description`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
 
 Methods:
 
@@ -2442,6 +3557,43 @@ Members:
 - `JAVASCRIPT` = `javascript`
 - `SQL` = `sql`
 
+### TransformUpdate
+
+Defined in `nexla_sdk/models/transforms/requests.py:22`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `code_type`: `typing.Optional[str]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.transforms.responses.TransformCodeOp]]`
+- `description`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+
+Methods:
+
+- `to_dict(self, exclude_none: bool = True) -> Dict[str, Any]`
+  - Source: `nexla_sdk/models/base.py:40`
+  - Convert model to dictionary.
+- `to_json(self, exclude_none: bool = True, indent: int = 2) -> str`
+  - Source: `nexla_sdk/models/base.py:52`
+  - Convert model to JSON string.
+
 ### User
 
 Defined in `nexla_sdk/models/users/responses.py:22`
@@ -2453,18 +3605,18 @@ Fields:
 - `id`: `int`
 - `email`: `str`
 - `full_name`: `str`
-- `super_user`: `Optional`
+- `super_user`: `typing.Optional[bool]`
 - `impersonated`: `bool`
 - `default_org`: `DefaultOrg`
-- `user_tier`: `Optional`
+- `user_tier`: `typing.Optional[str]`
 - `status`: `str`
 - `account_locked`: `bool`
-- `org_memberships`: `List`
-- `api_key`: `Optional`
-- `email_verified_at`: `Optional`
-- `tos_signed_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
+- `org_memberships`: `typing.List[nexla_sdk.models.users.responses.OrgMembership]`
+- `api_key`: `typing.Optional[str]`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
 
 Methods:
 
@@ -2483,11 +3635,11 @@ Request model for USER type accessor.
 
 Fields:
 
-- `type`: `Literal`
-- `id`: `Optional` — Unique ID of the user
-- `email`: `Optional` — Email of the user
-- `org_id`: `Optional` — Organization ID for cross-org access
-- `access_roles`: `List` — List of access roles
+- `type`: `typing.Literal[<AccessorType.USER: 'USER'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the user
+- `email`: `typing.Optional[str]` — Email of the user
+- `org_id`: `typing.Optional[int]` — Organization ID for cross-org access
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
 
 Methods:
 
@@ -2506,13 +3658,13 @@ Response model for USER type accessor.
 
 Fields:
 
-- `type`: `Literal`
-- `id`: `Optional` — Unique ID of the user
-- `email`: `Optional` — Email of the user
-- `org_id`: `Optional` — Organization ID for cross-org access
-- `access_roles`: `List` — List of access roles
-- `created_at`: `Optional` — Creation timestamp
-- `updated_at`: `Optional` — Last update timestamp
+- `type`: `typing.Literal[<AccessorType.USER: 'USER'>]`
+- `id`: `typing.Optional[int]` — Unique ID of the user
+- `email`: `typing.Optional[str]` — Email of the user
+- `org_id`: `typing.Optional[int]` — Organization ID for cross-org access
+- `access_roles`: `typing.List[nexla_sdk.models.enums.AccessRole]` — List of access roles
+- `created_at`: `typing.Optional[datetime.datetime]` — Creation timestamp
+- `updated_at`: `typing.Optional[datetime.datetime]` — Last update timestamp
 
 Methods:
 
@@ -2533,13 +3685,13 @@ Fields:
 
 - `full_name`: `str`
 - `email`: `str`
-- `default_org_id`: `Optional`
-- `status`: `Optional`
-- `user_tier_id`: `Optional`
-- `user_tier`: `Optional`
-- `password`: `Optional`
-- `tos_signed_at`: `Optional`
-- `admin`: `Union`
+- `default_org_id`: `typing.Optional[int]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
 
 Methods:
 
@@ -2561,19 +3713,19 @@ Fields:
 - `id`: `int`
 - `email`: `str`
 - `full_name`: `str`
-- `super_user`: `Optional`
+- `super_user`: `typing.Optional[bool]`
 - `impersonated`: `bool`
 - `default_org`: `DefaultOrg`
-- `user_tier`: `Optional`
+- `user_tier`: `typing.Optional[str]`
 - `status`: `str`
 - `account_locked`: `bool`
-- `org_memberships`: `List`
-- `api_key`: `Optional`
-- `email_verified_at`: `Optional`
-- `tos_signed_at`: `Optional`
-- `created_at`: `Optional`
-- `updated_at`: `Optional`
-- `account_summary`: `Optional`
+- `org_memberships`: `typing.List[nexla_sdk.models.users.responses.OrgMembership]`
+- `api_key`: `typing.Optional[str]`
+- `email_verified_at`: `typing.Optional[datetime.datetime]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `account_summary`: `typing.Optional[nexla_sdk.models.users.responses.AccountSummary]`
 
 Methods:
 
@@ -2584,17 +3736,6 @@ Methods:
   - Source: `nexla_sdk/models/base.py:52`
   - Convert model to JSON string.
 
-### UserMetricResourceType
-
-Defined in `nexla_sdk/models/metrics/enums.py:12`
-
-Valid resource types for user metrics endpoints.
-
-Members:
-
-- `SOURCE` = `SOURCE`
-- `SINK` = `SINK`
-
 ### UserSettings
 
 Defined in `nexla_sdk/models/users/responses.py:55`
@@ -2604,10 +3745,10 @@ User settings.
 Fields:
 
 - `id`: `str`
-- `owner`: `Dict`
-- `org`: `Dict`
+- `owner`: `typing.Dict[str, typing.Any]`
+- `org`: `typing.Dict[str, typing.Any]`
 - `user_settings_type`: `str`
-- `settings`: `Dict`
+- `settings`: `typing.Dict[str, typing.Any]`
 
 Methods:
 
@@ -2653,16 +3794,16 @@ Request model for updating a user.
 
 Fields:
 
-- `name`: `Optional`
-- `email`: `Optional`
-- `status`: `Optional`
-- `user_tier_id`: `Optional`
-- `user_tier`: `Optional`
-- `password`: `Optional`
-- `password_confirmation`: `Optional`
-- `password_current`: `Optional`
-- `tos_signed_at`: `Optional`
-- `admin`: `Union`
+- `name`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `user_tier_id`: `typing.Optional[int]`
+- `user_tier`: `typing.Optional[str]`
+- `password`: `typing.Optional[str]`
+- `password_confirmation`: `typing.Optional[str]`
+- `password_current`: `typing.Optional[str]`
+- `tos_signed_at`: `typing.Optional[datetime.datetime]`
+- `admin`: `typing.Union[str, bool, typing.List[typing.Dict[str, typing.Any]], NoneType]`
 
 Methods:
 

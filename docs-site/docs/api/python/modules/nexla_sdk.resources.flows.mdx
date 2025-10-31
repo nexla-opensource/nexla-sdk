@@ -16,34 +16,43 @@ Resource for managing data flows.
 
 Methods:
 
-- `activate(self, flow_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:75`
+- `activate(self, flow_id: int, all: bool = False, full_tree: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:83`
   - Activate a flow.
-- `activate_by_resource(self, resource_type: str, resource_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:148`
+- `activate_by_resource(self, resource_type: str, resource_id: int, all: bool = False, full_tree: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:164`
   - Activate flow by resource ID.
 - `copy(self, flow_id: int, options: Optional[nexla_sdk.models.flows.requests.FlowCopyOptions] = None) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:109`
+  - Source: `nexla_sdk/resources/flows.py:125`
   - Copy a flow.
 - `delete(self, flow_id: int) -> Dict[str, Any]`
-  - Source: `nexla_sdk/resources/flows.py:122`
+  - Source: `nexla_sdk/resources/flows.py:138`
   - Delete flow.
 - `delete_by_resource(self, resource_type: str, resource_id: int) -> Dict[str, Any]`
-  - Source: `nexla_sdk/resources/flows.py:134`
+  - Source: `nexla_sdk/resources/flows.py:150`
   - Delete flow by resource ID.
+- `docs_recommendation(self, flow_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:216`
+  - Generate AI suggestion for flow documentation.
 - `get(self, flow_id: int, flows_only: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:40`
+  - Source: `nexla_sdk/resources/flows.py:46`
   - Get flow by ID.
 - `get_by_resource(self, resource_type: str, resource_id: int, flows_only: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:54`
+  - Source: `nexla_sdk/resources/flows.py:62`
   - Get flow by resource ID.
+- `get_logs(self, resource_type: str, resource_id: int, run_id: int, from_ts: int, to_ts: int = None, page: int = None, per_page: int = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:221`
+  - Get flow execution logs for a specific run id of a flow.
+- `get_metrics(self, resource_type: str, resource_id: int, from_date: str, to_date: str = None, groupby: str = None, orderby: str = None, page: int = None, per_page: int = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/flows.py:243`
+  - Get flow metrics for a flow node keyed by resource id.
 - `list(self, flows_only: bool = False, include_run_metrics: bool = False, **kwargs) -> List[nexla_sdk.models.flows.responses.FlowResponse]`
   - Source: `nexla_sdk/resources/flows.py:15`
-  - List all flows.
-- `pause(self, flow_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:92`
+  - List flows with optional filters.
+- `pause(self, flow_id: int, all: bool = False, full_tree: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:104`
   - Pause a flow.
-- `pause_by_resource(self, resource_type: str, resource_id: int, all: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
-  - Source: `nexla_sdk/resources/flows.py:169`
+- `pause_by_resource(self, resource_type: str, resource_id: int, all: bool = False, full_tree: bool = False) -> nexla_sdk.models.flows.responses.FlowResponse`
+  - Source: `nexla_sdk/resources/flows.py:190`
   - Pause flow by resource ID.
 

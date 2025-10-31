@@ -11,6 +11,8 @@ Tracing: When OpenTelemetry is configured globally, the SDK adds spans per HTTP 
 - Attributes: `http.method`, `url.full`, `server.address`, `http.status_code`, `component=nexla-sdk`.
 - Trace context propagation via W3C trace headers when OTEL is available.
 
+To explicitly control tracing, pass `trace_enabled=True|False` to `NexlaClient`. If omitted, tracing auto-enables when a global OTEL tracer provider is detected.
+
 Enable (example):
 
 ```bash
@@ -18,8 +20,11 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
 export OTEL_SERVICE_NAME=nexla-sdk-example
 ```
 
-Traceability:
+Programmatic enablement example:
 
-- nexla_sdk/telemetry.py:1
-- nexla_sdk/http_client.py:37
+```python
+from nexla_sdk import NexlaClient
 
+# Force enable tracing regardless of global config
+client = NexlaClient(service_key="<SERVICE_KEY>", trace_enabled=True)
+```

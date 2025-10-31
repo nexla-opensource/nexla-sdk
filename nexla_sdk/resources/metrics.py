@@ -92,3 +92,45 @@ class MetricsResource(BaseResource):
         """
         path = "/limits"
         return self._make_request('GET', path)
+
+    # Convenience wrappers for flow-level logs/metrics
+    def get_flow_metrics(self,
+                         resource_type: str,
+                         resource_id: int,
+                         from_date: str,
+                         to_date: str = None,
+                         groupby: str = None,
+                         orderby: str = None,
+                         page: int = None,
+                         per_page: int = None) -> Dict[str, Any]:
+        path = f"/data_flows/{resource_type}/{resource_id}/metrics"
+        params = {'from': from_date}
+        if to_date:
+            params['to'] = to_date
+        if groupby:
+            params['groupby'] = groupby
+        if orderby:
+            params['orderby'] = orderby
+        if page is not None:
+            params['page'] = page
+        if per_page is not None:
+            params['per_page'] = per_page
+        return self._make_request('GET', path, params=params)
+
+    def get_flow_logs(self,
+                      resource_type: str,
+                      resource_id: int,
+                      run_id: int,
+                      from_ts: int,
+                      to_ts: int = None,
+                      page: int = None,
+                      per_page: int = None) -> Dict[str, Any]:
+        path = f"/data_flows/{resource_type}/{resource_id}/logs"
+        params = {'run_id': run_id, 'from': from_ts}
+        if to_ts is not None:
+            params['to'] = to_ts
+        if page is not None:
+            params['page'] = page
+        if per_page is not None:
+            params['per_page'] = per_page
+        return self._make_request('GET', path, params=params)

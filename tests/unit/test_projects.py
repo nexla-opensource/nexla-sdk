@@ -309,7 +309,7 @@ class TestProjectsResource:
         mock_client.http_client.request.assert_called_once()
         call_args = mock_client.http_client.request.call_args
         assert call_args[0][0] == 'PUT'
-        assert f'/projects/{project_id}/data_flows' in call_args[0][1]
+        assert f'/projects/{project_id}/flows' in call_args[0][1]
 
     def test_replace_data_flows(self, mock_client):
         """Test replacing data flows in a project."""
@@ -334,7 +334,7 @@ class TestProjectsResource:
         mock_client.http_client.request.assert_called_once()
         call_args = mock_client.http_client.request.call_args
         assert call_args[0][0] == 'POST'
-        assert f'/projects/{project_id}/data_flows' in call_args[0][1]
+        assert f'/projects/{project_id}/flows' in call_args[0][1]
 
     def test_remove_data_flows(self, mock_client):
         """Test removing data flows from a project."""
@@ -359,7 +359,7 @@ class TestProjectsResource:
         mock_client.http_client.request.assert_called_once()
         call_args = mock_client.http_client.request.call_args
         assert call_args[0][0] == 'DELETE'
-        assert f'/projects/{project_id}/data_flows' in call_args[0][1]
+        assert f'/projects/{project_id}/flows' in call_args[0][1]
 
     def test_remove_all_data_flows(self, mock_client):
         """Test removing all data flows from a project."""
@@ -378,7 +378,7 @@ class TestProjectsResource:
         mock_client.http_client.request.assert_called_once()
         call_args = mock_client.http_client.request.call_args
         assert call_args[0][0] == 'DELETE'
-        assert f'/projects/{project_id}/data_flows' in call_args[0][1]
+        assert f'/projects/{project_id}/flows' in call_args[0][1]
 
     def test_backward_compatibility_methods(self, mock_client):
         """Test backward compatibility methods."""

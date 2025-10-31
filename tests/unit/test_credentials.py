@@ -258,12 +258,12 @@ class TestCredentialsErrorHandling:
     def test_authentication_error_during_list(self, mock_client, mock_http_client):
         """Test handling authentication errors during API calls."""
         # Arrange
-        auth_error = create_http_error(401, "Authentication failed")
+        auth_error = create_http_error(401, "Authentication failed. Check your service key.")
         
-        # Mock both the credentials list request AND the token refresh request
+        # Mock both the credentials list request AND the session token obtain request
         # to return 401 errors so the retry also fails
         mock_http_client.add_response("/data_credentials", auth_error)
-        mock_http_client.add_response("/token/refresh", auth_error)
+        mock_http_client.add_response("/token", auth_error)
         
         # Act & Assert
         with pytest.raises(AuthenticationError):

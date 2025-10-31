@@ -50,17 +50,22 @@ class NotificationsResource(BaseResource):
              to_timestamp: Optional[int] = None,
              **kwargs) -> List[Notification]:
         """
-        List notifications.
+        List notifications with optional filters.
         
         Args:
             read: Filter by read status (0=unread, 1=read)
             level: Filter by level (DEBUG, INFO, WARN, ERROR, RECOVERED, RESOLVED)
             from_timestamp: Start timestamp (unix)
             to_timestamp: End timestamp (unix)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
             **kwargs: Additional parameters
         
         Returns:
             List of notifications
+        
+        Examples:
+            client.notifications.list(read=0, level="ERROR", page=1, per_page=50)
         """
         params = kwargs.copy()
         if read is not None:

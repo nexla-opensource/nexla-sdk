@@ -29,6 +29,18 @@ from nexla_sdk.resources import (
     ProjectsResource,
     NotificationsResource,
     MetricsResource,
+    CodeContainersResource,
+    TransformsResource,
+    AttributeTransformsResource,
+    AsyncTasksResource,
+    ApprovalRequestsResource,
+    RuntimesResource,
+    MarketplaceResource,
+    OrgAuthConfigsResource,
+    GenAIResource,
+    SelfSignupResource,
+    DocContainersResource,
+    DataSchemasResource,
 )
 
 # Import common models
@@ -86,6 +98,18 @@ __all__ = [
     'ProjectsResource',
     'NotificationsResource',
     'MetricsResource',
+    'CodeContainersResource',
+    'TransformsResource',
+    'AttributeTransformsResource',
+    'AsyncTasksResource',
+    'ApprovalRequestsResource',
+    'RuntimesResource',
+    'MarketplaceResource',
+    'OrgAuthConfigsResource',
+    'GenAIResource',
+    'SelfSignupResource',
+    'DocContainersResource',
+    'DataSchemasResource',
     
     # Models
     'BaseModel',

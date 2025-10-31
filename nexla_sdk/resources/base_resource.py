@@ -109,16 +109,34 @@ class BaseResource:
              access_role: Optional[str] = None,
              **params) -> List[T]:
         """
-        List resources.
+        List resources with optional filters.
+
+        Common filters available across most resources:
+        - page: Page number (1-based)
+        - per_page: Items per page
+        - access_role: owner, collaborator, operator, admin
+        
+        Any resource-specific filters can be passed via keyword arguments
+        (for example, `credentials_type` for credentials, `expand` for users/projects).
         
         Args:
-            page: Page number
+            page: Page number (1-based)
             per_page: Items per page
             access_role: Filter by access role (owner, collaborator, operator, admin)
-            **params: Additional query parameters
+            **params: Resource-specific query parameters
         
         Returns:
             List of resources
+        
+        Examples:
+            # Basic listing
+            client.sources.list()
+
+            # With pagination and role
+            client.sources.list(page=1, per_page=20, access_role="owner")
+
+            # With a resource-specific filter
+            client.credentials.list(credentials_type="s3")
         """
         query_params = {}
         if page is not None:
@@ -160,10 +178,17 @@ class BaseResource:
         
         Args:
             resource_id: Resource ID
-            expand: Include expanded references
+            expand: Include expanded references (where supported)
         
         Returns:
             Resource instance
+        
+        Examples:
+            # Get by ID
+            client.sources.get(123)
+
+            # Get with expanded relations (when supported by resource)
+            client.projects.get(456, expand=True)
         """
         path = f"{self._path}/{resource_id}"
         params = {'expand': 1} if expand else {}
@@ -176,10 +201,17 @@ class BaseResource:
         Create new resource.
         
         Args:
-            data: Resource data (dict or Pydantic model)
+            data: Resource data (Pydantic model or dict)
         
         Returns:
             Created resource
+        
+        Examples:
+            # Using a typed request model
+            source = client.sources.create(SourceCreate(name="My Source", connector=...))
+
+            # Some resources may still accept a plain dict
+            client.async_tasks.create(AsyncTaskCreate(type="export", arguments={...}))
         """
         serialized_data = self._serialize_data(data)
         response = self._make_request('POST', self._path, operation="create_resource", json=serialized_data)

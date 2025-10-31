@@ -19,14 +19,27 @@ class CredentialsResource(BaseResource):
              credentials_type: Optional[str] = None,
              **kwargs) -> List[Credential]:
         """
-        List all credentials.
+        List credentials with optional filters.
         
         Args:
-            credentials_type: Filter by credential type
-            **kwargs: Additional parameters
+            credentials_type: Filter by credential type (e.g., 's3', 'gcs')
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of credentials
+
+        Examples:
+            # All credentials
+            client.credentials.list()
+
+            # Filter by type
+            client.credentials.list(credentials_type="s3")
+
+            # With pagination and role
+            client.credentials.list(page=1, per_page=20, access_role="owner")
         """
         params = kwargs.copy()
         if credentials_type:
@@ -44,6 +57,9 @@ class CredentialsResource(BaseResource):
         
         Returns:
             Credential instance
+        
+        Examples:
+            client.credentials.get(123)
         """
         return super().get(credential_id, expand)
     
@@ -56,6 +72,11 @@ class CredentialsResource(BaseResource):
         
         Returns:
             Created credential
+        
+        Examples:
+            new_cred = client.credentials.create(
+                CredentialCreate(name="my-s3", connector_type="s3", config={...})
+            )
         """
         return super().create(data)
     
@@ -84,7 +105,7 @@ class CredentialsResource(BaseResource):
         """
         return super().delete(credential_id)
     
-    def probe(self, credential_id: int) -> Dict[str, Any]:
+    def probe(self, credential_id: int, async_mode: bool = False, request_id: Optional[int] = None) -> Dict[str, Any]:
         """
         Test credential validity.
         
@@ -95,7 +116,12 @@ class CredentialsResource(BaseResource):
             Probe response
         """
         path = f"{self._path}/{credential_id}/probe"
-        response = self._make_request('GET', path)
+        params = {}
+        if async_mode:
+            params['async'] = True
+        if request_id is not None:
+            params['request_id'] = request_id
+        response = self._make_request('GET', path, params=params)
         
         # Handle cases where the response might be None or contain raw text
         if response is None:
@@ -107,7 +133,9 @@ class CredentialsResource(BaseResource):
     
     def probe_tree(self, 
                    credential_id: int, 
-                   request: ProbeTreeRequest) -> ProbeTreeResponse:
+                   request: ProbeTreeRequest,
+                   async_mode: bool = False,
+                   request_id: Optional[int] = None) -> ProbeTreeResponse:
         """
         Preview storage structure accessible by credential.
         
@@ -119,12 +147,19 @@ class CredentialsResource(BaseResource):
             Storage structure response
         """
         path = f"{self._path}/{credential_id}/probe/tree"
-        response = self._make_request('POST', path, json=request.to_dict())
+        params = {}
+        if async_mode:
+            params['async'] = True
+        if request_id is not None:
+            params['request_id'] = request_id
+        response = self._make_request('POST', path, json=request.to_dict(), params=params)
         return ProbeTreeResponse(**response)
     
     def probe_sample(self, 
                      credential_id: int,
-                     request: ProbeSampleRequest) -> ProbeSampleResponse:
+                     request: ProbeSampleRequest,
+                     async_mode: bool = False,
+                     request_id: Optional[int] = None) -> ProbeSampleResponse:
         """
         Preview data content accessible by credential.
         
@@ -136,5 +171,10 @@ class CredentialsResource(BaseResource):
             Sample data response
         """
         path = f"{self._path}/{credential_id}/probe/sample"
-        response = self._make_request('POST', path, json=request.to_dict())
+        params = {}
+        if async_mode:
+            params['async'] = True
+        if request_id is not None:
+            params['request_id'] = request_id
+        response = self._make_request('POST', path, json=request.to_dict(), params=params)
         return ProbeSampleResponse(**response)

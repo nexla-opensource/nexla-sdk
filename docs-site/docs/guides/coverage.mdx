@@ -1,0 +1,43 @@
+---
+title: SDK Coverage Matrix
+---
+
+This page maps major OpenAPI areas to SDK resources and methods. All requests use `Accept: application/vnd.nexla.api.v1+json` and default base URL `https://dataops.nexla.io/nexla-api`.
+
+- Session Management
+  - Login/Logout handled by client auth; `NexlaClient.logout()` ends session
+- Flows: `client.flows`
+  - list/get/get_by_resource/activate/pause/copy/delete; docs_recommendation; get_logs; get_metrics
+- Sources: `client.sources`
+  - CRUD/activate/pause/copy
+- Destinations (Data Sinks): `client.destinations`
+  - CRUD/activate/pause/copy
+- Nexsets (Data Sets): `client.nexsets`
+  - CRUD/activate/pause/samples/copy/docs_recommendation
+- Credentials: `client.credentials`
+  - CRUD/probe/probe_tree/probe_sample (async/request_id)
+- Data Maps (Lookups): `client.lookups`
+  - CRUD; entries get/upsert/delete
+- Users: `client.users`
+  - CRUD/settings/quarantine/metrics/audit_log/transfer
+- Organizations: `client.organizations`
+  - CRUD/members/account metrics/audit log/auth settings/custodians
+- Teams: `client.teams` — CRUD/members
+- Projects: `client.projects` — CRUD/flows add/replace/remove/search/get
+- Notifications: `client.notifications` — list/delete/count/mark read/unread; channel/settings CRUD
+- Metrics: `client.metrics` — resource daily/by-run; flow logs/metrics; rate limits
+- Code Containers: `client.code_containers` — CRUD/copy/public list (accessors/audit via BaseResource)
+- Transforms: `client.transforms` — CRUD/copy/public list
+- Attribute Transforms: `client.attribute_transforms` — CRUD/public list
+- Async Tasks: `client.async_tasks` — list/create/get/delete/rerun/result/download_link/types/explain_arguments
+- Approval Requests: `client.approval_requests` — list_pending/list_requested/approve/reject
+- Runtimes: `client.runtimes` — CRUD/activate/pause
+- Marketplace: `client.marketplace` — domains CRUD; items list/create; custodians add/update/remove
+- Org Auth Configs: `client.org_auth_configs` — list/all/get/create/update/delete
+- GenAI Configurations/Org Settings: `client.genai` — configs CRUD; org settings CRUD; active_config
+- Doc Containers: `client.doc_containers` — audit_log; (access control via BaseResource)
+- Data Schemas: `client.data_schemas` — audit_log; (access control via BaseResource)
+- Webhooks: not included as a dedicated helper yet (use direct HTTP with API key per spec)
+
+See README for quick usage examples for each.
+

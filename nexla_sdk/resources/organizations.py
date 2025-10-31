@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.common import LogEntry
-from nexla_sdk.models.organizations.responses import Organization, OrgMember, AccountSummary
+from nexla_sdk.models.organizations.responses import Organization, OrgMember, AccountSummary, CustodianUser
 from nexla_sdk.models.organizations.requests import (
     OrganizationCreate,
     OrganizationUpdate,
@@ -9,6 +9,7 @@ from nexla_sdk.models.organizations.requests import (
     OrgMemberDelete,
     OrgMemberActivateDeactivateRequest
 )
+from nexla_sdk.models.organizations.custodians import OrgCustodiansPayload
 
 
 class OrganizationsResource(BaseResource):
@@ -21,13 +22,19 @@ class OrganizationsResource(BaseResource):
 
     def list(self, **kwargs) -> List[Organization]:
         """
-        List all organizations.
+        List organizations with optional filters.
         
         Args:
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of organizations
+        
+        Examples:
+            client.organizations.list(page=1, per_page=25)
         """
         return super().list(**kwargs)
 
@@ -194,6 +201,14 @@ class OrganizationsResource(BaseResource):
         response = self._make_request('GET', path)
         return AccountSummary.model_validate(response)
 
+    def get_org_flow_account_metrics(self, org_id: int, from_date: str, to_date: str = None) -> Dict[str, Any]:
+        """Get total account metrics for an organization (flows)."""
+        path = f"{self._path}/{org_id}/flows/account_metrics"
+        params = {'from': from_date}
+        if to_date:
+            params['to'] = to_date
+        return self._make_request('GET', path, params=params)
+
     def get_audit_log(self, org_id: int, **params) -> List[LogEntry]:
         """
         Get audit log for an organization.
@@ -256,3 +271,32 @@ class OrganizationsResource(BaseResource):
         path = f"{self._path}/{org_id}/auth_settings/{auth_setting_id}"
         data = {'enabled': enabled}
         return self._make_request('PUT', path, json=data)
+
+    # Org custodians
+    def get_custodians(self, org_id: int) -> List[CustodianUser]:
+        path = f"{self._path}/{org_id}/custodians"
+        response = self._make_request('GET', path)
+        if isinstance(response, list):
+            return [CustodianUser.model_validate(item) for item in response]
+        return []
+
+    def update_custodians(self, org_id: int, payload: OrgCustodiansPayload) -> List[CustodianUser]:
+        path = f"{self._path}/{org_id}/custodians"
+        data = self._serialize_data(payload)
+        response = self._make_request('PUT', path, json=data)
+        if isinstance(response, list):
+            return [CustodianUser.model_validate(item) for item in response]
+        return []
+
+    def add_custodians(self, org_id: int, payload: OrgCustodiansPayload) -> List[CustodianUser]:
+        path = f"{self._path}/{org_id}/custodians"
+        data = self._serialize_data(payload)
+        response = self._make_request('POST', path, json=data)
+        if isinstance(response, list):
+            return [CustodianUser.model_validate(item) for item in response]
+        return []
+
+    def remove_custodians(self, org_id: int, payload: OrgCustodiansPayload) -> Dict[str, Any]:
+        path = f"{self._path}/{org_id}/custodians"
+        data = self._serialize_data(payload)
+        return self._make_request('DELETE', path, json=data)

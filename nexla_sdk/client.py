@@ -23,6 +23,18 @@ from .resources.teams import TeamsResource
 from .resources.projects import ProjectsResource
 from .resources.notifications import NotificationsResource
 from .resources.metrics import MetricsResource
+from .resources.code_containers import CodeContainersResource
+from .resources.transforms import TransformsResource
+from .resources.attribute_transforms import AttributeTransformsResource
+from .resources.async_tasks import AsyncTasksResource
+from .resources.approval_requests import ApprovalRequestsResource
+from .resources.runtimes import RuntimesResource
+from .resources.marketplace import MarketplaceResource
+from .resources.org_auth_configs import OrgAuthConfigsResource
+from .resources.genai import GenAIResource
+from .resources.self_signup import SelfSignupResource
+from .resources.doc_containers import DocContainersResource
+from .resources.data_schemas import DataSchemasResource
 
 logger = logging.getLogger(__name__)
 
@@ -151,6 +163,18 @@ class NexlaClient:
         self.projects = ProjectsResource(self)
         self.notifications = NotificationsResource(self)
         self.metrics = MetricsResource(self)
+        self.code_containers = CodeContainersResource(self)
+        self.transforms = TransformsResource(self)
+        self.attribute_transforms = AttributeTransformsResource(self)
+        self.async_tasks = AsyncTasksResource(self)
+        self.approval_requests = ApprovalRequestsResource(self)
+        self.runtimes = RuntimesResource(self)
+        self.marketplace = MarketplaceResource(self)
+        self.org_auth_configs = OrgAuthConfigsResource(self)
+        self.genai = GenAIResource(self)
+        self.self_signup = SelfSignupResource(self)
+        self.doc_containers = DocContainersResource(self)
+        self.data_schemas = DataSchemasResource(self)
 
     def get_access_token(self) -> str:
         """
@@ -193,6 +217,14 @@ class NexlaClient:
         """
         self.auth_handler.refresh_session_token()
         return self.auth_handler.get_access_token()
+
+    def logout(self) -> None:
+        """
+        Logout current session and invalidate token.
+
+        Calls POST /token/logout and clears internal token state when successful.
+        """
+        self.auth_handler.logout()
 
     def _convert_to_model(self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]) -> Union[T, List[T]]:
         """
@@ -262,6 +294,9 @@ class NexlaClient:
         except HttpClientError as e:
             # Map HTTP client errors to appropriate Nexla exceptions
             self._handle_http_error(e, method, path, url, kwargs)
+        except NexlaError:
+            # Preserve explicit NexlaError subclasses (e.g., AuthenticationError)
+            raise
         except Exception as e:
             raise NexlaError(
                 message=f"Request failed: {e}",

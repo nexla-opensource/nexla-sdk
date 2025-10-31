@@ -17,45 +17,45 @@ Base class for all Nexla resources.
 Methods:
 
 - `activate(self, resource_id: int) -> ~T`
-  - Source: `nexla_sdk/resources/base_resource.py:217`
+  - Source: `nexla_sdk/resources/base_resource.py:249`
   - Activate resource.
 - `add_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
-  - Source: `nexla_sdk/resources/base_resource.py:292`
+  - Source: `nexla_sdk/resources/base_resource.py:324`
   - Add access control rules.
 - `copy(self, resource_id: int, options: Union[Dict[str, Any], Any, NoneType] = None) -> ~T`
-  - Source: `nexla_sdk/resources/base_resource.py:245`
+  - Source: `nexla_sdk/resources/base_resource.py:277`
   - Copy resource.
 - `create(self, data: Union[Dict[str, Any], Any]) -> ~T`
-  - Source: `nexla_sdk/resources/base_resource.py:174`
+  - Source: `nexla_sdk/resources/base_resource.py:199`
   - Create new resource.
 - `delete(self, resource_id: int) -> Dict[str, Any]`
-  - Source: `nexla_sdk/resources/base_resource.py:204`
+  - Source: `nexla_sdk/resources/base_resource.py:236`
   - Delete resource.
 - `delete_accessors(self, resource_id: int, accessors: Optional[List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]] = None) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
-  - Source: `nexla_sdk/resources/base_resource.py:332`
+  - Source: `nexla_sdk/resources/base_resource.py:364`
   - Delete access control rules.
 - `get(self, resource_id: int, expand: bool = False) -> ~T`
-  - Source: `nexla_sdk/resources/base_resource.py:157`
+  - Source: `nexla_sdk/resources/base_resource.py:175`
   - Get single resource by ID.
 - `get_accessors(self, resource_id: int) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
-  - Source: `nexla_sdk/resources/base_resource.py:274`
+  - Source: `nexla_sdk/resources/base_resource.py:306`
   - Get access control rules for resource.
 - `get_audit_log(self, resource_id: int) -> List[Dict[str, Any]]`
-  - Source: `nexla_sdk/resources/base_resource.py:261`
+  - Source: `nexla_sdk/resources/base_resource.py:293`
   - Get audit log for resource.
 - `list(self, page: Optional[int] = None, per_page: Optional[int] = None, access_role: Optional[str] = None, **params) -> List[~T]`
   - Source: `nexla_sdk/resources/base_resource.py:106`
-  - List resources.
+  - List resources with optional filters.
 - `paginate(self, per_page: int = 20, access_role: Optional[str] = None, **params) -> nexla_sdk.utils.pagination.Paginator[~T]`
-  - Source: `nexla_sdk/resources/base_resource.py:135`
+  - Source: `nexla_sdk/resources/base_resource.py:153`
   - Get paginator for iterating through resources.
 - `pause(self, resource_id: int) -> ~T`
-  - Source: `nexla_sdk/resources/base_resource.py:231`
+  - Source: `nexla_sdk/resources/base_resource.py:263`
   - Pause resource.
 - `replace_accessors(self, resource_id: int, accessors: List[Union[nexla_sdk.models.access.requests.UserAccessorRequest, nexla_sdk.models.access.requests.TeamAccessorRequest, nexla_sdk.models.access.requests.OrgAccessorRequest]]) -> List[Union[nexla_sdk.models.access.responses.UserAccessorResponse, nexla_sdk.models.access.responses.TeamAccessorResponse, nexla_sdk.models.access.responses.OrgAccessorResponse]]`
-  - Source: `nexla_sdk/resources/base_resource.py:312`
+  - Source: `nexla_sdk/resources/base_resource.py:344`
   - Replace all access control rules.
 - `update(self, resource_id: int, data: Union[Dict[str, Any], Any]) -> ~T`
-  - Source: `nexla_sdk/resources/base_resource.py:188`
+  - Source: `nexla_sdk/resources/base_resource.py:220`
   - Update resource.
 

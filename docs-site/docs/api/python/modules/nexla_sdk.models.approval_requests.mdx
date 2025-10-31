@@ -1,0 +1,55 @@
+---
+id: nexla_sdk.models.approval_requests
+title: nexla_sdk.models.approval_requests
+slug: /api/python/modules/nexla_sdk/models/approval_requests
+description: API for nexla_sdk.models.approval_requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### ApprovalDecision
+
+Defined in `nexla_sdk/models/approval_requests/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `approved`: `bool`
+- `reason`: `typing.Optional[str]`
+
+### ApprovalRequest
+
+Defined in `nexla_sdk/models/approval_requests/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `status`: `typing.Optional[str]`
+- `request_type`: `typing.Optional[str]`
+- `requester_id`: `typing.Optional[int]`
+- `resource_type`: `typing.Optional[str]`
+- `resource_id`: `typing.Optional[int]`
+- `reason`: `typing.Optional[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+

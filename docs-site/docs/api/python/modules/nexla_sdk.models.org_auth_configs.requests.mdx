@@ -1,0 +1,51 @@
+---
+id: nexla_sdk.models.org_auth_configs.requests
+title: nexla_sdk.models.org_auth_configs.requests
+slug: /api/python/modules/nexla_sdk/models/org_auth_configs/requests
+description: API for nexla_sdk.models.org_auth_configs.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AuthConfigPayload
+
+Defined in `nexla_sdk/models/org_auth_configs/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `typing.Optional[int]`
+- `owner_id`: `typing.Optional[int]`
+- `org_id`: `typing.Optional[int]`
+- `uid`: `typing.Optional[str]`
+- `protocol`: `typing.Optional[str]`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `global_`: `typing.Optional[bool]`
+- `enabled_by_default`: `typing.Optional[bool]`
+- `auto_create_users_enabled`: `typing.Optional[bool]`
+- `name_identifier_format`: `typing.Optional[str]`
+- `nexla_base_url`: `typing.Optional[str]`
+- `service_entity_id`: `typing.Optional[str]`
+- `assertion_consumer_url`: `typing.Optional[str]`
+- `idp_entity_id`: `typing.Optional[str]`
+- `idp_sso_target_url`: `typing.Optional[str]`
+- `idp_slo_target_url`: `typing.Optional[str]`
+- `idp_cert`: `typing.Optional[str]`
+- `security_settings`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `metadata`: `typing.Optional[str]`
+- `oidc_domain`: `typing.Optional[str]`
+- `oidc_keys_url_key`: `typing.Optional[str]`
+- `oidc_id_claims`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `oidc_access_claims`: `typing.Optional[typing.Dict[str, typing.Any]]`
+

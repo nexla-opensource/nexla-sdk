@@ -17,30 +17,30 @@ Resource for managing teams.
 Methods:
 
 - `add_members(self, team_id: int, members: nexla_sdk.models.teams.requests.TeamMemberList) -> List[nexla_sdk.models.teams.responses.TeamMember]`
-  - Source: `nexla_sdk/resources/teams.py:91`
+  - Source: `nexla_sdk/resources/teams.py:103`
   - Add members to team.
 - `create(self, data: nexla_sdk.models.teams.requests.TeamCreate) -> nexla_sdk.models.teams.responses.Team`
-  - Source: `nexla_sdk/resources/teams.py:40`
+  - Source: `nexla_sdk/resources/teams.py:49`
   - Create new team.
 - `delete(self, team_id: int) -> Dict[str, Any]`
-  - Source: `nexla_sdk/resources/teams.py:65`
+  - Source: `nexla_sdk/resources/teams.py:77`
   - Delete team.
 - `get(self, team_id: int, expand: bool = False) -> nexla_sdk.models.teams.responses.Team`
-  - Source: `nexla_sdk/resources/teams.py:27`
+  - Source: `nexla_sdk/resources/teams.py:33`
   - Get single team by ID.
 - `get_members(self, team_id: int) -> List[nexla_sdk.models.teams.responses.TeamMember]`
-  - Source: `nexla_sdk/resources/teams.py:77`
+  - Source: `nexla_sdk/resources/teams.py:89`
   - Get team members.
 - `list(self, **kwargs) -> List[nexla_sdk.models.teams.responses.Team]`
   - Source: `nexla_sdk/resources/teams.py:15`
-  - List all teams.
+  - List teams with optional filters.
 - `remove_members(self, team_id: int, members: Optional[nexla_sdk.models.teams.requests.TeamMemberList] = None) -> List[nexla_sdk.models.teams.responses.TeamMember]`
-  - Source: `nexla_sdk/resources/teams.py:121`
+  - Source: `nexla_sdk/resources/teams.py:133`
   - Remove members from team.
 - `replace_members(self, team_id: int, members: nexla_sdk.models.teams.requests.TeamMemberList) -> List[nexla_sdk.models.teams.responses.TeamMember]`
-  - Source: `nexla_sdk/resources/teams.py:106`
+  - Source: `nexla_sdk/resources/teams.py:118`
   - Replace all team members.
 - `update(self, team_id: int, data: nexla_sdk.models.teams.requests.TeamUpdate) -> nexla_sdk.models.teams.responses.Team`
-  - Source: `nexla_sdk/resources/teams.py:52`
+  - Source: `nexla_sdk/resources/teams.py:64`
   - Update team.
 

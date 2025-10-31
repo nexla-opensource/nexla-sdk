@@ -10,17 +10,17 @@ keywords: [Nexla, SDK, Python, API]
 
 ### OrgMemberActivateDeactivateRequest
 
-Defined in `nexla_sdk/models/organizations/requests.py:71`
+Defined in `nexla_sdk/models/organizations/requests.py:70`
 
 Request model for activating/deactivating org members.
 
 Fields:
 
-- `members`: `List`
+- `members`: `typing.List[typing.Dict[str, typing.Any]]`
 
 ### OrgMemberCreateRequest
 
-Defined in `nexla_sdk/models/organizations/requests.py:12`
+Defined in `nexla_sdk/models/organizations/requests.py:11`
 
 Request model for creating an org member.
 
@@ -32,53 +32,53 @@ Fields:
 
 ### OrgMemberDelete
 
-Defined in `nexla_sdk/models/organizations/requests.py:66`
+Defined in `nexla_sdk/models/organizations/requests.py:65`
 
 Request model for deleting org members.
 
 Fields:
 
-- `members`: `List`
+- `members`: `typing.List[nexla_sdk.models.organizations.requests.OrgMemberDeleteRequest]`
 
 ### OrgMemberDeleteRequest
 
-Defined in `nexla_sdk/models/organizations/requests.py:59`
+Defined in `nexla_sdk/models/organizations/requests.py:58`
 
 Request model for deleting a single org member.
 
 Fields:
 
-- `id`: `Optional`
-- `email`: `Optional`
-- `delegate_owner_id`: `Optional`
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `delegate_owner_id`: `typing.Optional[int]`
 
 ### OrgMemberList
 
-Defined in `nexla_sdk/models/organizations/requests.py:54`
+Defined in `nexla_sdk/models/organizations/requests.py:53`
 
 Request model for updating org members.
 
 Fields:
 
-- `members`: `List`
+- `members`: `typing.List[nexla_sdk.models.organizations.requests.OrgMemberUpdate]`
 
 ### OrgMemberUpdate
 
-Defined in `nexla_sdk/models/organizations/requests.py:45`
+Defined in `nexla_sdk/models/organizations/requests.py:44`
 
 Request model for updating org member.
 
 Fields:
 
-- `id`: `Optional`
-- `email`: `Optional`
-- `full_name`: `Optional`
-- `admin`: `Optional`
-- `access_role`: `Optional`
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `full_name`: `typing.Optional[str]`
+- `admin`: `typing.Optional[bool]`
+- `access_role`: `typing.Optional[str]`
 
 ### OrgOwnerRequest
 
-Defined in `nexla_sdk/models/organizations/requests.py:6`
+Defined in `nexla_sdk/models/organizations/requests.py:5`
 
 Request model for specifying an org owner.
 
@@ -89,7 +89,7 @@ Fields:
 
 ### OrganizationCreate
 
-Defined in `nexla_sdk/models/organizations/requests.py:19`
+Defined in `nexla_sdk/models/organizations/requests.py:18`
 
 Request model for creating an organization.
 
@@ -97,29 +97,29 @@ Fields:
 
 - `name`: `str`
 - `email_domain`: `str`
-- `owner`: `Optional`
-- `owner_id`: `Optional`
-- `description`: `Optional`
-- `billing_owner`: `Optional`
-- `billing_owner_id`: `Optional`
-- `email`: `Optional`
-- `account_tier_id`: `Optional`
-- `members`: `Optional`
+- `owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `owner_id`: `typing.Optional[int]`
+- `description`: `typing.Optional[str]`
+- `billing_owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `billing_owner_id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `account_tier_id`: `typing.Optional[int]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.organizations.requests.OrgMemberCreateRequest]]`
 
 ### OrganizationUpdate
 
-Defined in `nexla_sdk/models/organizations/requests.py:33`
+Defined in `nexla_sdk/models/organizations/requests.py:32`
 
 Request model for updating an organization.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `owner`: `Optional`
-- `owner_id`: `Optional`
-- `billing_owner`: `Optional`
-- `billing_owner_id`: `Optional`
-- `email`: `Optional`
-- `members`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `owner_id`: `typing.Optional[int]`
+- `billing_owner`: `typing.Optional[nexla_sdk.models.organizations.requests.OrgOwnerRequest]`
+- `billing_owner_id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.organizations.requests.OrgMemberCreateRequest]]`
 

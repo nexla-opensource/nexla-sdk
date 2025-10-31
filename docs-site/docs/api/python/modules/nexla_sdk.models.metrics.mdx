@@ -10,51 +10,51 @@ keywords: [Nexla, SDK, Python, API]
 
 ### AccountMetrics
 
-Defined in `nexla_sdk/models/metrics/responses.py:6`
+Defined in `nexla_sdk/models/metrics/responses.py:5`
 
 Account utilization metrics.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `List`
+- `metrics`: `typing.List[typing.Dict[str, typing.Any]]`
 
 ### DashboardMetrics
 
-Defined in `nexla_sdk/models/metrics/responses.py:20`
+Defined in `nexla_sdk/models/metrics/responses.py:19`
 
 24-hour dashboard metrics.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `Dict`
+- `metrics`: `typing.Dict[str, typing.Any]`
 
 ### MetricsByRunResponse
 
-Defined in `nexla_sdk/models/metrics/responses.py:50`
+Defined in `nexla_sdk/models/metrics/responses.py:49`
 
 Metrics by run response with pagination.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `Dict`
+- `metrics`: `typing.Dict[str, typing.Any]`
 
 ### MetricsResponse
 
-Defined in `nexla_sdk/models/metrics/responses.py:44`
+Defined in `nexla_sdk/models/metrics/responses.py:43`
 
 Generic metrics response.
 
 Fields:
 
 - `status`: `int`
-- `metrics`: `List`
+- `metrics`: `typing.List[typing.Any]`
 
 ### ResourceMetricDaily
 
-Defined in `nexla_sdk/models/metrics/responses.py:26`
+Defined in `nexla_sdk/models/metrics/responses.py:25`
 
 Daily resource metrics.
 
@@ -67,14 +67,14 @@ Fields:
 
 ### ResourceMetricsByRun
 
-Defined in `nexla_sdk/models/metrics/responses.py:34`
+Defined in `nexla_sdk/models/metrics/responses.py:33`
 
 Resource metrics grouped by run.
 
 Fields:
 
-- `runId`: `Optional`
-- `lastWritten`: `Optional`
+- `runId`: `typing.Optional[int]`
+- `lastWritten`: `typing.Optional[int]`
 - `dataSetId`: `int`
 - `records`: `int`
 - `size`: `int`

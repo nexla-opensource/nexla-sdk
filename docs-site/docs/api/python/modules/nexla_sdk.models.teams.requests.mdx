@@ -17,8 +17,8 @@ Request model for creating a team.
 Fields:
 
 - `name`: `str`
-- `description`: `Optional`
-- `members`: `List`
+- `description`: `typing.Optional[str]`
+- `members`: `typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]`
 
 ### TeamMemberList
 
@@ -28,7 +28,7 @@ Request model for team member operations.
 
 Fields:
 
-- `members`: `List`
+- `members`: `typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]`
 
 ### TeamMemberRequest
 
@@ -38,8 +38,8 @@ Request model for team member.
 
 Fields:
 
-- `id`: `Optional`
-- `email`: `Optional`
+- `id`: `typing.Optional[int]`
+- `email`: `typing.Optional[str]`
 - `admin`: `bool`
 
 ### TeamUpdate
@@ -50,7 +50,7 @@ Request model for updating a team.
 
 Fields:
 
-- `name`: `Optional`
-- `description`: `Optional`
-- `members`: `Optional`
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `members`: `typing.Optional[typing.List[nexla_sdk.models.teams.requests.TeamMemberRequest]]`
 

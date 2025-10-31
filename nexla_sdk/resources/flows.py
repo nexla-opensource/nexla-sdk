@@ -17,15 +17,21 @@ class FlowsResource(BaseResource):
              include_run_metrics: bool = False,
              **kwargs) -> List[FlowResponse]:
         """
-        List all flows.
+        List flows with optional filters.
         
         Args:
             flows_only: Only return flow structure without resource details
             include_run_metrics: Include run metrics in response
-            **kwargs: Additional parameters
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of flows
+        
+        Examples:
+            client.flows.list(flows_only=True)
+            client.flows.list(include_run_metrics=True, page=1, per_page=50)
         """
         params = kwargs.copy()
         if flows_only:
@@ -48,7 +54,10 @@ class FlowsResource(BaseResource):
         Returns:
             Flow response
         """
-        return super().get(flow_id, expand=False)
+        path = f"{self._path}/{flow_id}"
+        params = {'flows_only': 1} if flows_only else {}
+        response = self._make_request('GET', path, params=params)
+        return self._parse_response(response)
     
     def get_by_resource(self, 
                         resource_type: str,
@@ -71,7 +80,7 @@ class FlowsResource(BaseResource):
         response = self._make_request('GET', path, params=params)
         return self._parse_response(response)
     
-    def activate(self, flow_id: int, all: bool = False) -> FlowResponse:
+    def activate(self, flow_id: int, all: bool = False, full_tree: bool = False) -> FlowResponse:
         """
         Activate a flow.
         
@@ -83,12 +92,16 @@ class FlowsResource(BaseResource):
             Activated flow
         """
         path = f"{self._path}/{flow_id}/activate"
-        params = {'all': 1} if all else {}
+        params = {}
+        if all:
+            params['all'] = 1
+        if full_tree:
+            params['full_tree'] = 1
         
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
     
-    def pause(self, flow_id: int, all: bool = False) -> FlowResponse:
+    def pause(self, flow_id: int, all: bool = False, full_tree: bool = False) -> FlowResponse:
         """
         Pause a flow.
         
@@ -100,7 +113,11 @@ class FlowsResource(BaseResource):
             Paused flow
         """
         path = f"{self._path}/{flow_id}/pause"
-        params = {'all': 1} if all else {}
+        params = {}
+        if all:
+            params['all'] = 1
+        if full_tree:
+            params['full_tree'] = 1
         
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
@@ -147,7 +164,8 @@ class FlowsResource(BaseResource):
     def activate_by_resource(self,
                              resource_type: str,
                              resource_id: int,
-                             all: bool = False) -> FlowResponse:
+                             all: bool = False,
+                             full_tree: bool = False) -> FlowResponse:
         """
         Activate flow by resource ID.
         
@@ -160,7 +178,11 @@ class FlowsResource(BaseResource):
             Activated flow
         """
         path = f"/{resource_type}/{resource_id}/activate"
-        params = {'all': 1} if all else {}
+        params = {}
+        if all:
+            params['all'] = 1
+        if full_tree:
+            params['full_tree'] = 1
         
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
@@ -168,7 +190,8 @@ class FlowsResource(BaseResource):
     def pause_by_resource(self,
                           resource_type: str,
                           resource_id: int,
-                          all: bool = False) -> FlowResponse:
+                          all: bool = False,
+                          full_tree: bool = False) -> FlowResponse:
         """
         Pause flow by resource ID.
         
@@ -181,7 +204,63 @@ class FlowsResource(BaseResource):
             Paused flow
         """
         path = f"/{resource_type}/{resource_id}/pause"
-        params = {'all': 1} if all else {}
+        params = {}
+        if all:
+            params['all'] = 1
+        if full_tree:
+            params['full_tree'] = 1
         
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
+
+    def docs_recommendation(self, flow_id: int) -> Dict[str, Any]:
+        """Generate AI suggestion for flow documentation."""
+        path = f"{self._path}/{flow_id}/docs/recommendation"
+        return self._make_request('POST', path)
+
+    def get_logs(self,
+                 resource_type: str,
+                 resource_id: int,
+                 run_id: int,
+                 from_ts: int,
+                 to_ts: int = None,
+                 page: int = None,
+                 per_page: int = None) -> Dict[str, Any]:
+        """Get flow execution logs for a specific run id of a flow."""
+        path = f"/data_flows/{resource_type}/{resource_id}/logs"
+        params = {
+            'run_id': run_id,
+            'from': from_ts,
+        }
+        if to_ts is not None:
+            params['to'] = to_ts
+        if page is not None:
+            params['page'] = page
+        if per_page is not None:
+            params['per_page'] = per_page
+        return self._make_request('GET', path, params=params)
+
+    def get_metrics(self,
+                    resource_type: str,
+                    resource_id: int,
+                    from_date: str,
+                    to_date: str = None,
+                    groupby: str = None,
+                    orderby: str = None,
+                    page: int = None,
+                    per_page: int = None) -> Dict[str, Any]:
+        """Get flow metrics for a flow node keyed by resource id."""
+        path = f"/data_flows/{resource_type}/{resource_id}/metrics"
+        params = {'from': from_date}
+        if to_date:
+            params['to'] = to_date
+        if groupby:
+            params['groupby'] = groupby
+        if orderby:
+            params['orderby'] = orderby
+        if page is not None:
+            params['page'] = page
+        if per_page is not None:
+            params['per_page'] = per_page
+        
+        return self._make_request('GET', path, params=params)

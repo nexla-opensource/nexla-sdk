@@ -20,6 +20,10 @@ so no additional typed overrides are needed.
 
 Methods:
 
+- `get_flow_logs(self, resource_type: str, resource_id: int, run_id: int, from_ts: int, to_ts: int = None, page: int = None, per_page: int = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/metrics.py:120`
+- `get_flow_metrics(self, resource_type: str, resource_id: int, from_date: str, to_date: str = None, groupby: str = None, orderby: str = None, page: int = None, per_page: int = None) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/metrics.py:97`
 - `get_rate_limits(self) -> Dict[str, Any]`
   - Source: `nexla_sdk/resources/metrics.py:86`
   - Get current rate limit and usage.

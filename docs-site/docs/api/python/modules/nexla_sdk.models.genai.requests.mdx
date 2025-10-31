@@ -1,0 +1,75 @@
+---
+id: nexla_sdk.models.genai.requests
+title: nexla_sdk.models.genai.requests
+slug: /api/python/modules/nexla_sdk/models/genai/requests
+description: API for nexla_sdk.models.genai.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### GenAiConfigCreatePayload
+
+Defined in `nexla_sdk/models/genai/requests.py:16`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `type`: `str`
+- `config`: `typing.Dict[str, typing.Any]`
+- `data_credentials_id`: `int`
+- `description`: `typing.Optional[str]`
+
+### GenAiConfigPayload
+
+Defined in `nexla_sdk/models/genai/requests.py:6`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `type`: `typing.Optional[str]`
+- `data_credentials_id`: `typing.Optional[int]`
+
+### GenAiOrgSettingPayload
+
+Defined in `nexla_sdk/models/genai/requests.py:24`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `org_id`: `typing.Optional[int]`
+- `gen_ai_config_id`: `int`
+- `gen_ai_usage`: `str`
+

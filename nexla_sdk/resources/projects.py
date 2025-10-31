@@ -1,6 +1,6 @@
 from typing import List, Optional, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
-from nexla_sdk.models.projects.responses import Project
+from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
 from nexla_sdk.models.projects.requests import ProjectCreate, ProjectUpdate, ProjectFlowList
 from nexla_sdk.models.flows.responses import FlowResponse
 
@@ -15,14 +15,21 @@ class ProjectsResource(BaseResource):
     
     def list(self, expand: bool = False, **kwargs) -> List[Project]:
         """
-        List all projects.
+        List projects with optional filters.
         
         Args:
             expand: Include flows in the response
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of projects
+        
+        Examples:
+            client.projects.list(page=1, per_page=10)
+            client.projects.list(expand=True)
         """
         if expand:
             kwargs['expand'] = 'true'
@@ -38,6 +45,9 @@ class ProjectsResource(BaseResource):
         
         Returns:
             Project instance
+        
+        Examples:
+            client.projects.get(12)
         """
         return super().get(project_id, expand)
     
@@ -50,6 +60,9 @@ class ProjectsResource(BaseResource):
         
         Returns:
             Created project
+        
+        Examples:
+            client.projects.create(ProjectCreate(name="My Project"))
         """
         return super().create(data)
     
@@ -92,7 +105,7 @@ class ProjectsResource(BaseResource):
         response = self._make_request('GET', path)
         return FlowResponse(**response)
     
-    def add_flows(self, project_id: int, flows: ProjectFlowList) -> FlowResponse:
+    def add_flows(self, project_id: int, flows: ProjectFlowList) -> List[ProjectDataFlow]:
         """
         Add flows to project.
         
@@ -101,13 +114,15 @@ class ProjectsResource(BaseResource):
             flows: Flows to add
         
         Returns:
-            Updated flow response
+            List of added project flows
         """
         path = f"{self._path}/{project_id}/flows"
-        response = self._make_request('PUT', path, json=flows.to_dict())
-        return FlowResponse(**response)
+        payload = self._serialize_data(flows)
+        response = self._make_request('PUT', path, json=payload)
+        # API returns a list of project data flows for add operation
+        return [ProjectDataFlow.model_validate(item) for item in response]
     
-    def replace_flows(self, project_id: int, flows: ProjectFlowList) -> FlowResponse:
+    def replace_flows(self, project_id: int, flows: ProjectFlowList) -> List[ProjectDataFlow]:
         """
         Replace all flows in project.
         
@@ -116,15 +131,17 @@ class ProjectsResource(BaseResource):
             flows: New flow list
         
         Returns:
-            New flow response
+            List of project flows after replacement
         """
         path = f"{self._path}/{project_id}/flows"
-        response = self._make_request('POST', path, json=flows.to_dict())
-        return FlowResponse(**response)
+        payload = self._serialize_data(flows)
+        response = self._make_request('POST', path, json=payload)
+        # API returns a list of project data flows for replace operation
+        return [ProjectDataFlow.model_validate(item) for item in response]
     
     def remove_flows(self,
                      project_id: int,
-                     flows: Optional[ProjectFlowList] = None) -> FlowResponse:
+                     flows: Optional[ProjectFlowList] = None) -> List[ProjectDataFlow]:
         """
         Remove flows from project.
         
@@ -133,9 +150,52 @@ class ProjectsResource(BaseResource):
             flows: Flows to remove (None = remove all)
         
         Returns:
-            Remaining flows
+            Remaining project flows
         """
         path = f"{self._path}/{project_id}/flows"
-        data = flows.to_dict() if flows else None
+        data = self._serialize_data(flows) if flows else None
         response = self._make_request('DELETE', path, json=data)
+        # API returns remaining flows list
+        return [ProjectDataFlow.model_validate(item) for item in response]
+
+    def add_data_flows(self, project_id: int, flows: ProjectFlowList) -> List[ProjectDataFlow]:
+        """
+        Backward-compatible alias for adding flows to a project.
+
+        Uses the updated endpoint '/flows'.
+        """
+        return self.add_flows(project_id, flows)
+
+    def replace_data_flows(self, project_id: int, flows: ProjectFlowList) -> List[ProjectDataFlow]:
+        """
+        Backward-compatible alias for replacing all flows in a project.
+
+        Uses the updated endpoint '/flows'.
+        """
+        return self.replace_flows(project_id, flows)
+
+    def remove_data_flows(self,
+                          project_id: int,
+                          flows: Optional[ProjectFlowList] = None) -> List[ProjectDataFlow]:
+        """
+        Backward-compatible alias for removing flows from a project.
+
+        Uses the updated endpoint '/flows'.
+        """
+        return self.remove_flows(project_id, flows)
+
+    def search_flows(self, project_id: int, filters: List[Dict[str, Any]]) -> FlowResponse:
+        """
+        Search flows in a project using filter criteria.
+
+        Args:
+            project_id: Project ID
+            filters: List of filter dicts
+
+        Returns:
+            Flow response matching the search criteria
+        """
+        path = f"{self._path}/{project_id}/flows/search"
+        payload = {"filters": filters}
+        response = self._make_request('POST', path, json=payload)
         return FlowResponse(**response)

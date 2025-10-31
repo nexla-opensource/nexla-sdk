@@ -14,13 +14,23 @@ class SourcesResource(BaseResource):
     
     def list(self, **kwargs) -> List[Source]:
         """
-        List all sources.
+        List sources with optional filters.
         
         Args:
-            **kwargs: Additional parameters (page, per_page, access_role, etc.)
+            page: Page number (via kwargs)
+            per_page: Items per page (via kwargs)
+            access_role: Filter by access role (via kwargs)
+            **kwargs: Additional query parameters
         
         Returns:
             List of sources
+
+        Examples:
+            # All sources
+            client.sources.list()
+
+            # With pagination and role
+            client.sources.list(page=1, per_page=20, access_role="owner")
         """
         return super().list(**kwargs)
     
@@ -34,6 +44,9 @@ class SourcesResource(BaseResource):
         
         Returns:
             Source instance
+        
+        Examples:
+            client.sources.get(123)
         """
         return super().get(source_id, expand)
     
@@ -46,6 +59,9 @@ class SourcesResource(BaseResource):
         
         Returns:
             Created source
+        
+        Examples:
+            new_source = client.sources.create(SourceCreate(name="My Source", connector=...))
         """
         return super().create(data)
     

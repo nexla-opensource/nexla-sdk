@@ -182,6 +182,7 @@ docs_venv/
 docs-site/docs_venv/
 docs-site/.docusaurus/
 docs-site/build/
+docs-site/.cache/
 
 # OpenAPI
 openapi/
@@ -193,3 +194,11 @@ plugin-redoc-0.yaml
 
 # Sample directory
 create_flow_sample/
+
+# Tool caches and assistants
+.ruff_cache/
+.pyrightcache/
+.cursor/
+.claude/
+.direnv/
+.envrc

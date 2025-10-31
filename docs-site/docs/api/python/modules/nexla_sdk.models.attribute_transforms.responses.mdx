@@ -1,0 +1,49 @@
+---
+id: nexla_sdk.models.attribute_transforms.responses
+title: nexla_sdk.models.attribute_transforms.responses
+slug: /api/python/modules/nexla_sdk/models/attribute_transforms/responses
+description: API for nexla_sdk.models.attribute_transforms.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AttributeTransform
+
+Defined in `nexla_sdk/models/attribute_transforms/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `resource_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `access_roles`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `runtime_data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `description`: `typing.Optional[str]`
+- `code_type`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `data_sets`: `typing.Optional[typing.List[int]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
