@@ -1,8 +1,9 @@
 from typing import List, Dict, Any
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.marketplace.responses import (
-    MarketplaceDomain, MarketplaceDomainsItem, CustodianUser,
+    MarketplaceDomain, MarketplaceDomainsItem,
 )
+from nexla_sdk.models.organizations.responses import CustodianUser
 from nexla_sdk.models.marketplace.requests import (
     MarketplaceDomainCreate, MarketplaceDomainsItemCreate, CustodiansPayload,
 )

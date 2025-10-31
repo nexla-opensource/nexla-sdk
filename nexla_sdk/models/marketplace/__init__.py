@@ -1,4 +1,4 @@
-from .responses import MarketplaceDomain, MarketplaceDomainsItem, CustodianUser
+from .responses import MarketplaceDomain, MarketplaceDomainsItem
 from .requests import (
     MarketplaceDomainCreate, MarketplaceDomainsItemCreate, CustodiansPayload, CustodianRef,
 )
@@ -6,7 +6,6 @@ from .requests import (
 __all__ = [
     'MarketplaceDomain',
     'MarketplaceDomainsItem',
-    'CustodianUser',
     'MarketplaceDomainCreate',
     'MarketplaceDomainsItemCreate',
     'CustodiansPayload',

@@ -1,0 +1,27 @@
+---
+id: nexla_sdk.models.async_tasks.requests
+title: nexla_sdk.models.async_tasks.requests
+slug: /api/python/modules/nexla_sdk/models/async_tasks/requests
+description: API for nexla_sdk.models.async_tasks.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AsyncTaskCreate
+
+Defined in `nexla_sdk/models/async_tasks/requests.py:6`
+
+Generic async task payload wrapper aligned with OpenAPI AsyncTaskPayload.
+
+Fields:
+    type: The task type (e.g., BulkDeleteNotifications)
+    priority: Optional task priority
+    arguments: Arguments for the task
+
+Fields:
+
+- `type`: `str`
+- `priority`: `typing.Optional[int]`
+- `arguments`: `typing.Dict[str, typing.Any]`
+

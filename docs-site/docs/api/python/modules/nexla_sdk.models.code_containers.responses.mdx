@@ -1,0 +1,62 @@
+---
+id: nexla_sdk.models.code_containers.responses
+title: nexla_sdk.models.code_containers.responses
+slug: /api/python/modules/nexla_sdk/models/code_containers/responses
+description: API for nexla_sdk.models.code_containers.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### CodeContainer
+
+Defined in `nexla_sdk/models/code_containers/responses.py:12`
+
+Pydantic model for Code Container responses.
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `resource_type`: `typing.Optional[str]`
+- `ai_function_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `public`: `typing.Optional[bool]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `access_roles`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `runtime_data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `description`: `typing.Optional[str]`
+- `code_type`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.code_containers.responses.CodeOperation]]`
+- `managed`: `typing.Optional[bool]`
+- `data_sets`: `typing.Optional[typing.List[int]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
+### CodeOperation
+
+Defined in `nexla_sdk/models/code_containers/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `operation`: `typing.Optional[str]`
+- `spec`: `typing.Optional[typing.Dict[str, typing.Any]]`
+

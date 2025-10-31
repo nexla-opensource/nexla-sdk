@@ -1,0 +1,74 @@
+---
+id: nexla_sdk.models.async_tasks.responses
+title: nexla_sdk.models.async_tasks.responses
+slug: /api/python/modules/nexla_sdk/models/async_tasks/responses
+description: API for nexla_sdk.models.async_tasks.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AsyncTask
+
+Defined in `nexla_sdk/models/async_tasks/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `type`: `typing.Optional[str]`
+- `status`: `typing.Optional[str]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `started_at`: `typing.Optional[datetime.datetime]`
+- `finished_at`: `typing.Optional[datetime.datetime]`
+- `result`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `error`: `typing.Optional[str]`
+
+### AsyncTaskResult
+
+Defined in `nexla_sdk/models/async_tasks/responses.py:19`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `task_id`: `typing.Optional[int]`
+- `result`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+### DownloadLink
+
+Defined in `nexla_sdk/models/async_tasks/responses.py:24`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `url`: `str`
+- `expires_at`: `typing.Optional[datetime.datetime]`
+

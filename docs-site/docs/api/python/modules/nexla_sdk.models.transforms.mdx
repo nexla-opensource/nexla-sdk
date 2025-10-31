@@ -1,0 +1,124 @@
+---
+id: nexla_sdk.models.transforms
+title: nexla_sdk.models.transforms
+slug: /api/python/modules/nexla_sdk/models/transforms
+description: API for nexla_sdk.models.transforms
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### Transform
+
+Defined in `nexla_sdk/models/transforms/responses.py:12`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `str`
+- `resource_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `owner`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `org`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `access_roles`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `runtime_data_credentials`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `description`: `typing.Optional[str]`
+- `code_type`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.transforms.responses.TransformCodeOp]]`
+- `managed`: `typing.Optional[bool]`
+- `data_sets`: `typing.Optional[typing.List[int]]`
+- `copied_from_id`: `typing.Optional[int]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `tags`: `typing.Optional[typing.List[str]]`
+
+### TransformCodeOp
+
+Defined in `nexla_sdk/models/transforms/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `operation`: `typing.Optional[str]`
+- `spec`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+### TransformCreate
+
+Defined in `nexla_sdk/models/transforms/requests.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `str`
+- `output_type`: `str`
+- `reusable`: `bool`
+- `code_type`: `str`
+- `code_encoding`: `str`
+- `code`: `typing.List[nexla_sdk.models.transforms.responses.TransformCodeOp]`
+- `description`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+
+### TransformUpdate
+
+Defined in `nexla_sdk/models/transforms/requests.py:22`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `output_type`: `typing.Optional[str]`
+- `reusable`: `typing.Optional[bool]`
+- `code_type`: `typing.Optional[str]`
+- `code_encoding`: `typing.Optional[str]`
+- `code`: `typing.Optional[typing.List[nexla_sdk.models.transforms.responses.TransformCodeOp]]`
+- `description`: `typing.Optional[str]`
+- `code_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `custom_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `data_credentials_id`: `typing.Optional[int]`
+- `runtime_data_credentials_id`: `typing.Optional[int]`
+

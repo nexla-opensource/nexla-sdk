@@ -1,0 +1,37 @@
+---
+id: nexla_sdk.resources.attribute_transforms
+title: nexla_sdk.resources.attribute_transforms
+slug: /api/python/modules/nexla_sdk/resources/attribute_transforms
+description: API for nexla_sdk.resources.attribute_transforms
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### AttributeTransformsResource
+
+Defined in `nexla_sdk/resources/attribute_transforms.py:9`
+
+Resource for reusable attribute transforms (aliased to code containers).
+
+Methods:
+
+- `create(self, data: nexla_sdk.models.attribute_transforms.requests.AttributeTransformCreate) -> nexla_sdk.models.attribute_transforms.responses.AttributeTransform`
+  - Source: `nexla_sdk/resources/attribute_transforms.py:39`
+  - Create a new attribute transform.
+- `delete(self, attribute_transform_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/attribute_transforms.py:47`
+  - Delete an attribute transform by ID.
+- `get(self, attribute_transform_id: int, expand: bool = False) -> nexla_sdk.models.attribute_transforms.responses.AttributeTransform`
+  - Source: `nexla_sdk/resources/attribute_transforms.py:35`
+  - Get an attribute transform by ID.
+- `list(self, **kwargs) -> List[nexla_sdk.models.attribute_transforms.responses.AttributeTransform]`
+  - Source: `nexla_sdk/resources/attribute_transforms.py:17`
+  - List attribute transforms with optional filters.
+- `list_public(self) -> List[nexla_sdk.models.attribute_transforms.responses.AttributeTransform]`
+  - Source: `nexla_sdk/resources/attribute_transforms.py:51`
+  - List publicly shared attribute transforms.
+- `update(self, attribute_transform_id: int, data: nexla_sdk.models.attribute_transforms.requests.AttributeTransformUpdate) -> nexla_sdk.models.attribute_transforms.responses.AttributeTransform`
+  - Source: `nexla_sdk/resources/attribute_transforms.py:43`
+  - Update an attribute transform by ID.
+

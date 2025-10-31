@@ -202,5 +202,3 @@ create_flow_sample/
 .claude/
 .direnv/
 .envrc
-
-docs-site/*

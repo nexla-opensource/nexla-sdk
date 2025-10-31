@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List
 from nexla_sdk.resources.base_resource import BaseResource
 from nexla_sdk.models.approval_requests.responses import ApprovalRequest
 

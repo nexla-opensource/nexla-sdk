@@ -1,0 +1,53 @@
+---
+id: nexla_sdk.models.self_signup.responses
+title: nexla_sdk.models.self_signup.responses
+slug: /api/python/modules/nexla_sdk/models/self_signup/responses
+description: API for nexla_sdk.models.self_signup.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### BlockedDomain
+
+Defined in `nexla_sdk/models/self_signup/responses.py:17`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `domain`: `str`
+
+### SelfSignupRequest
+
+Defined in `nexla_sdk/models/self_signup/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `status`: `typing.Optional[str]`
+- `email`: `typing.Optional[str]`
+- `full_name`: `typing.Optional[str]`
+- `invite_id`: `typing.Optional[int]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+

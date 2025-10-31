@@ -1,0 +1,76 @@
+---
+id: nexla_sdk.models.genai.responses
+title: nexla_sdk.models.genai.responses
+slug: /api/python/modules/nexla_sdk/models/genai/responses
+description: API for nexla_sdk.models.genai.responses
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### ActiveConfigView
+
+Defined in `nexla_sdk/models/genai/responses.py:26`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `gen_ai_usage`: `typing.Optional[str]`
+- `active_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+### GenAiConfig
+
+Defined in `nexla_sdk/models/genai/responses.py:7`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `name`: `typing.Optional[str]`
+- `provider`: `typing.Optional[str]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+
+### GenAiOrgSetting
+
+Defined in `nexla_sdk/models/genai/responses.py:16`
+
+Base model class with Pydantic functionality and Nexla API compatibility.
+
+Features:
+- Automatically ignores unknown fields from API responses
+- Supports both camelCase and snake_case field names
+- Handles datetime parsing automatically
+- Provides JSON serialization methods
+- Validates data types automatically
+- Easy logging and printing support
+
+Fields:
+
+- `id`: `int`
+- `org_id`: `typing.Optional[int]`
+- `gen_ai_usage`: `typing.Optional[str]`
+- `active_config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+- `configs`: `typing.Optional[typing.List[typing.Dict[str, typing.Any]]]`
+- `created_at`: `typing.Optional[datetime.datetime]`
+- `updated_at`: `typing.Optional[datetime.datetime]`
+

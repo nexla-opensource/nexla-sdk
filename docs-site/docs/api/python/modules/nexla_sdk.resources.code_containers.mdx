@@ -1,0 +1,40 @@
+---
+id: nexla_sdk.resources.code_containers
+title: nexla_sdk.resources.code_containers
+slug: /api/python/modules/nexla_sdk/resources/code_containers
+description: API for nexla_sdk.resources.code_containers
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### CodeContainersResource
+
+Defined in `nexla_sdk/resources/code_containers.py:7`
+
+Resource for managing code containers.
+
+Methods:
+
+- `copy(self, code_container_id: int) -> nexla_sdk.models.code_containers.responses.CodeContainer`
+  - Source: `nexla_sdk/resources/code_containers.py:61`
+  - Copy a code container by ID.
+- `create(self, data: nexla_sdk.models.code_containers.requests.CodeContainerCreate) -> nexla_sdk.models.code_containers.responses.CodeContainer`
+  - Source: `nexla_sdk/resources/code_containers.py:41`
+  - Create a new code container.
+- `delete(self, code_container_id: int) -> Dict[str, Any]`
+  - Source: `nexla_sdk/resources/code_containers.py:57`
+  - Delete a code container by ID.
+- `get(self, code_container_id: int, expand: bool = False) -> nexla_sdk.models.code_containers.responses.CodeContainer`
+  - Source: `nexla_sdk/resources/code_containers.py:33`
+  - Get a code container by ID.
+- `list(self, **kwargs) -> List[nexla_sdk.models.code_containers.responses.CodeContainer]`
+  - Source: `nexla_sdk/resources/code_containers.py:15`
+  - List code containers with optional filters.
+- `list_public(self) -> List[nexla_sdk.models.code_containers.responses.CodeContainer]`
+  - Source: `nexla_sdk/resources/code_containers.py:65`
+  - List publicly shared code containers.
+- `update(self, code_container_id: int, data: nexla_sdk.models.code_containers.requests.CodeContainerUpdate) -> nexla_sdk.models.code_containers.responses.CodeContainer`
+  - Source: `nexla_sdk/resources/code_containers.py:49`
+  - Update an existing code container.
+

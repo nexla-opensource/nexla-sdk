@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.organizations.responses import CustodianUser
 
 
 class MarketplaceDomain(BaseModel):
@@ -22,4 +21,3 @@ class MarketplaceDomainsItem(BaseModel):
     resource_id: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-

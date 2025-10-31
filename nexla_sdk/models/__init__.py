@@ -78,7 +78,7 @@ from nexla_sdk.models.runtimes import (
     Runtime, RuntimeCreate, RuntimeUpdate,
 )
 from nexla_sdk.models.marketplace import (
-    MarketplaceDomain, MarketplaceDomainsItem, CustodianUser,
+    MarketplaceDomain, MarketplaceDomainsItem,
     MarketplaceDomainCreate, MarketplaceDomainsItemCreate, CustodiansPayload,
 )
 from nexla_sdk.models.org_auth_configs import (
@@ -267,7 +267,7 @@ __all__ = [
     'MarketplaceDomainCreate',
     'MarketplaceDomainsItemCreate',
     'CustodiansPayload',
-    'MarketplaceDomain', 'MarketplaceDomainsItem', 'CustodianUser',
+    'MarketplaceDomain', 'MarketplaceDomainsItem',
     
     # Org auth configs
     'AuthConfig', 'AuthConfigPayload',

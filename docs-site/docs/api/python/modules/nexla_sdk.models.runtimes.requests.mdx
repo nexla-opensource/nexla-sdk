@@ -1,0 +1,40 @@
+---
+id: nexla_sdk.models.runtimes.requests
+title: nexla_sdk.models.runtimes.requests
+slug: /api/python/modules/nexla_sdk/models/runtimes/requests
+description: API for nexla_sdk.models.runtimes.requests
+keywords: [Nexla, SDK, Python, API]
+---
+
+## Classes
+
+### RuntimeCreate
+
+Defined in `nexla_sdk/models/runtimes/requests.py:6`
+
+Create payload for Custom Runtime matching OpenAPI RuntimePayload.
+
+Fields:
+
+- `name`: `str`
+- `description`: `typing.Optional[str]`
+- `active`: `typing.Optional[bool]`
+- `dockerpath`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
+### RuntimeUpdate
+
+Defined in `nexla_sdk/models/runtimes/requests.py:16`
+
+Update payload for Custom Runtime matching OpenAPI RuntimePayload.
+
+Fields:
+
+- `name`: `typing.Optional[str]`
+- `description`: `typing.Optional[str]`
+- `active`: `typing.Optional[bool]`
+- `dockerpath`: `typing.Optional[str]`
+- `managed`: `typing.Optional[bool]`
+- `config`: `typing.Optional[typing.Dict[str, typing.Any]]`
+
