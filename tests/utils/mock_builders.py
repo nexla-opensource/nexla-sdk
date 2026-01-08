@@ -477,6 +477,83 @@ class MockResponseBuilder:
         base.update(overrides)
         return base
 
+    @staticmethod
+    def webhook_send_response(dataset_id: Optional[int] = None, processed: int = 1, **overrides) -> Dict[str, Any]:
+        """Build a mock webhook send response."""
+        base = {
+            "dataset_id": dataset_id or fake.random_int(1, 10000),
+            "processed": processed
+        }
+        base.update(overrides)
+        return base
+
+    @staticmethod
+    def flow_log_entry(**overrides) -> Dict[str, Any]:
+        """Build a mock flow log entry."""
+        base = {
+            "timestamp": fake.date_time(tzinfo=timezone.utc).isoformat(),
+            "level": fake.random_element(["DEBUG", "INFO", "WARN", "ERROR"]),
+            "message": fake.sentence(),
+            "resource_id": fake.random_int(1, 10000),
+            "resource_type": fake.random_element(["data_sources", "data_sets", "data_sinks"]),
+            "run_id": fake.random_int(1, 10000),
+            "details": {"records": fake.random_int(0, 1000)}
+        }
+        base.update(overrides)
+        return base
+
+    @staticmethod
+    def flow_logs_response(log_count: int = 3, **overrides) -> Dict[str, Any]:
+        """Build a mock flow logs response."""
+        base = {
+            "status": 200,
+            "message": "Ok",
+            "logs": [MockResponseBuilder.flow_log_entry() for _ in range(log_count)],
+            "meta": {
+                "currentPage": 1,
+                "pageCount": 1,
+                "totalCount": log_count
+            }
+        }
+        base.update(overrides)
+        return base
+
+    @staticmethod
+    def flow_metrics_api_response(**overrides) -> Dict[str, Any]:
+        """Build a mock flow metrics API response."""
+        resource_id = str(fake.random_int(1, 10000))
+        base = {
+            "status": 200,
+            "message": "Ok",
+            "metrics": {
+                "data": {
+                    resource_id: {
+                        "records": fake.random_int(0, 10000),
+                        "size": fake.random_int(0, 100000),
+                        "errors": fake.random_int(0, 100),
+                        "runId": fake.random_int(1, 10000)
+                    }
+                },
+                "meta": {
+                    "currentPage": 1,
+                    "pageCount": 1,
+                    "totalCount": 1
+                }
+            }
+        }
+        base.update(overrides)
+        return base
+
+    @staticmethod
+    def docs_recommendation_response(**overrides) -> Dict[str, Any]:
+        """Build a mock docs recommendation response."""
+        base = {
+            "recommendation": fake.paragraph(),
+            "status": "success"
+        }
+        base.update(overrides)
+        return base
+
 
 class MockDataFactory:
     """Factory for generating mock data for testing."""
@@ -874,6 +951,49 @@ class MockDataFactory:
         flow_kwargs = {k: v for k, v in kwargs.items() if k != "include_elements"}
         base.update(flow_kwargs)
         return base
+
+    def create_mock_flow_metrics(self, **kwargs) -> Dict[str, Any]:
+        """Create mock flow metrics data."""
+        return {
+            "origin_node_id": kwargs.get("origin_node_id", self.fake.random_int(1, 10000)),
+            "records": kwargs.get("records", self.fake.random_int(0, 10000)),
+            "size": kwargs.get("size", self.fake.random_int(0, 100000)),
+            "errors": kwargs.get("errors", self.fake.random_int(0, 100)),
+            "reporting_date": kwargs.get("reporting_date", self.fake.date_time(tzinfo=timezone.utc).isoformat()),
+            "run_id": kwargs.get("run_id", self.fake.random_int(1, 10000))
+        }
+
+    def create_mock_flow_node(self, max_depth: int = 2, current_depth: int = 0, parent_node_id: int = None, **kwargs) -> Dict[str, Any]:
+        """Create mock flow node with optional nested children."""
+        node_id = kwargs.get("id", self.fake.random_int(1, 10000))
+        node = {
+            "id": node_id,
+            "origin_node_id": kwargs.get("origin_node_id", self.fake.random_int(1, 10000)),
+            "parent_node_id": parent_node_id,
+            "data_source_id": kwargs.get("data_source_id", self.fake.random_int(1, 10000) if current_depth == 0 else None),
+            "data_set_id": kwargs.get("data_set_id", self.fake.random_int(1, 10000) if current_depth > 0 else None),
+            "data_sink_id": kwargs.get("data_sink_id"),
+            "status": kwargs.get("status", "ACTIVE"),
+            "project_id": kwargs.get("project_id"),
+            "flow_type": kwargs.get("flow_type", "batch"),
+            "ingestion_mode": kwargs.get("ingestion_mode", "POLL"),
+            "name": kwargs.get("name", f"Flow Node {node_id}"),
+            "description": kwargs.get("description", "Mock flow node"),
+            "children": []
+        }
+
+        # Add children if not at max depth
+        if current_depth < max_depth:
+            num_children = self.fake.random_int(1, 2)
+            for _ in range(num_children):
+                child = self.create_mock_flow_node(
+                    max_depth=max_depth,
+                    current_depth=current_depth + 1,
+                    parent_node_id=node_id
+                )
+                node["children"].append(child)
+
+        return node
 
 
 # Utility functions for list generation
