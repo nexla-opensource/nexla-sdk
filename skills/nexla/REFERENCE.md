@@ -556,3 +556,465 @@ else:
 | **High error rate** | >20% failed runs | Check logs, validate inputs, test incrementally |
 | **Stale data** | No updates in 24h+ | Check source polling, upstream availability |
 | **Permission denied** | 403 on operations | Verify access roles, request permissions |
+
+## Additional SDK resources
+
+The following sections document SDK resources not covered in the core workflow sections above.
+
+---
+
+## Webhooks (push data to Nexla)
+
+Send data to Nexla webhook sources using API key authentication. Webhooks operate independently of the main NexlaClient.
+
+### Create webhook client
+```python
+from nexla_sdk import NexlaClient
+
+client = NexlaClient()
+webhooks = client.create_webhook_client(api_key="your-webhook-api-key")
+```
+
+Or standalone:
+```python
+from nexla_sdk.resources.webhooks import WebhooksResource
+
+webhooks = WebhooksResource(api_key="your-webhook-api-key")
+```
+
+### Send single record
+```python
+response = webhooks.send_one_record(
+    webhook_url="https://api.nexla.com/webhook/abc123",
+    record={"event": "page_view", "user_id": 123, "timestamp": "2025-01-09T12:00:00Z"}
+)
+print(f"Dataset ID: {response.dataset_id}, Processed: {response.processed}")
+```
+
+### Send multiple records
+```python
+response = webhooks.send_many_records(
+    webhook_url="https://api.nexla.com/webhook/abc123",
+    records=[
+        {"event": "page_view", "page": "/home"},
+        {"event": "page_view", "page": "/about"},
+        {"event": "click", "button": "signup"}
+    ]
+)
+print(f"Processed {response.processed} records")
+```
+
+### Authentication methods
+```python
+# Query parameter auth (default)
+webhooks.send_one_record(webhook_url, record, auth_method="query")
+
+# Header auth (Basic)
+webhooks.send_one_record(webhook_url, record, auth_method="header")
+```
+
+### Send options
+```python
+from nexla_sdk.models.webhooks.requests import WebhookSendOptions
+
+response = webhooks.send_one_record(
+    webhook_url="https://api.nexla.com/webhook/abc123",
+    record={"event": "click"},
+    options=WebhookSendOptions(
+        include_headers=True,
+        include_url_params=True,
+        force_schema_detection=True
+    )
+)
+```
+
+---
+
+## Async tasks (background jobs)
+
+Manage long-running background operations.
+
+### List task types
+```python
+task_types = client.async_tasks.types()
+# Returns: ['export', 'import', 'schema_migration', ...]
+```
+
+### Get task type arguments
+```python
+args = client.async_tasks.explain_arguments("export")
+# Returns schema for required arguments
+```
+
+### List tasks
+```python
+# All tasks
+tasks = client.async_tasks.list()
+
+# By type
+export_tasks = client.async_tasks.list_of_type("export")
+
+# By status
+pending = client.async_tasks.list_by_status("pending")
+completed = client.async_tasks.list_by_status("completed")
+```
+
+### Create async task
+```python
+from nexla_sdk.models.async_tasks.requests import AsyncTaskCreate
+
+task = client.async_tasks.create(AsyncTaskCreate(
+    type="export",
+    arguments={"resource_id": 123, "format": "csv"}
+))
+print(f"Task ID: {task.id}, Status: {task.status}")
+```
+
+### Poll for completion
+```python
+import time
+
+def poll_async_task(client, task_id, max_wait=300, poll_interval=5):
+    """Poll async task until completion or timeout."""
+    start = time.time()
+    while time.time() - start < max_wait:
+        task = client.async_tasks.get(task_id)
+
+        if task.status in ['completed', 'success']:
+            return client.async_tasks.result(task_id)
+        elif task.status in ['failed', 'error']:
+            raise Exception(f"Task failed: {task.error_message}")
+
+        time.sleep(poll_interval)
+
+    raise TimeoutError(f"Task {task_id} did not complete in {max_wait}s")
+```
+
+### Get task result
+```python
+result = client.async_tasks.result(task_id)
+```
+
+### Download task output
+```python
+download_link = client.async_tasks.download_link(task_id)
+# Returns URL string or DownloadLink object
+```
+
+### Rerun failed task
+```python
+new_task = client.async_tasks.rerun(task_id)
+```
+
+### Acknowledge task
+```python
+client.async_tasks.acknowledge(task_id)
+```
+
+---
+
+## Advanced credential probing
+
+Beyond basic `probe()`, use `probe_tree()` and `probe_sample()` to preview storage structure and data.
+
+### Probe storage tree
+```python
+from nexla_sdk.models.credentials.requests import ProbeTreeRequest
+
+tree = client.credentials.probe_tree(
+    credential_id=123,
+    request=ProbeTreeRequest(path="/data/")
+)
+# Returns directory listing, file names, sizes
+```
+
+### Probe data sample
+```python
+from nexla_sdk.models.credentials.requests import ProbeSampleRequest
+
+sample = client.credentials.probe_sample(
+    credential_id=123,
+    request=ProbeSampleRequest(path="/data/orders.json")
+)
+# Returns sample records from the file
+```
+
+### Async probing (for large structures)
+```python
+tree = client.credentials.probe_tree(
+    credential_id=123,
+    request=ProbeTreeRequest(path="/"),
+    async_mode=True,
+    request_id=12345
+)
+```
+
+---
+
+## AI-generated documentation
+
+Generate AI suggestions for flow and nexset documentation.
+
+### Flow documentation
+```python
+docs = client.flows.docs_recommendation(flow_id=123)
+print(docs.recommendation)  # AI-generated description
+```
+
+### Nexset documentation
+```python
+docs = client.nexsets.docs_recommendation(nexset_id=456)
+print(docs.recommendation)
+```
+
+---
+
+## GenAI integration
+
+Configure AI integrations for your organization.
+
+### List integration configs
+```python
+configs = client.genai.list_configs()
+for config in configs:
+    print(f"{config.id}: {config.name}")
+```
+
+### Create integration config
+```python
+from nexla_sdk.models.genai.requests import GenAiConfigCreatePayload
+
+config = client.genai.create_config(GenAiConfigCreatePayload(
+    name="openai-gpt4",
+    provider="openai",
+    api_key="sk-...",
+    model="gpt-4"
+))
+```
+
+### Get/update/delete config
+```python
+config = client.genai.get_config(config_id)
+updated = client.genai.update_config(config_id, GenAiConfigPayload(...))
+client.genai.delete_config(config_id)
+```
+
+### Organization settings
+```python
+# List org settings
+settings = client.genai.list_org_settings(org_id=123)
+
+# Create org setting
+from nexla_sdk.models.genai.requests import GenAiOrgSettingPayload
+
+setting = client.genai.create_org_setting(GenAiOrgSettingPayload(
+    org_id=123,
+    gen_ai_integration_config_id=456,
+    gen_ai_usage="docs_recommendation"
+))
+
+# Get active config for a usage
+active = client.genai.show_active_config(gen_ai_usage="docs_recommendation")
+```
+
+---
+
+## Data marketplace
+
+Manage marketplace domains and items for data sharing.
+
+### List domains
+```python
+domains = client.marketplace.list_domains()
+for domain in domains:
+    print(f"{domain.id}: {domain.name}")
+```
+
+### Create domain
+```python
+from nexla_sdk.models.marketplace.requests import MarketplaceDomainCreate
+
+domain = client.marketplace.create_domain(MarketplaceDomainCreate(
+    name="Sales Data",
+    description="Sales metrics and analytics"
+))
+```
+
+### Get domains for organization
+```python
+org_domains = client.marketplace.get_domains_for_org(org_id=123)
+```
+
+### Manage domain items
+```python
+# List items in domain
+items = client.marketplace.list_domain_items(domain_id=123)
+
+# Add item to domain
+from nexla_sdk.models.marketplace.requests import MarketplaceDomainsItemCreate
+
+client.marketplace.create_domain_item(
+    domain_id=123,
+    data=MarketplaceDomainsItemCreate(
+        data_set_id=456,
+        name="Daily Sales Report"
+    )
+)
+```
+
+### Manage domain custodians
+```python
+from nexla_sdk.models.marketplace.requests import CustodiansPayload
+
+# List custodians
+custodians = client.marketplace.list_domain_custodians(domain_id=123)
+
+# Add custodians
+client.marketplace.add_domain_custodians(
+    domain_id=123,
+    payload=CustodiansPayload(user_ids=[1, 2, 3])
+)
+
+# Remove custodians
+client.marketplace.remove_domain_custodians(
+    domain_id=123,
+    payload=CustodiansPayload(user_ids=[3])
+)
+```
+
+---
+
+## Approval requests
+
+Manage workflow approvals for resources.
+
+### List approval requests
+```python
+requests = client.approval_requests.list()
+for req in requests:
+    print(f"{req.id}: {req.status} - {req.resource_type}/{req.resource_id}")
+```
+
+### Get approval request
+```python
+request = client.approval_requests.get(request_id)
+```
+
+### Create/update/delete
+```python
+# Create
+new_request = client.approval_requests.create(data)
+
+# Update
+updated = client.approval_requests.update(request_id, data)
+
+# Delete
+client.approval_requests.delete(request_id)
+```
+
+---
+
+## Data schemas
+
+Manage schema definitions.
+
+### List schemas
+```python
+schemas = client.data_schemas.list()
+```
+
+### CRUD operations
+```python
+# Get
+schema = client.data_schemas.get(schema_id)
+
+# Create
+new_schema = client.data_schemas.create(data)
+
+# Update
+updated = client.data_schemas.update(schema_id, data)
+
+# Delete
+client.data_schemas.delete(schema_id)
+```
+
+---
+
+## Organization auth configs (SSO)
+
+Configure SSO and authentication settings.
+
+### List auth configs
+```python
+configs = client.org_auth_configs.list()
+```
+
+### CRUD operations
+```python
+config = client.org_auth_configs.get(config_id)
+new_config = client.org_auth_configs.create(data)
+updated = client.org_auth_configs.update(config_id, data)
+client.org_auth_configs.delete(config_id)
+```
+
+---
+
+## Self signup
+
+Manage user self-registration.
+
+### List signups
+```python
+signups = client.self_signup.list()
+```
+
+### Get signup details
+```python
+signup = client.self_signup.get(signup_id)
+```
+
+---
+
+## Doc containers
+
+Manage document storage containers.
+
+### List containers
+```python
+containers = client.doc_containers.list()
+```
+
+### CRUD operations
+```python
+container = client.doc_containers.get(container_id)
+new_container = client.doc_containers.create(data)
+updated = client.doc_containers.update(container_id, data)
+client.doc_containers.delete(container_id)
+```
+
+---
+
+## Runtimes
+
+Manage execution environments.
+
+### List runtimes
+```python
+runtimes = client.runtimes.list()
+for runtime in runtimes:
+    print(f"{runtime.id}: {runtime.name} ({runtime.status})")
+```
+
+### CRUD operations
+```python
+runtime = client.runtimes.get(runtime_id)
+new_runtime = client.runtimes.create(data)
+updated = client.runtimes.update(runtime_id, data)
+client.runtimes.delete(runtime_id)
+```
+
+### Lifecycle operations
+```python
+client.runtimes.activate(runtime_id)
+client.runtimes.pause(runtime_id)
+```

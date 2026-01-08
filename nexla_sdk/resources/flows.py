@@ -1,6 +1,8 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from nexla_sdk.resources.base_resource import BaseResource
-from nexla_sdk.models.flows.responses import FlowResponse
+from nexla_sdk.models.flows.responses import (
+    FlowResponse, FlowLogsResponse, FlowMetricsApiResponse, DocsRecommendation
+)
 from nexla_sdk.models.flows.requests import FlowCopyOptions
 
 
@@ -15,30 +17,35 @@ class FlowsResource(BaseResource):
     def list(self,
              flows_only: bool = False,
              include_run_metrics: bool = False,
+             access_role: Optional[str] = None,
              **kwargs) -> List[FlowResponse]:
         """
         List flows with optional filters.
-        
+
         Args:
             flows_only: Only return flow structure without resource details
             include_run_metrics: Include run metrics in response
+            access_role: Filter by access role (owner, collaborator, operator, admin)
             page: Page number (via kwargs)
             per_page: Items per page (via kwargs)
             **kwargs: Additional query parameters
-        
+
         Returns:
             List of flows
-        
+
         Examples:
             client.flows.list(flows_only=True)
             client.flows.list(include_run_metrics=True, page=1, per_page=50)
+            client.flows.list(access_role="owner")
         """
         params = kwargs.copy()
         if flows_only:
             params['flows_only'] = 1
         if include_run_metrics:
             params['include_run_metrics'] = 1
-        
+        if access_role:
+            params['access_role'] = access_role
+
         response = self._make_request('GET', self._path, params=params)
         # API returns a single FlowResponse object for list
         return [self._parse_response(response)]
@@ -101,14 +108,20 @@ class FlowsResource(BaseResource):
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
     
-    def pause(self, flow_id: int, all: bool = False, full_tree: bool = False) -> FlowResponse:
+    def pause(self,
+              flow_id: int,
+              all: bool = False,
+              full_tree: bool = False,
+              async_mode: bool = False) -> FlowResponse:
         """
         Pause a flow.
-        
+
         Args:
             flow_id: Flow ID
             all: Pause entire flow tree
-        
+            full_tree: Alias for 'all' parameter
+            async_mode: Execute pause asynchronously
+
         Returns:
             Paused flow
         """
@@ -118,7 +131,9 @@ class FlowsResource(BaseResource):
             params['all'] = 1
         if full_tree:
             params['full_tree'] = 1
-        
+        if async_mode:
+            params['async'] = 1
+
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
     
@@ -213,10 +228,22 @@ class FlowsResource(BaseResource):
         response = self._make_request('PUT', path, params=params)
         return self._parse_response(response)
 
-    def docs_recommendation(self, flow_id: int) -> Dict[str, Any]:
-        """Generate AI suggestion for flow documentation."""
+    def docs_recommendation(self, flow_id: int) -> Union[DocsRecommendation, Dict[str, Any]]:
+        """Generate AI suggestion for flow documentation.
+
+        Args:
+            flow_id: Flow ID
+
+        Returns:
+            DocsRecommendation with AI-generated documentation suggestion,
+            or raw dict if response doesn't match expected schema.
+        """
         path = f"{self._path}/{flow_id}/docs/recommendation"
-        return self._make_request('POST', path)
+        response = self._make_request('POST', path)
+        try:
+            return DocsRecommendation.model_validate(response)
+        except Exception:
+            return response
 
     def get_logs(self,
                  resource_type: str,
@@ -225,8 +252,22 @@ class FlowsResource(BaseResource):
                  from_ts: int,
                  to_ts: int = None,
                  page: int = None,
-                 per_page: int = None) -> Dict[str, Any]:
-        """Get flow execution logs for a specific run id of a flow."""
+                 per_page: int = None) -> Union[FlowLogsResponse, Dict[str, Any]]:
+        """Get flow execution logs for a specific run id of a flow.
+
+        Args:
+            resource_type: Type of resource (data_sources, data_sets, data_sinks)
+            resource_id: Resource ID
+            run_id: Run ID to get logs for
+            from_ts: Start timestamp (Unix timestamp)
+            to_ts: End timestamp (Unix timestamp)
+            page: Page number for pagination
+            per_page: Items per page
+
+        Returns:
+            FlowLogsResponse with log entries and pagination metadata,
+            or raw dict if response doesn't match expected schema.
+        """
         path = f"/data_flows/{resource_type}/{resource_id}/logs"
         params = {
             'run_id': run_id,
@@ -238,7 +279,11 @@ class FlowsResource(BaseResource):
             params['page'] = page
         if per_page is not None:
             params['per_page'] = per_page
-        return self._make_request('GET', path, params=params)
+        response = self._make_request('GET', path, params=params)
+        try:
+            return FlowLogsResponse.model_validate(response)
+        except Exception:
+            return response
 
     def get_metrics(self,
                     resource_type: str,
@@ -248,8 +293,23 @@ class FlowsResource(BaseResource):
                     groupby: str = None,
                     orderby: str = None,
                     page: int = None,
-                    per_page: int = None) -> Dict[str, Any]:
-        """Get flow metrics for a flow node keyed by resource id."""
+                    per_page: int = None) -> Union[FlowMetricsApiResponse, Dict[str, Any]]:
+        """Get flow metrics for a flow node keyed by resource id.
+
+        Args:
+            resource_type: Type of resource (data_sources, data_sets, data_sinks)
+            resource_id: Resource ID
+            from_date: Start date (ISO format, e.g., '2023-01-17')
+            to_date: End date (ISO format)
+            groupby: Group metrics by field (e.g., 'runId')
+            orderby: Order results by field ('runId' or 'created_at')
+            page: Page number for pagination
+            per_page: Items per page
+
+        Returns:
+            FlowMetricsApiResponse with metrics data and pagination,
+            or raw dict if response doesn't match expected schema.
+        """
         path = f"/data_flows/{resource_type}/{resource_id}/metrics"
         params = {'from': from_date}
         if to_date:
@@ -262,5 +322,9 @@ class FlowsResource(BaseResource):
             params['page'] = page
         if per_page is not None:
             params['per_page'] = per_page
-        
-        return self._make_request('GET', path, params=params)
+
+        response = self._make_request('GET', path, params=params)
+        try:
+            return FlowMetricsApiResponse.model_validate(response)
+        except Exception:
+            return response

@@ -21,7 +21,10 @@ from nexla_sdk.models.credentials import (
     CredentialCreate, CredentialUpdate, ProbeTreeRequest, ProbeSampleRequest
 )
 from nexla_sdk.models.flows import (
-    FlowResponse, FlowMetrics, FlowElements, FlowCopyOptions
+    FlowResponse, FlowMetrics, FlowElements, FlowCopyOptions,
+    FlowLogEntry, FlowLogsMeta, FlowLogsResponse,
+    FlowMetricData, FlowMetricsMeta, FlowMetricsData, FlowMetricsApiResponse,
+    DocsRecommendation
 )
 from nexla_sdk.models.sources import (
     SourceStatus, SourceType, IngestMethod, FlowType, Source, DataSetBrief, RunInfo,
@@ -97,6 +100,9 @@ from nexla_sdk.models.doc_containers import (
 from nexla_sdk.models.data_schemas import (
     DataSchema,
 )
+from nexla_sdk.models.webhooks import (
+    WebhookSendOptions, WebhookResponse,
+)
 
 __all__ = [
     # Base and Common models
@@ -148,6 +154,14 @@ __all__ = [
     'FlowMetrics',
     'FlowElements',
     'FlowCopyOptions',
+    'FlowLogEntry',
+    'FlowLogsMeta',
+    'FlowLogsResponse',
+    'FlowMetricData',
+    'FlowMetricsMeta',
+    'FlowMetricsData',
+    'FlowMetricsApiResponse',
+    'DocsRecommendation',
     
     # Source models and enums
     'SourceStatus',
@@ -283,4 +297,7 @@ __all__ = [
     
     # Doc containers / Data schemas
     'DocContainer', 'DataSchema',
+
+    # Webhooks
+    'WebhookSendOptions', 'WebhookResponse',
 ]

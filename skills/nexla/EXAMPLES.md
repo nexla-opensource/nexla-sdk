@@ -727,3 +727,561 @@ print(json.dumps(drift, indent=2))
 - Tag inconsistencies → standardize tagging strategy.
 - Config format differences → normalize before comparison.
 - Missing resources → verify environment completeness.
+
+## Recipe 11: Create and apply a reusable transform
+
+**Preconditions**
+- You have a nexset with data to transform.
+- You know the transform logic (Jolt, Python, etc.).
+
+**Steps**
+1) Create a reusable transform.
+2) Attach transform to nexset.
+3) Validate output with samples.
+4) Activate the flow.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+from nexla_sdk.models.transforms.requests import TransformCreate
+from nexla_sdk.models.nexsets.requests import NexsetUpdate
+
+client = NexlaClient()
+
+# Step 1: Create transform (e.g., remove sensitive fields)
+transform = client.transforms.create(TransformCreate(
+    name="remove-pii-fields",
+    description="Removes PII before delivery",
+    output_type="json",
+    reusable=True,
+    code_type="jolt",
+    code_encoding="json",
+    code=[
+        {"operation": "remove", "spec": {"ssn": "", "dob": ""}}
+    ]
+))
+print(f"Created transform: {transform.id}")
+
+# Step 2: Attach to nexset
+nexset = client.nexsets.update(
+    <nexset_id>,
+    NexsetUpdate(has_custom_transform=True, transform_id=transform.id)
+)
+
+# Step 3: Validate with samples
+samples = client.nexsets.get_samples(nexset.id, count=5)
+for sample in samples:
+    record = sample.raw_message
+    assert "ssn" not in record, "PII field not removed!"
+print("Transform validated successfully")
+
+# Step 4: Activate flow
+flow = client.flows.get_by_resource("data_sets", nexset.id, flows_only=True)
+if flow.flows:
+    client.flows.activate(flow.flows[0].id)
+```
+
+**Verification**
+- Samples show transformed data without removed fields.
+- Flow activates without errors.
+
+**Common failure modes + fixes**
+- Transform syntax error → validate Jolt/Python code in UI first.
+- Empty samples → ensure parent source has data.
+- Schema mismatch → update downstream destinations if schema changed.
+
+## Recipe 12: Attribute-level transforms (field masking, type conversion)
+
+**Preconditions**
+- Nexset with fields needing transformation.
+
+**Steps**
+1) Create attribute transform for specific field logic.
+2) Apply to nexset or use in transform pipeline.
+3) Validate field transformation.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+from nexla_sdk.models.attribute_transforms.requests import AttributeTransformCreate
+
+client = NexlaClient()
+
+# Create attribute transform for email masking
+attr_transform = client.attribute_transforms.create(AttributeTransformCreate(
+    name="mask-email",
+    description="Mask email addresses for privacy",
+    output_type="string",
+    reusable=True,
+    code_type="python",
+    code_encoding="text",
+    code='lambda x: x.split("@")[0][:2] + "***@" + x.split("@")[1] if "@" in str(x) else x'
+))
+print(f"Created attribute transform: {attr_transform.id}")
+
+# Create credit card masking transform
+cc_mask = client.attribute_transforms.create(AttributeTransformCreate(
+    name="mask-credit-card",
+    description="Show only last 4 digits",
+    output_type="string",
+    reusable=True,
+    code_type="python",
+    code_encoding="text",
+    code='lambda x: "****-****-****-" + str(x)[-4:] if x else x'
+))
+
+# List available public transforms for reuse
+public_transforms = client.attribute_transforms.list_public()
+print(f"Available public transforms: {[t.name for t in public_transforms]}")
+```
+
+**Verification**
+- Transformed field matches expected pattern.
+- Original data preserved in parent nexset.
+
+**Common failure modes + fixes**
+- Lambda syntax error → test code locally first.
+- Type mismatch → ensure input matches expected type.
+- Null handling → add null checks in transform code.
+
+## Recipe 13: Schema validation and data quality checks
+
+**Preconditions**
+- Nexset with defined schema or expected structure.
+
+**Steps**
+1) Fetch samples from nexset.
+2) Validate against expected schema.
+3) Report quality issues.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+
+client = NexlaClient()
+
+def validate_schema(client, nexset_id, required_fields, field_types=None):
+    """Validate nexset data against expected schema."""
+    samples = client.nexsets.get_samples(nexset_id, count=20, include_metadata=True)
+
+    issues = []
+    for i, sample in enumerate(samples):
+        record = sample.raw_message
+
+        # Check required fields
+        for field in required_fields:
+            if field not in record:
+                issues.append(f"Sample {i}: missing field '{field}'")
+
+        # Check field types
+        if field_types:
+            for field, expected_type in field_types.items():
+                if field in record and not isinstance(record[field], expected_type):
+                    issues.append(
+                        f"Sample {i}: field '{field}' expected {expected_type.__name__}, "
+                        f"got {type(record[field]).__name__}"
+                    )
+
+    return {
+        "valid": len(issues) == 0,
+        "sample_count": len(samples),
+        "issues": issues
+    }
+
+# Validate customer data
+result = validate_schema(
+    client,
+    nexset_id=<nexset_id>,
+    required_fields=["customer_id", "email", "created_at"],
+    field_types={"customer_id": int, "email": str}
+)
+
+if not result["valid"]:
+    print(f"Schema issues found: {len(result['issues'])}")
+    for issue in result["issues"][:5]:
+        print(f"  - {issue}")
+else:
+    print("Schema validation passed!")
+```
+
+**Verification**
+- All required fields present.
+- Field types match expectations.
+- No unexpected nulls or empty values.
+
+**Common failure modes + fixes**
+- Sampling issues → increase sample count for better coverage.
+- Type coercion → check if JSON parsing affects types.
+- Dynamic schemas → adjust validation for optional fields.
+
+## Recipe 14: Grant team access to pipeline resources
+
+**Preconditions**
+- Team exists in your organization.
+- You have owner/admin access to resources.
+
+**Steps**
+1) Identify resources to share.
+2) Define access level.
+3) Grant team access.
+4) Verify access was applied.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+
+client = NexlaClient()
+
+def grant_pipeline_access(client, team_id, source_id, role="operator"):
+    """Grant team access to entire pipeline (source → nexsets → destinations)."""
+    accessor = {"type": "TEAM", "id": team_id, "access_roles": [role]}
+    results = {"sources": [], "nexsets": [], "destinations": []}
+
+    # Grant access to source
+    client.sources.add_accessors(source_id, [accessor])
+    results["sources"].append(source_id)
+
+    # Find connected nexsets
+    source = client.sources.get(source_id, expand=True)
+    for ds in getattr(source, 'data_sets', []):
+        nexset_id = ds.id if hasattr(ds, 'id') else ds
+        client.nexsets.add_accessors(nexset_id, [accessor])
+        results["nexsets"].append(nexset_id)
+
+        # Find connected destinations
+        nexset = client.nexsets.get(nexset_id)
+        for sink in getattr(nexset, 'data_sinks', []):
+            sink_id = sink.id if hasattr(sink, 'id') else sink
+            client.destinations.add_accessors(sink_id, [accessor])
+            results["destinations"].append(sink_id)
+
+    return results
+
+# Grant data engineering team operator access
+result = grant_pipeline_access(
+    client,
+    team_id=<team_id>,
+    source_id=<source_id>,
+    role="operator"
+)
+print(f"Granted access to: {result}")
+
+# Verify access was applied
+accessors = client.sources.get_accessors(<source_id>)
+team_access = [a for a in accessors if getattr(a, 'id', None) == <team_id>]
+print(f"Team access verified: {len(team_access) > 0}")
+```
+
+**Example commands (CLI script)**
+```bash
+# Grant team access to multiple sources
+python scripts/manage_access.py \
+    --operation grant \
+    --resource-type sources \
+    --resource-ids 123,456,789 \
+    --accessor-type TEAM \
+    --accessor-id 42 \
+    --role operator
+```
+
+**Verification**
+- Team members can access all pipeline resources.
+- Access level matches expected role.
+
+**Common failure modes + fixes**
+- 403 error → ensure you have admin/owner access.
+- Team not found → verify team_id exists.
+- Partial success → check each resource's accessor list.
+
+## Recipe 15: Audit access changes across resources
+
+**Preconditions**
+- Resources you want to audit.
+
+**Steps**
+1) Fetch audit logs for resources.
+2) Filter for access-related changes.
+3) Generate audit report.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+from datetime import datetime, timedelta
+
+client = NexlaClient()
+
+def audit_access_changes(client, resource_type, resource_ids, days=30):
+    """Audit access changes across multiple resources."""
+    resource_api = getattr(client, resource_type)
+    cutoff = datetime.utcnow() - timedelta(days=days)
+
+    all_changes = []
+    for resource_id in resource_ids:
+        try:
+            # Get current accessors
+            accessors = resource_api.get_accessors(resource_id)
+
+            # Get audit log
+            logs = resource_api.get_audit_log(resource_id)
+
+            # Filter access-related changes
+            for log in logs:
+                action = log.get("action", "").lower()
+                if any(kw in action for kw in ["accessor", "access", "permission", "share"]):
+                    all_changes.append({
+                        "resource_type": resource_type,
+                        "resource_id": resource_id,
+                        "action": log.get("action"),
+                        "user": log.get("user", {}).get("email"),
+                        "timestamp": log.get("created_at"),
+                        "details": log.get("details", {})
+                    })
+        except Exception as e:
+            print(f"Error auditing {resource_type}/{resource_id}: {e}")
+
+    return sorted(all_changes, key=lambda x: x.get("timestamp", ""), reverse=True)
+
+# Audit critical production sources
+source_ids = [123, 456, 789]
+changes = audit_access_changes(client, "sources", source_ids, days=7)
+
+print(f"Access changes in last 7 days: {len(changes)}")
+for change in changes[:10]:
+    print(f"  [{change['timestamp']}] {change['action']} by {change['user']}")
+
+# Export audit report
+import json
+with open("access_audit_report.json", "w") as f:
+    json.dump(changes, f, indent=2)
+print("Audit report saved to access_audit_report.json")
+```
+
+**Example commands (CLI script)**
+```bash
+# List current accessors for a resource
+python scripts/manage_access.py \
+    --operation list \
+    --resource-type sources \
+    --resource-id 123
+```
+
+**Verification**
+- All access changes captured.
+- Report shows who made changes and when.
+
+**Common failure modes + fixes**
+- Empty audit log → resource may be new or audit retention expired.
+- Permission denied → verify you have access to view audit logs.
+- Missing timestamps → check log format for date fields.
+
+---
+
+## Recipe 16: Send data via webhooks
+
+Push data to Nexla webhook sources for real-time ingestion.
+
+**Preconditions**
+- Webhook source created in Nexla UI.
+- API key from webhook configuration.
+- Webhook URL copied from source settings.
+
+**Steps**
+1) Create webhook client with API key.
+2) Send single or batch records.
+3) Verify data ingestion.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+
+client = NexlaClient()
+webhooks = client.create_webhook_client(api_key="your-webhook-api-key")
+
+# Send single record
+response = webhooks.send_one_record(
+    webhook_url="https://api.nexla.com/webhook/abc123",
+    record={
+        "event": "user_signup",
+        "user_id": 42,
+        "email": "user@example.com",
+        "timestamp": "2025-01-09T12:00:00Z"
+    }
+)
+print(f"Dataset ID: {response.dataset_id}, Processed: {response.processed}")
+
+# Send batch of records
+events = [
+    {"event": "page_view", "page": "/home", "user_id": 42},
+    {"event": "page_view", "page": "/products", "user_id": 42},
+    {"event": "add_to_cart", "product_id": 123, "user_id": 42}
+]
+response = webhooks.send_many_records(
+    webhook_url="https://api.nexla.com/webhook/abc123",
+    records=events
+)
+print(f"Processed {response.processed} events")
+```
+
+**Example commands (cURL)**
+```bash
+# Send single record
+curl -X POST "https://api.nexla.com/webhook/abc123?api_key=your-api-key" \
+     -H "Content-Type: application/json" \
+     -d '{"event": "user_signup", "user_id": 42}'
+
+# Send batch
+curl -X POST "https://api.nexla.com/webhook/abc123?api_key=your-api-key" \
+     -H "Content-Type: application/json" \
+     -d '[{"event": "click"}, {"event": "scroll"}]'
+```
+
+**Verification**
+- Response shows `processed` count matching records sent.
+- Check nexset in Nexla UI for new records.
+
+**Common failure modes + fixes**
+- 401 Unauthorized → verify API key is correct.
+- 404 Not Found → verify webhook URL is correct.
+- Empty response → check webhook source is active.
+
+---
+
+## Recipe 17: Manage async tasks
+
+Create and monitor background jobs for long-running operations.
+
+**Preconditions**
+- Valid Nexla credentials.
+- Task type available (check with `types()` method).
+
+**Steps**
+1) List available task types.
+2) Create async task with arguments.
+3) Poll for completion.
+4) Retrieve results or download output.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+from nexla_sdk.models.async_tasks.requests import AsyncTaskCreate
+import time
+
+client = NexlaClient()
+
+# List available task types
+task_types = client.async_tasks.types()
+print(f"Available task types: {task_types}")
+
+# Get required arguments for a task type
+args_schema = client.async_tasks.explain_arguments("export")
+print(f"Required arguments: {args_schema}")
+
+# Create async task
+task = client.async_tasks.create(AsyncTaskCreate(
+    type="export",
+    arguments={"resource_id": 123, "format": "csv"}
+))
+print(f"Task created: {task.id}, Status: {task.status}")
+
+# Poll for completion
+def wait_for_task(task_id, max_wait=300):
+    start = time.time()
+    while time.time() - start < max_wait:
+        task = client.async_tasks.get(task_id)
+        print(f"  Status: {task.status}")
+
+        if task.status in ['completed', 'success']:
+            return client.async_tasks.result(task_id)
+        elif task.status in ['failed', 'error']:
+            raise Exception(f"Task failed: {task.error_message}")
+
+        time.sleep(5)
+    raise TimeoutError("Task did not complete in time")
+
+result = wait_for_task(task.id)
+print(f"Task result: {result}")
+
+# Get download link if available
+try:
+    link = client.async_tasks.download_link(task.id)
+    print(f"Download: {link}")
+except Exception:
+    print("No download available for this task type")
+
+# Acknowledge completion
+client.async_tasks.acknowledge(task.id)
+```
+
+**Verification**
+- Task status changes from `pending` → `running` → `completed`.
+- Result data returned successfully.
+
+**Common failure modes + fixes**
+- Task stays pending → check system load, retry later.
+- Task fails immediately → verify arguments match schema.
+- Timeout → increase max_wait or check task health.
+
+---
+
+## Recipe 18: Configure GenAI integration
+
+Set up AI integrations for documentation suggestions and other AI features.
+
+**Preconditions**
+- Admin access to organization.
+- AI provider API key (OpenAI, Anthropic, etc.).
+
+**Steps**
+1) Create integration config with provider credentials.
+2) Create org setting to enable for specific usage.
+3) Test with docs_recommendation.
+
+**Example commands (Python SDK)**
+```python
+from nexla_sdk import NexlaClient
+from nexla_sdk.models.genai.requests import (
+    GenAiConfigCreatePayload,
+    GenAiOrgSettingPayload
+)
+
+client = NexlaClient()
+
+# List existing configs
+configs = client.genai.list_configs()
+print(f"Existing configs: {[c.name for c in configs]}")
+
+# Create new integration config
+config = client.genai.create_config(GenAiConfigCreatePayload(
+    name="openai-gpt4",
+    provider="openai",
+    api_key="sk-your-openai-key",
+    model="gpt-4"
+))
+print(f"Created config: {config.id}")
+
+# Enable for organization
+setting = client.genai.create_org_setting(GenAiOrgSettingPayload(
+    org_id=123,  # Your org ID
+    gen_ai_integration_config_id=config.id,
+    gen_ai_usage="docs_recommendation"
+))
+print(f"Enabled for org: {setting.id}")
+
+# Verify active config
+active = client.genai.show_active_config(gen_ai_usage="docs_recommendation")
+print(f"Active config: {active}")
+
+# Test with flow documentation
+docs = client.flows.docs_recommendation(flow_id=456)
+print(f"AI-generated docs:\n{docs.recommendation}")
+```
+
+**Verification**
+- Config appears in `list_configs()`.
+- `show_active_config()` returns the new config.
+- `docs_recommendation()` returns AI-generated content.
+
+**Common failure modes + fixes**
+- API key invalid → verify key with provider.
+- Permission denied → verify admin access to org.
+- Empty recommendation → check flow has sufficient data for AI analysis.
