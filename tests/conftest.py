@@ -114,7 +114,6 @@ def assertions() -> NexlaAssertions:
 
 # Integration Test Fixtures (with real API)
 @pytest.fixture(scope="session")
-@skip_if_no_integration_creds
 def integration_client(api_url: str, api_version: str) -> NexlaClient:
     """
     Provides a NexlaClient instance configured for integration tests.

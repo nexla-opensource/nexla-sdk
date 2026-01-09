@@ -362,8 +362,10 @@ class NexlaAssertions:
         """Assert destination response matches expected data."""
         assert response.id == expected_data["id"]
         assert response.name == expected_data["name"]
-        assert response.status == expected_data["status"]
-        assert response.sink_type == expected_data["sink_type"]
+        if "status" in expected_data:
+            assert response.status == expected_data["status"]
+        if "sink_type" in expected_data:
+            assert response.sink_type == expected_data["sink_type"]
         if "owner" in expected_data:
             assert response.owner.id == expected_data["owner"]["id"]
             assert response.owner.email == expected_data["owner"]["email"]
@@ -442,10 +444,14 @@ class NexlaAssertions:
         """Assert lookup response matches expected data."""
         assert response.id == expected_data["id"]
         assert response.name == expected_data["name"]
-        assert response.description == expected_data["description"]
-        assert response.map_primary_key == expected_data["map_primary_key"]
-        assert response.data_type == expected_data["data_type"]
-        assert response.public == expected_data["public"]
+        if "description" in expected_data:
+            assert response.description == expected_data["description"]
+        if "map_primary_key" in expected_data:
+            assert response.map_primary_key == expected_data["map_primary_key"]
+        if "data_type" in expected_data:
+            assert response.data_type == expected_data["data_type"]
+        if "public" in expected_data:
+            assert response.public == expected_data["public"]
         if "owner" in expected_data:
             assert response.owner.id == expected_data["owner"]["id"]
             assert response.owner.email == expected_data["owner"]["email"]

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import ValidationError
+from nexla_sdk.resources.webhooks import WebhooksResource
 
 # Mark all tests in this module as unit tests
 pytestmark = pytest.mark.unit
@@ -67,3 +68,29 @@ def test_convert_to_model_list_validation_error():
     data = [{"id": 1, "name": "Test1"}, {"id": "not_an_int", "name": "Test2"}]
     with pytest.raises(ValidationError):
         client._convert_to_model(data, DummyModel)
+
+
+def test_create_webhook_client_returns_webhooks_resource():
+    """Test that create_webhook_client returns a WebhooksResource instance."""
+    client = NexlaClient(service_key="test_service_key")
+    webhook_client = client.create_webhook_client(api_key="webhook-api-key-123")
+
+    assert isinstance(webhook_client, WebhooksResource)
+
+
+def test_create_webhook_client_sets_api_key():
+    """Test that create_webhook_client sets the API key correctly."""
+    client = NexlaClient(service_key="test_service_key")
+    api_key = "my-webhook-api-key"
+    webhook_client = client.create_webhook_client(api_key=api_key)
+
+    assert webhook_client.api_key == api_key
+
+
+def test_create_webhook_client_shares_http_client():
+    """Test that create_webhook_client shares the parent client's HTTP client."""
+    client = NexlaClient(service_key="test_service_key")
+    webhook_client = client.create_webhook_client(api_key="webhook-api-key")
+
+    # The webhook client should use the same HTTP client as the parent
+    assert webhook_client._http_client is client.http_client

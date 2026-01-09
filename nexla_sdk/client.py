@@ -35,6 +35,7 @@ from .resources.genai import GenAIResource
 from .resources.self_signup import SelfSignupResource
 from .resources.doc_containers import DocContainersResource
 from .resources.data_schemas import DataSchemasResource
+from .resources.webhooks import WebhooksResource
 
 logger = logging.getLogger(__name__)
 
@@ -225,6 +226,44 @@ class NexlaClient:
         Calls POST /token/logout and clears internal token state when successful.
         """
         self.auth_handler.logout()
+
+    def create_webhook_client(self, api_key: str) -> WebhooksResource:
+        """
+        Create a webhook client for sending data to Nexla webhooks.
+
+        Webhooks use API key authentication instead of session tokens.
+        The API key and webhook URL are provided when you create a webhook
+        source in the Nexla UI.
+
+        Args:
+            api_key: Nexla API key for webhook authentication.
+
+        Returns:
+            WebhooksResource instance for sending webhook data.
+
+        Examples:
+            # Create a webhook client
+            webhooks = client.create_webhook_client(api_key="your-api-key")
+
+            # Send a single record
+            response = webhooks.send_one_record(
+                webhook_url="https://api.nexla.com/webhook/abc123",
+                record={"event": "page_view", "user_id": 123}
+            )
+
+            # Send multiple records
+            response = webhooks.send_many_records(
+                webhook_url="https://api.nexla.com/webhook/abc123",
+                records=[{"id": 1}, {"id": 2}]
+            )
+
+        Note:
+            You can also create a WebhooksResource directly without a NexlaClient:
+
+            from nexla_sdk.resources.webhooks import WebhooksResource
+            webhooks = WebhooksResource(api_key="your-api-key")
+        """
+        return WebhooksResource(api_key=api_key, http_client=self.http_client)
 
     def _convert_to_model(self, data: Union[Dict[str, Any], List[Dict[str, Any]]], model_class: Type[T]) -> Union[T, List[T]]:
         """

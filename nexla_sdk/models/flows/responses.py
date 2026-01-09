@@ -19,6 +19,85 @@ class FlowMetrics(BaseModel):
     run_id: int
 
 
+class FlowLogEntry(BaseModel):
+    """A single flow execution log entry."""
+    timestamp: Optional[datetime] = None
+    level: Optional[str] = None
+    message: Optional[str] = None
+    resource_id: Optional[int] = None
+    resource_type: Optional[str] = None
+    run_id: Optional[int] = None
+    details: Optional[Dict[str, Any]] = None
+
+
+class FlowLogsMeta(BaseModel):
+    """Metadata for flow logs pagination."""
+    current_page: Optional[int] = Field(default=None, alias="currentPage")
+    page_count: Optional[int] = Field(default=None, alias="pageCount")
+    total_count: Optional[int] = Field(default=None, alias="totalCount")
+
+
+class FlowLogsResponse(BaseModel):
+    """Response from get_logs() containing flow execution logs.
+
+    Attributes:
+        status: Status code of the response (200 for success).
+        message: Status message ("Ok" for success).
+        logs: List of log entries.
+        meta: Pagination metadata.
+    """
+    status: Optional[int] = None
+    message: Optional[str] = None
+    logs: List[FlowLogEntry] = Field(default_factory=list)
+    meta: Optional[FlowLogsMeta] = None
+
+
+class FlowMetricData(BaseModel):
+    """Flow metric data for a resource."""
+    records: Optional[int] = None
+    size: Optional[int] = None
+    errors: Optional[int] = None
+    run_id: Optional[int] = Field(default=None, alias="runId")
+    reporting_date: Optional[datetime] = None
+
+
+class FlowMetricsMeta(BaseModel):
+    """Metadata for flow metrics pagination."""
+    current_page: Optional[int] = Field(default=None, alias="currentPage")
+    page_count: Optional[int] = Field(default=None, alias="pageCount")
+    total_count: Optional[int] = Field(default=None, alias="totalCount")
+
+
+class FlowMetricsData(BaseModel):
+    """Flow metrics data container."""
+    data: Optional[Dict[str, Any]] = None
+    meta: Optional[FlowMetricsMeta] = None
+
+
+class FlowMetricsApiResponse(BaseModel):
+    """Response from get_metrics() containing flow metrics.
+
+    Attributes:
+        status: Status code of the response (200 for success).
+        message: Status message ("Ok" for success).
+        metrics: Metrics data including resource-keyed data and pagination.
+    """
+    status: Optional[int] = None
+    message: Optional[str] = None
+    metrics: Optional[FlowMetricsData] = None
+
+
+class DocsRecommendation(BaseModel):
+    """Response from docs_recommendation() with AI-generated documentation.
+
+    Attributes:
+        recommendation: The AI-generated documentation suggestion.
+        status: Status of the recommendation request.
+    """
+    recommendation: Optional[str] = None
+    status: Optional[str] = None
+
+
 class FlowElements(BaseModel):
     """Flow elements containing all resources."""
     code_containers: List[Dict[str, Any]] = Field(default_factory=list)

@@ -1,7 +1,7 @@
 """Unit tests for UsersResource."""
 
 import pytest
-from nexla_sdk.exceptions import ServerError, NotFoundError
+from nexla_sdk.exceptions import ServerError, NotFoundError, ValidationError
 from nexla_sdk.models.users.responses import User, UserExpanded, UserSettings
 from nexla_sdk.models.users.requests import UserCreate, UserUpdate
 from nexla_sdk.http_client import HttpClientError
@@ -127,10 +127,10 @@ class TestUsersUnitTests:
             email="invalid-email"
         )
         client.http_client.add_error("/users",
-            HttpClientError("Validation failed", status_code=400, 
+            HttpClientError("Validation failed", status_code=400,
                           response={"message": "Invalid email format"}))
-        
-        with pytest.raises(ServerError):
+
+        with pytest.raises(ValidationError):
             client.users.create(request_data)
 
     def test_update_user_success(self, mock_client):
