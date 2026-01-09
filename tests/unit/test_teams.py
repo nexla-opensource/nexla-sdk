@@ -1,7 +1,7 @@
 """Unit tests for TeamsResource."""
 
 import pytest
-from nexla_sdk.exceptions import ServerError, NotFoundError
+from nexla_sdk.exceptions import ServerError, NotFoundError, ValidationError
 from nexla_sdk.models.teams.responses import Team, TeamMember
 from nexla_sdk.models.teams.requests import TeamCreate, TeamUpdate, TeamMemberRequest, TeamMemberList
 from nexla_sdk.http_client import HttpClientError
@@ -127,10 +127,10 @@ class TestTeamsUnitTests:
             description="A test team"
         )
         client.http_client.add_error("/teams",
-            HttpClientError("Validation failed", status_code=400, 
+            HttpClientError("Validation failed", status_code=400,
                           response={"message": "Team name cannot be empty"}))
-        
-        with pytest.raises(ServerError):
+
+        with pytest.raises(ValidationError):
             client.teams.create(request_data)
 
     def test_update_team_success(self, mock_client):

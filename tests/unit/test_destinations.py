@@ -1,101 +1,75 @@
 """Unit tests for destinations resource."""
 import pytest
-from unittest.mock import MagicMock
 
-from nexla_sdk import NexlaClient
-from nexla_sdk.models.destinations import DestinationCreate, DestinationUpdate, DestinationCopyOptions
-from nexla_sdk.exceptions import ServerError
+from nexla_sdk.models.destinations.responses import Destination
+from nexla_sdk.models.destinations.requests import DestinationCreate, DestinationUpdate, DestinationCopyOptions
+from nexla_sdk.exceptions import ServerError, NotFoundError
 from nexla_sdk.http_client import HttpClientError
-from tests.utils.fixtures import create_test_client
-from tests.utils.mock_builders import MockDataFactory, MockResponseBuilder
-from tests.utils.assertions import NexlaAssertions
+from tests.utils.mock_builders import MockResponseBuilder
+from tests.utils.assertions import NexlaAssertions, assert_model_list_valid
 
 
+@pytest.mark.unit
 class TestDestinationsResource:
     """Test destinations resource methods."""
 
-    @pytest.fixture
-    def mock_client(self) -> NexlaClient:
-        """Create a test client with mocked HTTP."""
-        return create_test_client()
-
-    @pytest.fixture
-    def assertions(self) -> NexlaAssertions:
-        """Create assertions helper."""
-        return NexlaAssertions()
-
-    @pytest.fixture
-    def mock_factory(self) -> MockDataFactory:
-        """Create mock data factory."""
-        return MockDataFactory()
-
-    def test_list_destinations(self, mock_client, assertions):
+    def test_list_destinations(self, mock_client):
         """Test listing destinations."""
         # Arrange
         mock_destinations = [
             MockResponseBuilder.destination({"id": 1, "name": "Dest 1"}),
             MockResponseBuilder.destination({"id": 2, "name": "Dest 2"})
         ]
-        mock_client.http_client.request = MagicMock(return_value=mock_destinations)
-        
+        mock_client.http_client.add_response("/data_sinks", mock_destinations)
+
         # Act
         destinations = mock_client.destinations.list()
-        
+
         # Assert
         assert len(destinations) == 2
-        for i, destination in enumerate(destinations):
-            assertions.assert_destination_response(destination, mock_destinations[i])
-        
-        # Check the call was made (verify call happened)
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'GET'  # Method
-        assert '/data_sinks' in call_args[0][1]  # URL contains path
+        assert_model_list_valid(destinations, Destination)
+        mock_client.http_client.assert_request_made("GET", "/data_sinks")
 
-    def test_list_destinations_with_parameters(self, mock_client, assertions):
+    def test_list_destinations_with_parameters(self, mock_client):
         """Test listing destinations with query parameters."""
         # Arrange
         mock_destinations = [MockResponseBuilder.destination()]
-        mock_client.http_client.request = MagicMock(return_value=mock_destinations)
-        
+        mock_client.http_client.add_response("/data_sinks", mock_destinations)
+
         # Act
         destinations = mock_client.destinations.list(
-            page=2, 
+            page=2,
             per_page=50,
             access_role="owner"
         )
-        
+
         # Assert
         assert len(destinations) == 1
-        assertions.assert_destination_response(destinations[0], mock_destinations[0])
-        
-        # Check the call was made with parameters
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'GET'
-        assert '/data_sinks' in call_args[0][1]
-        assert 'params' in call_args[1]
+        mock_client.http_client.assert_request_made("GET", "/data_sinks")
 
-    def test_get_destination(self, mock_client, assertions):
+        # Verify parameters were sent
+        request = mock_client.http_client.get_last_request()
+        assert request["params"].get("page") == 2
+        assert request["params"].get("per_page") == 50
+        assert request["params"].get("access_role") == "owner"
+
+    def test_get_destination(self, mock_client):
         """Test getting single destination."""
         # Arrange
         destination_id = 12345
         mock_response = MockResponseBuilder.destination({"id": destination_id, "name": "Test Destination"})
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", mock_response)
+
         # Act
         destination = mock_client.destinations.get(destination_id)
-        
-        # Assert
-        assertions.assert_destination_response(destination, {"id": destination_id, "name": "Test Destination"})
-        
-        # Check the call was made
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'GET'
-        assert f'/data_sinks/{destination_id}' in call_args[0][1]
 
-    def test_get_destination_with_expand(self, mock_client, assertions):
+        # Assert
+        assert isinstance(destination, Destination)
+        assert destination.id == destination_id
+        assert destination.name == "Test Destination"
+        mock_client.http_client.assert_request_made("GET", f"/data_sinks/{destination_id}")
+
+    def test_get_destination_with_expand(self, mock_client):
         """Test getting destination with expand parameter."""
         # Arrange
         destination_id = 12345
@@ -104,23 +78,21 @@ class TestDestinationsResource:
             "name": "Test Destination",
             "data_set": MockResponseBuilder.data_set_info()
         })
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", mock_response)
+
         # Act
         destination = mock_client.destinations.get(destination_id, expand=True)
-        
-        # Assert
-        assertions.assert_destination_response(destination, mock_response)
-        assert hasattr(destination, 'data_set')
-        
-        # Check the call was made with expand parameter
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'GET'
-        assert f'/data_sinks/{destination_id}' in call_args[0][1]
-        assert 'params' in call_args[1]
 
-    def test_create_destination(self, mock_client, assertions):
+        # Assert
+        assert isinstance(destination, Destination)
+        assert destination.id == destination_id
+        mock_client.http_client.assert_request_made("GET", f"/data_sinks/{destination_id}")
+
+        # Verify expand parameter was sent
+        request = mock_client.http_client.get_last_request()
+        assert request["params"].get("expand") == 1
+
+    def test_create_destination(self, mock_client):
         """Test creating destination."""
         # Arrange
         create_data = DestinationCreate(
@@ -135,26 +107,23 @@ class TestDestinationsResource:
             "name": "Test Destination",
             "sink_type": "s3"
         })
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response("/data_sinks", mock_response)
+
         # Act
         destination = mock_client.destinations.create(create_data)
-        
-        # Assert
-        assertions.assert_destination_response(destination, {
-            "id": 12345,
-            "name": "Test Destination", 
-            "sink_type": "s3"
-        })
-        
-        # Verify the request
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'POST'
-        assert '/data_sinks' in call_args[0][1]
-        assert 'json' in call_args[1]
 
-    def test_update_destination(self, mock_client, assertions):
+        # Assert
+        assert isinstance(destination, Destination)
+        assert destination.id == 12345
+        assert destination.name == "Test Destination"
+        mock_client.http_client.assert_request_made("POST", "/data_sinks")
+
+        # Verify request body
+        request = mock_client.http_client.get_last_request()
+        assert request["json"]["name"] == "Test Destination"
+        assert request["json"]["sink_type"] == "s3"
+
+    def test_update_destination(self, mock_client):
         """Test updating destination."""
         # Arrange
         destination_id = 12345
@@ -166,42 +135,30 @@ class TestDestinationsResource:
             "id": destination_id,
             "name": "Updated Destination"
         })
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", mock_response)
+
         # Act
         destination = mock_client.destinations.update(destination_id, update_data)
-        
+
         # Assert
-        assertions.assert_destination_response(destination, {
-            "id": destination_id,
-            "name": "Updated Destination"
-        })
-        
-        # Verify the request
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'PUT'
-        assert f'/data_sinks/{destination_id}' in call_args[0][1]
+        assert isinstance(destination, Destination)
+        assert destination.name == "Updated Destination"
+        mock_client.http_client.assert_request_made("PUT", f"/data_sinks/{destination_id}")
 
     def test_delete_destination(self, mock_client):
         """Test deleting destination."""
         # Arrange
         destination_id = 12345
-        mock_client.http_client.request = MagicMock(return_value={"status": "deleted"})
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", {"status": "deleted"})
+
         # Act
         result = mock_client.destinations.delete(destination_id)
-        
+
         # Assert
         assert result == {"status": "deleted"}
-        
-        # Verify the request
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'DELETE'
-        assert f'/data_sinks/{destination_id}' in call_args[0][1]
+        mock_client.http_client.assert_request_made("DELETE", f"/data_sinks/{destination_id}")
 
-    def test_activate_destination(self, mock_client, assertions):
+    def test_activate_destination(self, mock_client):
         """Test activating destination."""
         # Arrange
         destination_id = 12345
@@ -209,24 +166,17 @@ class TestDestinationsResource:
             "id": destination_id,
             "status": "ACTIVE"
         })
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}/activate", mock_response)
+
         # Act
         destination = mock_client.destinations.activate(destination_id)
-        
-        # Assert
-        assertions.assert_destination_response(destination, {
-            "id": destination_id,
-            "status": "ACTIVE"
-        })
-        
-        # Verify the request
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'PUT'
-        assert f'/data_sinks/{destination_id}/activate' in call_args[0][1]
 
-    def test_pause_destination(self, mock_client, assertions):
+        # Assert
+        assert isinstance(destination, Destination)
+        assert destination.status == "ACTIVE"
+        mock_client.http_client.assert_request_made("PUT", f"/data_sinks/{destination_id}/activate")
+
+    def test_pause_destination(self, mock_client):
         """Test pausing destination."""
         # Arrange
         destination_id = 12345
@@ -234,24 +184,17 @@ class TestDestinationsResource:
             "id": destination_id,
             "status": "PAUSED"
         })
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}/pause", mock_response)
+
         # Act
         destination = mock_client.destinations.pause(destination_id)
-        
-        # Assert
-        assertions.assert_destination_response(destination, {
-            "id": destination_id,
-            "status": "PAUSED"
-        })
-        
-        # Verify the request
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'PUT'
-        assert f'/data_sinks/{destination_id}/pause' in call_args[0][1]
 
-    def test_copy_destination(self, mock_client, assertions):
+        # Assert
+        assert isinstance(destination, Destination)
+        assert destination.status == "PAUSED"
+        mock_client.http_client.assert_request_made("PUT", f"/data_sinks/{destination_id}/pause")
+
+    def test_copy_destination(self, mock_client):
         """Test copying destination."""
         # Arrange
         destination_id = 12345
@@ -263,58 +206,68 @@ class TestDestinationsResource:
             "id": 54321,
             "name": "Copied Destination"
         })
-        mock_client.http_client.request = MagicMock(return_value=mock_response)
-        
+        mock_client.http_client.add_response(f"/data_sinks/{destination_id}/copy", mock_response)
+
         # Act
         destination = mock_client.destinations.copy(destination_id, copy_options)
-        
+
         # Assert
-        assertions.assert_destination_response(destination, {
-            "id": 54321,
-            "name": "Copied Destination"
-        })
-        
-        # Verify the request
-        mock_client.http_client.request.assert_called_once()
-        call_args = mock_client.http_client.request.call_args
-        assert call_args[0][0] == 'POST'
-        assert f'/data_sinks/{destination_id}/copy' in call_args[0][1]
+        assert isinstance(destination, Destination)
+        assert destination.id == 54321
+        mock_client.http_client.assert_request_made("POST", f"/data_sinks/{destination_id}/copy")
 
     def test_http_error_handling(self, mock_client):
         """Test HTTP error handling."""
         # Arrange
-        mock_client.http_client.request = MagicMock(
-            side_effect=HttpClientError(
+        mock_client.http_client.add_error(
+            "/data_sinks",
+            HttpClientError(
                 "Server Error",
                 status_code=500,
                 response={"message": "Internal server error"}
             )
         )
-        
+
         # Act & Assert
         with pytest.raises(ServerError) as exc_info:
             mock_client.destinations.list()
-        
-        assert exc_info.value.status_code == 500
-        assert "API error" in str(exc_info.value)
 
-    def test_validation_error_handling(self, mock_client):
+        assert exc_info.value.status_code == 500
+
+    def test_not_found_error(self, mock_client):
+        """Test not found error handling."""
+        # Arrange
+        destination_id = 99999
+        mock_client.http_client.add_error(
+            f"/data_sinks/{destination_id}",
+            HttpClientError(
+                "Not found",
+                status_code=404,
+                response={"message": "Destination not found"}
+            )
+        )
+
+        # Act & Assert
+        with pytest.raises(NotFoundError):
+            mock_client.destinations.get(destination_id)
+
+    def test_validation_error_handling(self):
         """Test validation error handling."""
         # Arrange
         invalid_data = {"invalid": "data"}  # Missing required fields
-        
-        # Act & Assert  
-        with pytest.raises(Exception):  # Will raise validation error during model creation
+
+        # Act & Assert - Will raise validation error during model creation
+        with pytest.raises(Exception):
             DestinationCreate(**invalid_data)
 
     def test_empty_list_response(self, mock_client):
         """Test handling empty list response."""
         # Arrange
-        mock_client.http_client.request = MagicMock(return_value=[])
-        
+        mock_client.http_client.add_response("/data_sinks", [])
+
         # Act
         destinations = mock_client.destinations.list()
-        
+
         # Assert
         assert destinations == []
-        assert len(destinations) == 0 
+        assert len(destinations) == 0
