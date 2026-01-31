@@ -1,7 +1,8 @@
-from typing import List, Dict, Any
-from nexla_sdk.resources.base_resource import BaseResource
-from nexla_sdk.models.transforms.responses import Transform
+from typing import Any, Dict, List
+
 from nexla_sdk.models.transforms.requests import TransformCreate, TransformUpdate
+from nexla_sdk.models.transforms.responses import Transform
+from nexla_sdk.resources.base_resource import BaseResource
 
 
 class TransformsResource(BaseResource):
@@ -53,5 +54,5 @@ class TransformsResource(BaseResource):
     def list_public(self) -> List[Transform]:
         """List publicly shared transforms."""
         path = f"{self._path}/public"
-        response = self._make_request('GET', path)
+        response = self._make_request("GET", path)
         return self._parse_response(response)

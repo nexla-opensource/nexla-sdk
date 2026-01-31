@@ -24,4 +24,3 @@ class AsyncTaskResult(BaseModel):
 class DownloadLink(BaseModel):
     url: str
     expires_at: Optional[datetime] = None
-

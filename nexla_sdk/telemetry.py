@@ -5,13 +5,15 @@ This module isolates optional OpenTelemetry usage so the SDK works
 without any OpenTelemetry packages installed. If tracing is disabled
 or OpenTelemetry isn't available, a no-op tracer is provided.
 """
-from typing import Optional, Any
+
 import os
 import threading
+from typing import Any, Optional
 
 # Guard against missing OpenTelemetry installation
 try:  # pragma: no cover - optional dependency
     from opentelemetry import trace  # type: ignore
+
     _opentelemetry_available = True
 except Exception:  # pragma: no cover
     trace = None  # type: ignore
@@ -39,7 +41,9 @@ class _NoOpSpan:
 
 
 class _NoOpTracer:
-    def start_as_current_span(self, *args: Any, **kwargs: Any) -> _NoOpSpan:  # noqa: D401
+    def start_as_current_span(
+        self, *args: Any, **kwargs: Any
+    ) -> _NoOpSpan:  # noqa: D401
         return _NoOpSpan()
 
     def start_span(self, *args: Any, **kwargs: Any) -> _NoOpSpan:  # noqa: D401
@@ -67,6 +71,7 @@ def get_tracer(trace_enabled: bool):
                 # Using a stable instrumentation name for the SDK tracer
                 try:
                     from importlib.metadata import version  # Python 3.8+
+
                     pkg_version = version("nexla-sdk")
                 except Exception:  # pragma: no cover
                     pkg_version = "unknown"
@@ -90,7 +95,8 @@ def is_tracing_configured() -> bool:
         provider = trace.get_tracer_provider()  # type: ignore[union-attr]
         # If provider is not the default NoOpTracerProvider, assume configured
         if getattr(trace, "NoOpTracerProvider", None) and not isinstance(
-            provider, trace.NoOpTracerProvider  # type: ignore[attr-defined]
+            provider,
+            trace.NoOpTracerProvider,  # type: ignore[attr-defined]
         ):
             return True
     except Exception:  # pragma: no cover

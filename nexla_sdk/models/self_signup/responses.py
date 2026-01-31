@@ -17,4 +17,3 @@ class SelfSignupRequest(BaseModel):
 class BlockedDomain(BaseModel):
     id: int
     domain: str
-

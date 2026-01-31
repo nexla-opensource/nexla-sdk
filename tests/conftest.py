@@ -2,12 +2,13 @@
 
 import logging
 import os
+
 import pytest
 from dotenv import load_dotenv
 
 from nexla_sdk import NexlaClient
 from nexla_sdk.exceptions import AuthenticationError
-from tests.utils import MockHTTPClient, MockResponseBuilder, MockDataFactory
+from tests.utils import MockDataFactory, MockHTTPClient, MockResponseBuilder
 from tests.utils.assertions import NexlaAssertions
 
 # Load environment variables from .env file in the tests directory
@@ -75,22 +76,25 @@ def mock_http_client():
 def mock_client(mock_http_client):
     """Create a Nexla client with mock HTTP client for unit tests."""
     # First, add the authentication token response for the initial token request
-    mock_http_client.add_response("/token", {
-        "access_token": "mock-token-12345",
-        "expires_in": 86400,
-        "token_type": "Bearer"
-    })
-    
+    mock_http_client.add_response(
+        "/token",
+        {
+            "access_token": "mock-token-12345",
+            "expires_in": 86400,
+            "token_type": "Bearer",
+        },
+    )
+
     # Create client with service key authentication
     client = NexlaClient(
         service_key="test-service-key",
         base_url="https://api.test.nexla.io/nexla-api",
-        http_client=mock_http_client
+        http_client=mock_http_client,
     )
-    
+
     # Clear any previous requests from initialization
     mock_http_client.clear_requests()
-    
+
     return client
 
 
@@ -119,40 +123,42 @@ def integration_client(api_url: str, api_version: str) -> NexlaClient:
     Provides a NexlaClient instance configured for integration tests.
     Tries to make a simple call to verify authentication.
     """
-    logger.info(f"Initializing Nexla client with URL: {api_url}, API version: {api_version}")
-    
+    logger.info(
+        f"Initializing Nexla client with URL: {api_url}, API version: {api_version}"
+    )
+
     # Try service key first, then access token
     if NEXLA_TEST_SERVICE_KEY:
         client = NexlaClient(
-            service_key=NEXLA_TEST_SERVICE_KEY, 
-            base_url=api_url, 
-            api_version=api_version
+            service_key=NEXLA_TEST_SERVICE_KEY,
+            base_url=api_url,
+            api_version=api_version,
         )
     elif NEXLA_TEST_ACCESS_TOKEN:
         client = NexlaClient(
             access_token=NEXLA_TEST_ACCESS_TOKEN,
             base_url=api_url,
-            api_version=api_version
+            api_version=api_version,
         )
     else:
         pytest.skip("No authentication credentials available for integration tests")
-    
+
     # Perform a lightweight check to ensure the client is functional
     try:
         logger.info("Testing client authentication")
         # Try to get credentials list as a lightweight auth check
         credentials = client.credentials.list()
         logger.info(f"Authentication successful, found {len(credentials)} credentials")
-    
+
     except AuthenticationError as e:
         logger.error(f"Authentication failed for integration tests: {e}")
         pytest.skip(f"Authentication failed for integration tests: {e}")
-    
+
     except Exception as e:
         # Catch other potential issues like network errors during setup
         logger.error(f"Could not connect to Nexla API or other setup error: {e}")
         pytest.skip(f"Could not connect to Nexla API or other setup error: {e}")
-    
+
     return client
 
 
@@ -166,8 +172,8 @@ def sample_credential_data():
         "properties": {
             "access_key_id": "test-access-key",
             "secret_access_key": "test-secret-key",
-            "region": "us-east-1"
-        }
+            "region": "us-east-1",
+        },
     }
 
 
@@ -181,34 +187,30 @@ def sample_credential_response():
 def sample_credentials_list():
     """Sample list of credentials for testing."""
     from tests.utils.mock_builders import credential_list
+
     return credential_list(count=3)
 
 
 @pytest.fixture
 def sample_probe_tree_request():
     """Sample probe tree request for testing."""
-    return {
-        "depth": 3,
-        "path": "/"
-    }
+    return {"depth": 3, "path": "/"}
 
 
 @pytest.fixture
 def sample_probe_sample_request():
     """Sample probe sample request for testing."""
-    return {
-        "connection_type": "s3",
-        "path": "/data/sample.csv",
-        "max_rows": 100
-    }
+    return {"connection_type": "s3", "path": "/data/sample.csv", "max_rows": 100}
 
 
 # Auto-use fixtures for marking tests
 @pytest.fixture(autouse=True)
 def mark_unit_tests_by_default(request):
     """Automatically mark tests as unit tests if not otherwise marked."""
-    if not any(mark.name in ['integration', 'performance', 'contract'] 
-               for mark in request.node.iter_markers()):
+    if not any(
+        mark.name in ["integration", "performance", "contract"]
+        for mark in request.node.iter_markers()
+    ):
         request.node.add_marker(pytest.mark.unit)
 
 
@@ -217,7 +219,7 @@ def mark_unit_tests_by_default(request):
 def temp_env_vars():
     """Temporarily set environment variables for testing."""
     original_env = {}
-    
+
     def set_env(**kwargs):
         for key, value in kwargs.items():
             original_env[key] = os.environ.get(key)
@@ -225,9 +227,9 @@ def temp_env_vars():
                 os.environ.pop(key, None)
             else:
                 os.environ[key] = str(value)
-    
+
     yield set_env
-    
+
     # Restore original environment
     for key, value in original_env.items():
         if value is None:
@@ -241,13 +243,13 @@ def temp_env_vars():
 def cleanup_credentials():
     """Track created credentials for cleanup in integration tests."""
     created_credentials = []
-    
+
     def track_credential(credential):
         created_credentials.append(credential)
         return credential
-    
+
     yield track_credential
-    
+
     # Cleanup (this will run after the test)
     # Note: This would need access to the client, so in practice
     # you'd pass the client to this fixture or use a different approach

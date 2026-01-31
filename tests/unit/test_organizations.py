@@ -2,10 +2,10 @@
 
 from nexla_sdk.models.organizations.requests import (
     OrganizationCreate,
-    OrgMemberUpdate,
-    OrgMemberList,
+    OrgMemberActivateDeactivateRequest,
     OrgMemberDelete,
-    OrgMemberActivateDeactivateRequest
+    OrgMemberList,
+    OrgMemberUpdate,
 )
 from tests.utils.assertions import NexlaAssertions
 from tests.utils.mock_builders import MockResponseBuilder
@@ -19,9 +19,9 @@ class TestOrganizationsResource:
         # Arrange
         mock_orgs = [
             MockResponseBuilder.organization(org_id=1, name="Org 1"),
-            MockResponseBuilder.organization(org_id=2, name="Org 2")
+            MockResponseBuilder.organization(org_id=2, name="Org 2"),
         ]
-        mock_client.http_client.add_response('/orgs', mock_orgs)
+        mock_client.http_client.add_response("/orgs", mock_orgs)
 
         # Act
         orgs = mock_client.organizations.list()
@@ -38,7 +38,7 @@ class TestOrganizationsResource:
         # Arrange
         org_id = 123
         mock_response = MockResponseBuilder.organization(org_id=org_id, name="Test Org")
-        mock_client.http_client.add_response(f'/orgs/{org_id}', mock_response)
+        mock_client.http_client.add_response(f"/orgs/{org_id}", mock_response)
 
         # Act
         org = mock_client.organizations.get(org_id)
@@ -47,8 +47,8 @@ class TestOrganizationsResource:
         assert org.id == org_id
         assert org.name == "Test Org"
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'GET'
-        assert f'/orgs/{org_id}' in last_request['url']
+        assert last_request["method"] == "GET"
+        assert f"/orgs/{org_id}" in last_request["url"]
 
     def test_create_organization(self, mock_client, assertions: NexlaAssertions):
         """Test creating an organization."""
@@ -56,10 +56,12 @@ class TestOrganizationsResource:
         create_data = OrganizationCreate(
             name="New Test Org",
             owner={"full_name": "Test Owner", "email": "owner@test.com"},
-            email_domain="test.com"
+            email_domain="test.com",
         )
-        mock_response = MockResponseBuilder.organization(name="New Test Org", org_id=123)
-        mock_client.http_client.add_response('/orgs', mock_response)
+        mock_response = MockResponseBuilder.organization(
+            name="New Test Org", org_id=123
+        )
+        mock_client.http_client.add_response("/orgs", mock_response)
 
         # Act
         org = mock_client.organizations.create(create_data)
@@ -68,17 +70,19 @@ class TestOrganizationsResource:
         assert org.name == "New Test Org"
         assert org.id == 123
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'POST'
-        assert '/orgs' in last_request['url']
-        assert last_request['json'] == create_data.model_dump(exclude_none=True)
+        assert last_request["method"] == "POST"
+        assert "/orgs" in last_request["url"]
+        assert last_request["json"] == create_data.model_dump(exclude_none=True)
 
     def test_update_organization(self, mock_client, assertions: NexlaAssertions):
         """Test updating an organization."""
         # Arrange
         org_id = 123
         update_data = {"name": "Updated Org Name"}
-        mock_response = MockResponseBuilder.organization(org_id=org_id, name="Updated Org Name")
-        mock_client.http_client.add_response(f'/orgs/{org_id}', mock_response)
+        mock_response = MockResponseBuilder.organization(
+            org_id=org_id, name="Updated Org Name"
+        )
+        mock_client.http_client.add_response(f"/orgs/{org_id}", mock_response)
 
         # Act
         org = mock_client.organizations.update(org_id, update_data)
@@ -87,9 +91,9 @@ class TestOrganizationsResource:
         assert org.id == org_id
         assert org.name == "Updated Org Name"
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'PUT'
-        assert f'/orgs/{org_id}' in last_request['url']
-        assert last_request['json'] == update_data
+        assert last_request["method"] == "PUT"
+        assert f"/orgs/{org_id}" in last_request["url"]
+        assert last_request["json"] == update_data
 
     def test_get_members(self, mock_client, assertions: NexlaAssertions):
         """Test getting organization members."""
@@ -97,9 +101,9 @@ class TestOrganizationsResource:
         org_id = 123
         mock_members = [
             MockResponseBuilder.org_member(member_id=1, email="member1@test.com"),
-            MockResponseBuilder.org_member(member_id=2, email="member2@test.com")
+            MockResponseBuilder.org_member(member_id=2, email="member2@test.com"),
         ]
-        mock_client.http_client.add_response(f'/orgs/{org_id}/members', mock_members)
+        mock_client.http_client.add_response(f"/orgs/{org_id}/members", mock_members)
 
         # Act
         members = mock_client.organizations.get_members(org_id)
@@ -109,8 +113,8 @@ class TestOrganizationsResource:
         for member, mock_member in zip(members, mock_members):
             assertions.assert_org_member_response(member, mock_member)
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'GET'
-        assert f'/orgs/{org_id}/members' in last_request['url']
+        assert last_request["method"] == "GET"
+        assert f"/orgs/{org_id}/members" in last_request["url"]
 
     def test_update_members(self, mock_client, assertions: NexlaAssertions):
         """Test updating organization members."""
@@ -118,15 +122,19 @@ class TestOrganizationsResource:
         org_id = 123
         update_list = OrgMemberList(
             members=[
-                OrgMemberUpdate(email="new.member@test.com", full_name="New Member", admin=False),
-                OrgMemberUpdate(id=1, admin=True)
+                OrgMemberUpdate(
+                    email="new.member@test.com", full_name="New Member", admin=False
+                ),
+                OrgMemberUpdate(id=1, admin=True),
             ]
         )
         mock_response = [
             MockResponseBuilder.org_member(member_id=1, is_admin=True),
-            MockResponseBuilder.org_member(member_id=3, email="new.member@test.com", is_admin=False)
+            MockResponseBuilder.org_member(
+                member_id=3, email="new.member@test.com", is_admin=False
+            ),
         ]
-        mock_client.http_client.add_response(f'/orgs/{org_id}/members', mock_response)
+        mock_client.http_client.add_response(f"/orgs/{org_id}/members", mock_response)
 
         # Act
         members = mock_client.organizations.update_members(org_id, update_list)
@@ -134,19 +142,17 @@ class TestOrganizationsResource:
         # Assert
         assert len(members) == 2
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'PUT'
-        assert f'/orgs/{org_id}/members' in last_request['url']
-        assert last_request['json'] == update_list.model_dump(exclude_none=True)
+        assert last_request["method"] == "PUT"
+        assert f"/orgs/{org_id}/members" in last_request["url"]
+        assert last_request["json"] == update_list.model_dump(exclude_none=True)
 
     def test_delete_members(self, mock_client):
         """Test deleting organization members."""
         # Arrange
         org_id = 123
-        delete_list = OrgMemberDelete(
-            members=[{"email": "member1@test.com"}]
-        )
+        delete_list = OrgMemberDelete(members=[{"email": "member1@test.com"}])
         mock_client.http_client.add_response(
-            f'/orgs/{org_id}/members', {"status": "success"}
+            f"/orgs/{org_id}/members", {"status": "success"}
         )
 
         # Act
@@ -155,9 +161,9 @@ class TestOrganizationsResource:
         # Assert
         assert response == {"status": "success"}
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'DELETE'
-        assert f'/orgs/{org_id}/members' in last_request['url']
-        assert last_request['json'] == delete_list.model_dump(exclude_none=True)
+        assert last_request["method"] == "DELETE"
+        assert f"/orgs/{org_id}/members" in last_request["url"]
+        assert last_request["json"] == delete_list.model_dump(exclude_none=True)
 
     def test_deactivate_members(self, mock_client, assertions: NexlaAssertions):
         """Test deactivating organization members."""
@@ -167,9 +173,15 @@ class TestOrganizationsResource:
             members=[{"email": "member1@test.com"}]
         )
         mock_response = [
-            MockResponseBuilder.org_member(member_id=1, email="member1@test.com", org_membership_status="DEACTIVATED")
+            MockResponseBuilder.org_member(
+                member_id=1,
+                email="member1@test.com",
+                org_membership_status="DEACTIVATED",
+            )
         ]
-        mock_client.http_client.add_response(f'/orgs/{org_id}/members/deactivate', mock_response)
+        mock_client.http_client.add_response(
+            f"/orgs/{org_id}/members/deactivate", mock_response
+        )
 
         # Act
         members = mock_client.organizations.deactivate_members(org_id, deactivate_list)
@@ -177,9 +189,9 @@ class TestOrganizationsResource:
         # Assert
         assert members[0].org_membership_status == "DEACTIVATED"
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'PUT'
-        assert f'/orgs/{org_id}/members/deactivate' in last_request['url']
-        assert last_request['json'] == deactivate_list.model_dump(exclude_none=True)
+        assert last_request["method"] == "PUT"
+        assert f"/orgs/{org_id}/members/deactivate" in last_request["url"]
+        assert last_request["json"] == deactivate_list.model_dump(exclude_none=True)
 
     def test_activate_members(self, mock_client, assertions: NexlaAssertions):
         """Test activating organization members."""
@@ -189,9 +201,13 @@ class TestOrganizationsResource:
             members=[{"email": "member1@test.com"}]
         )
         mock_response = [
-            MockResponseBuilder.org_member(member_id=1, email="member1@test.com", org_membership_status="ACTIVE")
+            MockResponseBuilder.org_member(
+                member_id=1, email="member1@test.com", org_membership_status="ACTIVE"
+            )
         ]
-        mock_client.http_client.add_response(f'/orgs/{org_id}/members/activate', mock_response)
+        mock_client.http_client.add_response(
+            f"/orgs/{org_id}/members/activate", mock_response
+        )
 
         # Act
         members = mock_client.organizations.activate_members(org_id, activate_list)
@@ -199,16 +215,18 @@ class TestOrganizationsResource:
         # Assert
         assert members[0].org_membership_status == "ACTIVE"
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'PUT'
-        assert f'/orgs/{org_id}/members/activate' in last_request['url']
-        assert last_request['json'] == activate_list.model_dump(exclude_none=True)
+        assert last_request["method"] == "PUT"
+        assert f"/orgs/{org_id}/members/activate" in last_request["url"]
+        assert last_request["json"] == activate_list.model_dump(exclude_none=True)
 
     def test_get_account_summary(self, mock_client):
         """Test getting the account summary for an organization."""
         # Arrange
         org_id = 123
         mock_summary = MockResponseBuilder.account_summary(org_id=org_id)
-        mock_client.http_client.add_response(f'/orgs/{org_id}/account_summary', mock_summary)
+        mock_client.http_client.add_response(
+            f"/orgs/{org_id}/account_summary", mock_summary
+        )
 
         # Act
         summary = mock_client.organizations.get_account_summary(org_id)
@@ -217,14 +235,14 @@ class TestOrganizationsResource:
         assert summary.org_id == org_id
         assert "data_sources" in summary.model_dump()
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'GET'
-        assert f'/orgs/{org_id}/account_summary' in last_request['url']
+        assert last_request["method"] == "GET"
+        assert f"/orgs/{org_id}/account_summary" in last_request["url"]
 
     def test_get_current_account_summary(self, mock_client):
         """Test getting the account summary for the current organization."""
         # Arrange
         mock_summary = MockResponseBuilder.account_summary(org_id=1)
-        mock_client.http_client.add_response('/orgs/account_summary', mock_summary)
+        mock_client.http_client.add_response("/orgs/account_summary", mock_summary)
 
         # Act
         summary = mock_client.organizations.get_current_account_summary()
@@ -232,8 +250,8 @@ class TestOrganizationsResource:
         # Assert
         assert "data_sources" in summary.model_dump()
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'GET'
-        assert '/orgs/account_summary' in last_request['url']
+        assert last_request["method"] == "GET"
+        assert "/orgs/account_summary" in last_request["url"]
 
     def test_get_audit_log(self, mock_client):
         """Test getting the audit log for an organization."""
@@ -241,9 +259,9 @@ class TestOrganizationsResource:
         org_id = 123
         mock_log = [
             MockResponseBuilder.audit_log_entry(),
-            MockResponseBuilder.audit_log_entry()
+            MockResponseBuilder.audit_log_entry(),
         ]
-        mock_client.http_client.add_response(f'/orgs/{org_id}/audit_log', mock_log)
+        mock_client.http_client.add_response(f"/orgs/{org_id}/audit_log", mock_log)
 
         # Act
         audit_log = mock_client.organizations.get_audit_log(org_id, per_page=10)
@@ -251,6 +269,6 @@ class TestOrganizationsResource:
         # Assert
         assert len(audit_log) == 2
         last_request = mock_client.http_client.get_last_request()
-        assert last_request['method'] == 'GET'
-        assert f'/orgs/{org_id}/audit_log' in last_request['url']
-        assert last_request['params'] == {'per_page': 10} 
+        assert last_request["method"] == "GET"
+        assert f"/orgs/{org_id}/audit_log" in last_request["url"]
+        assert last_request["params"] == {"per_page": 10}

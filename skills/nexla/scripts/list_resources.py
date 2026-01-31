@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """List and filter Nexla resources."""
 
-import sys
-import json
 import argparse
-from typing import Dict, List, Any, Optional
+import json
+import sys
+from typing import Any, Dict, List, Optional
 
 try:
     from nexla_sdk import NexlaClient
@@ -144,7 +144,10 @@ def main() -> None:
         "--name", help="Filter by name (substring match, case-insensitive)"
     )
     parser.add_argument(
-        "--limit", type=int, default=10, help="Maximum number of results (default: 10, max: 500)"
+        "--limit",
+        type=int,
+        default=10,
+        help="Maximum number of results (default: 10, max: 500)",
     )
     parser.add_argument(
         "--full",

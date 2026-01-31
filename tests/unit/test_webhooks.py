@@ -1,13 +1,14 @@
 """Unit tests for webhooks resource."""
-import pytest
-import base64
-from unittest.mock import MagicMock
 
-from nexla_sdk.resources.webhooks import WebhooksResource
-from nexla_sdk.models.webhooks.requests import WebhookSendOptions
-from nexla_sdk.models.webhooks.responses import WebhookResponse
+import base64
+
+import pytest
+
 from nexla_sdk.exceptions import NexlaError
 from nexla_sdk.http_client import HttpClientError
+from nexla_sdk.models.webhooks.requests import WebhookSendOptions
+from nexla_sdk.models.webhooks.responses import WebhookResponse
+from nexla_sdk.resources.webhooks import WebhooksResource
 from tests.utils.fixtures import MockHTTPClient
 from tests.utils.mock_builders import MockResponseBuilder
 
@@ -20,9 +21,7 @@ class TestWebhooksResourceModels:
     def test_webhook_send_options_model(self):
         """Test WebhookSendOptions model with all fields."""
         options = WebhookSendOptions(
-            include_headers=True,
-            include_url_params=True,
-            force_schema_detection=True
+            include_headers=True, include_url_params=True, force_schema_detection=True
         )
         assert options.include_headers is True
         assert options.include_url_params is True
@@ -78,8 +77,7 @@ class TestWebhooksResourceUnit:
         record = {"event": "page_view", "user_id": 123}
 
         response = webhooks.send_one_record(
-            webhook_url="https://api.nexla.com/webhook/abc123",
-            record=record
+            webhook_url="https://api.nexla.com/webhook/abc123", record=record
         )
 
         assert isinstance(response, WebhookResponse)
@@ -101,15 +99,13 @@ class TestWebhooksResourceUnit:
 
         webhooks = WebhooksResource(api_key="test-api-key", http_client=http_client)
         options = WebhookSendOptions(
-            include_headers=True,
-            include_url_params=True,
-            force_schema_detection=True
+            include_headers=True, include_url_params=True, force_schema_detection=True
         )
 
         response = webhooks.send_one_record(
             webhook_url="https://api.nexla.com/webhook/abc123",
             record={"event": "click"},
-            options=options
+            options=options,
         )
 
         assert isinstance(response, WebhookResponse)
@@ -131,7 +127,7 @@ class TestWebhooksResourceUnit:
         webhooks.send_one_record(
             webhook_url="https://api.nexla.com/webhook/abc123",
             record={"data": "test"},
-            auth_method="query"
+            auth_method="query",
         )
 
         last_request = http_client.get_last_request()
@@ -150,7 +146,7 @@ class TestWebhooksResourceUnit:
         webhooks.send_one_record(
             webhook_url="https://api.nexla.com/webhook/abc123",
             record={"data": "test"},
-            auth_method="header"
+            auth_method="header",
         )
 
         last_request = http_client.get_last_request()
@@ -175,12 +171,11 @@ class TestWebhooksResourceUnit:
         records = [
             {"event": "page_view", "page": "/home"},
             {"event": "page_view", "page": "/about"},
-            {"event": "click", "button": "signup"}
+            {"event": "click", "button": "signup"},
         ]
 
         response = webhooks.send_many_records(
-            webhook_url="https://api.nexla.com/webhook/abc123",
-            records=records
+            webhook_url="https://api.nexla.com/webhook/abc123", records=records
         )
 
         assert isinstance(response, WebhookResponse)
@@ -201,8 +196,7 @@ class TestWebhooksResourceUnit:
         webhooks = WebhooksResource(api_key="test-api-key", http_client=http_client)
 
         response = webhooks.send_many_records(
-            webhook_url="https://api.nexla.com/webhook/abc123",
-            records=[]
+            webhook_url="https://api.nexla.com/webhook/abc123", records=[]
         )
 
         assert isinstance(response, WebhookResponse)
@@ -219,16 +213,14 @@ class TestWebhooksResourceUnit:
 
         webhooks = WebhooksResource(api_key="test-api-key", http_client=http_client)
         options = WebhookSendOptions(
-            include_headers=True,
-            include_url_params=True,
-            force_schema_detection=True
+            include_headers=True, include_url_params=True, force_schema_detection=True
         )
 
         webhooks.send_many_records(
             webhook_url="https://api.nexla.com/webhook/abc123",
             records=[{"id": 1}, {"id": 2}],
             options=options,
-            auth_method="header"
+            auth_method="header",
         )
 
         last_request = http_client.get_last_request()
@@ -253,8 +245,8 @@ class TestWebhooksErrorHandling:
             HttpClientError(
                 message="Connection refused",
                 status_code=500,
-                response={"error": "Server error"}
-            )
+                response={"error": "Server error"},
+            ),
         )
 
         webhooks = WebhooksResource(api_key="test-api-key", http_client=http_client)
@@ -262,7 +254,7 @@ class TestWebhooksErrorHandling:
         with pytest.raises(NexlaError) as exc_info:
             webhooks.send_one_record(
                 webhook_url="https://api.nexla.com/webhook/abc123",
-                record={"data": "test"}
+                record={"data": "test"},
             )
 
         assert "Webhook request failed" in str(exc_info.value)
@@ -275,16 +267,15 @@ class TestWebhooksErrorHandling:
             HttpClientError(
                 message="Timeout",
                 status_code=504,
-                response={"error": "Gateway timeout"}
-            )
+                response={"error": "Gateway timeout"},
+            ),
         )
 
         webhooks = WebhooksResource(api_key="test-api-key", http_client=http_client)
 
         with pytest.raises(NexlaError) as exc_info:
             webhooks.send_many_records(
-                webhook_url="https://api.nexla.com/webhook/abc123",
-                records=[{"id": 1}]
+                webhook_url="https://api.nexla.com/webhook/abc123", records=[{"id": 1}]
             )
 
         assert "Webhook request failed" in str(exc_info.value)
@@ -297,8 +288,8 @@ class TestWebhooksErrorHandling:
             HttpClientError(
                 message="Bad Request",
                 status_code=400,
-                response={"error": "Invalid payload"}
-            )
+                response={"error": "Invalid payload"},
+            ),
         )
 
         webhooks = WebhooksResource(api_key="test-api-key", http_client=http_client)
@@ -306,8 +297,7 @@ class TestWebhooksErrorHandling:
 
         with pytest.raises(NexlaError) as exc_info:
             webhooks.send_one_record(
-                webhook_url=webhook_url,
-                record={"invalid": "data"}
+                webhook_url=webhook_url, record={"invalid": "data"}
             )
 
         error = exc_info.value

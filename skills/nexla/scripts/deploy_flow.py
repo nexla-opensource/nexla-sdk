@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Deploy Nexla flow with validation and rollback."""
 
-import sys
-import json
-import time
 import argparse
-from typing import Dict, Any, List, Tuple
+import json
+import sys
+import time
+from typing import Any, Dict, List, Tuple
 
 try:
-    from nexla_sdk import NexlaClient, CredentialError, FlowError
+    from nexla_sdk import CredentialError, FlowError, NexlaClient
 except ImportError:
     print("Error: nexla_sdk not installed. Run: pip install nexla-sdk", file=sys.stderr)
     sys.exit(1)

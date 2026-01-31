@@ -1,7 +1,11 @@
-from typing import List, Dict, Any
-from nexla_sdk.resources.base_resource import BaseResource
+from typing import Any, Dict, List
+
+from nexla_sdk.models.code_containers.requests import (
+    CodeContainerCreate,
+    CodeContainerUpdate,
+)
 from nexla_sdk.models.code_containers.responses import CodeContainer
-from nexla_sdk.models.code_containers.requests import CodeContainerCreate, CodeContainerUpdate
+from nexla_sdk.resources.base_resource import BaseResource
 
 
 class CodeContainersResource(BaseResource):
@@ -46,7 +50,9 @@ class CodeContainersResource(BaseResource):
         """
         return super().create(data)
 
-    def update(self, code_container_id: int, data: CodeContainerUpdate) -> CodeContainer:
+    def update(
+        self, code_container_id: int, data: CodeContainerUpdate
+    ) -> CodeContainer:
         """Update an existing code container.
 
         Examples:
@@ -65,5 +71,5 @@ class CodeContainersResource(BaseResource):
     def list_public(self) -> List[CodeContainer]:
         """List publicly shared code containers."""
         path = f"{self._path}/public"
-        response = self._make_request('GET', path)
+        response = self._make_request("GET", path)
         return self._parse_response(response)

@@ -11,7 +11,9 @@ pytestmark = pytest.mark.unit
 
 def test_client_initialization_with_service_key():
     client = NexlaClient(
-        service_key="test_service_key", base_url="http://localhost:8000", api_version="v1"
+        service_key="test_service_key",
+        base_url="http://localhost:8000",
+        api_version="v1",
     )
     assert client.auth_handler.service_key == "test_service_key"
     assert client.api_url == "http://localhost:8000"
@@ -26,7 +28,9 @@ def test_client_initialization_defaults():
 
 
 def test_client_api_url_strips_trailing_slash():
-    client = NexlaClient(service_key="test_service_key", base_url="http://localhost:8000/")
+    client = NexlaClient(
+        service_key="test_service_key", base_url="http://localhost:8000/"
+    )
     assert client.api_url == "http://localhost:8000"
 
 

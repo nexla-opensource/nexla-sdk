@@ -1,9 +1,11 @@
-from typing import List, Dict, Any
-from nexla_sdk.resources.base_resource import BaseResource
-from nexla_sdk.models.attribute_transforms.responses import AttributeTransform
+from typing import Any, Dict, List
+
 from nexla_sdk.models.attribute_transforms.requests import (
-    AttributeTransformCreate, AttributeTransformUpdate,
+    AttributeTransformCreate,
+    AttributeTransformUpdate,
 )
+from nexla_sdk.models.attribute_transforms.responses import AttributeTransform
+from nexla_sdk.resources.base_resource import BaseResource
 
 
 class AttributeTransformsResource(BaseResource):
@@ -32,7 +34,9 @@ class AttributeTransformsResource(BaseResource):
         """
         return super().list(**kwargs)
 
-    def get(self, attribute_transform_id: int, expand: bool = False) -> AttributeTransform:
+    def get(
+        self, attribute_transform_id: int, expand: bool = False
+    ) -> AttributeTransform:
         """Get an attribute transform by ID."""
         return super().get(attribute_transform_id, expand)
 
@@ -40,7 +44,9 @@ class AttributeTransformsResource(BaseResource):
         """Create a new attribute transform."""
         return super().create(data)
 
-    def update(self, attribute_transform_id: int, data: AttributeTransformUpdate) -> AttributeTransform:
+    def update(
+        self, attribute_transform_id: int, data: AttributeTransformUpdate
+    ) -> AttributeTransform:
         """Update an attribute transform by ID."""
         return super().update(attribute_transform_id, data)
 
@@ -51,5 +57,5 @@ class AttributeTransformsResource(BaseResource):
     def list_public(self) -> List[AttributeTransform]:
         """List publicly shared attribute transforms."""
         path = f"{self._path}/public"
-        response = self._make_request('GET', path)
+        response = self._make_request("GET", path)
         return self._parse_response(response)

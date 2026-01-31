@@ -4,7 +4,6 @@ from nexla_sdk import NexlaClient
 from nexla_sdk.models.transforms.requests import TransformCreate, TransformUpdate
 from nexla_sdk.models.transforms.responses import Transform, TransformCodeOp
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -31,7 +30,10 @@ class TestTransformsResource:
 
         mock_http_client.clear_responses()
         create = TransformCreate(
-            name="t", output_type="json", code_type="python", code_encoding="utf-8",
+            name="t",
+            output_type="json",
+            code_type="python",
+            code_encoding="utf-8",
             code=[TransformCodeOp(operation="map", spec={})],
         )
         mock_http_client.add_response("/transforms", {"id": 12, "name": "t"})
@@ -44,7 +46,9 @@ class TestTransformsResource:
         assert upd.name == "t2"
 
         mock_http_client.clear_responses()
-        mock_http_client.add_response("/transforms/12/copy", {"id": 13, "name": "t-copy"})
+        mock_http_client.add_response(
+            "/transforms/12/copy", {"id": 13, "name": "t-copy"}
+        )
         cp = client.transforms.copy(12)
         assert isinstance(cp, Transform)
 
@@ -52,4 +56,3 @@ class TestTransformsResource:
         mock_http_client.add_response("/transforms/13", {"status": "deleted"})
         res = client.transforms.delete(13)
         assert res.get("status") == "deleted"
-

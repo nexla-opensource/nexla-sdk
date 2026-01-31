@@ -22,10 +22,10 @@ Environment:
     NEXLA_API_URL can override the default API endpoint.
 """
 
-import sys
-import json
 import argparse
-from typing import List, Dict, Any
+import json
+import sys
+from typing import Any, Dict, List
 
 try:
     from nexla_sdk import NexlaClient
@@ -41,18 +41,21 @@ def list_accessors(client, resource_type: str, resource_id: int) -> List[Dict]:
 
     return [
         {
-            "type": acc.type.value if hasattr(acc.type, 'value') else acc.type,
-            "id": getattr(acc, 'id', None),
-            "email": getattr(acc, 'email', None),
-            "name": getattr(acc, 'name', None),
-            "access_roles": [r.value if hasattr(r, 'value') else r for r in acc.access_roles]
+            "type": acc.type.value if hasattr(acc.type, "value") else acc.type,
+            "id": getattr(acc, "id", None),
+            "email": getattr(acc, "email", None),
+            "name": getattr(acc, "name", None),
+            "access_roles": [
+                r.value if hasattr(r, "value") else r for r in acc.access_roles
+            ],
         }
         for acc in accessors
     ]
 
 
-def grant_access(client, resource_type: str, resource_ids: List[int],
-                 accessor: Dict) -> Dict[str, Any]:
+def grant_access(
+    client, resource_type: str, resource_ids: List[int], accessor: Dict
+) -> Dict[str, Any]:
     """Grant access to multiple resources."""
     resource_api = getattr(client, resource_type)
     results = {"success": [], "failed": []}
@@ -69,8 +72,9 @@ def grant_access(client, resource_type: str, resource_ids: List[int],
     return results
 
 
-def revoke_access(client, resource_type: str, resource_ids: List[int],
-                  accessor: Dict) -> Dict[str, Any]:
+def revoke_access(
+    client, resource_type: str, resource_ids: List[int], accessor: Dict
+) -> Dict[str, Any]:
     """Revoke access from multiple resources."""
     resource_api = getattr(client, resource_type)
     results = {"success": [], "failed": []}
@@ -91,7 +95,7 @@ def build_accessor(args) -> Dict[str, Any]:
     """Build accessor dict from CLI arguments."""
     accessor = {
         "type": args.accessor_type,
-        "access_roles": [args.role] if args.role else ["collaborator"]
+        "access_roles": [args.role] if args.role else ["collaborator"],
     }
 
     if args.accessor_id:
@@ -106,53 +110,38 @@ def main():
     parser = argparse.ArgumentParser(
         description="Manage Nexla resource access control",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
+        epilog=__doc__,
     )
 
     parser.add_argument(
-        "--operation", "-o",
+        "--operation",
+        "-o",
         choices=["list", "grant", "revoke"],
         required=True,
-        help="Operation to perform"
+        help="Operation to perform",
     )
     parser.add_argument(
-        "--resource-type", "-t",
+        "--resource-type",
+        "-t",
         required=True,
-        help="Resource type: sources, nexsets, destinations, flows, credentials, etc."
+        help="Resource type: sources, nexsets, destinations, flows, credentials, etc.",
+    )
+    parser.add_argument("--resource-id", "-r", type=int, help="Single resource ID")
+    parser.add_argument(
+        "--resource-ids", help="Comma-separated resource IDs for batch operations"
     )
     parser.add_argument(
-        "--resource-id", "-r",
-        type=int,
-        help="Single resource ID"
+        "--accessor-type", choices=["USER", "TEAM", "ORG"], help="Type of accessor"
     )
-    parser.add_argument(
-        "--resource-ids",
-        help="Comma-separated resource IDs for batch operations"
-    )
-    parser.add_argument(
-        "--accessor-type",
-        choices=["USER", "TEAM", "ORG"],
-        help="Type of accessor"
-    )
-    parser.add_argument(
-        "--accessor-id",
-        type=int,
-        help="Accessor ID (for TEAM or ORG)"
-    )
-    parser.add_argument(
-        "--email",
-        help="Email address (for USER accessor)"
-    )
+    parser.add_argument("--accessor-id", type=int, help="Accessor ID (for TEAM or ORG)")
+    parser.add_argument("--email", help="Email address (for USER accessor)")
     parser.add_argument(
         "--role",
         choices=["owner", "admin", "operator", "collaborator"],
         default="collaborator",
-        help="Access role (default: collaborator)"
+        help="Access role (default: collaborator)",
     )
-    parser.add_argument(
-        "--output", "-O",
-        help="Output file for results (JSON)"
-    )
+    parser.add_argument("--output", "-O", help="Output file for results (JSON)")
 
     args = parser.parse_args()
 
@@ -193,15 +182,21 @@ def main():
             accessor = build_accessor(args)
 
             if args.operation == "grant":
-                result = grant_access(client, args.resource_type, resource_ids, accessor)
+                result = grant_access(
+                    client, args.resource_type, resource_ids, accessor
+                )
             else:
-                result = revoke_access(client, args.resource_type, resource_ids, accessor)
+                result = revoke_access(
+                    client, args.resource_type, resource_ids, accessor
+                )
 
             # Summary
-            print(f"\nSummary: {len(result['success'])} succeeded, {len(result['failed'])} failed")
+            print(
+                f"\nSummary: {len(result['success'])} succeeded, {len(result['failed'])} failed"
+            )
 
             if args.output:
-                with open(args.output, 'w') as f:
+                with open(args.output, "w") as f:
                     json.dump(result, f, indent=2)
                 print(f"Results saved to {args.output}")
 

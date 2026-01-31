@@ -1,17 +1,21 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
 
 
 class DefaultOrg(BaseModel):
     """User's default organization."""
+
     id: int
     name: str
 
 
 class OrgMembership(BaseModel):
     """Organization membership details."""
+
     id: int
     name: str
     is_admin: Optional[bool] = Field(default=None, alias="isAdmin")
@@ -21,6 +25,7 @@ class OrgMembership(BaseModel):
 
 class User(BaseModel):
     """User response model."""
+
     id: int
     email: str
     full_name: str
@@ -32,7 +37,7 @@ class User(BaseModel):
     account_locked: bool
     org_memberships: List[OrgMembership]
     api_key: Optional[str] = None
-    
+
     email_verified_at: Optional[datetime] = None
     tos_signed_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
@@ -41,6 +46,7 @@ class User(BaseModel):
 
 class AccountSummary(BaseModel):
     """User account summary."""
+
     data_sources: Dict[str, Dict[str, int]]
     data_sets: Dict[str, Dict[str, int]]
     data_sinks: Dict[str, Dict[str, int]]
@@ -49,11 +55,13 @@ class AccountSummary(BaseModel):
 
 class UserExpanded(User):
     """User with expanded account summary."""
+
     account_summary: Optional[AccountSummary] = None
 
 
 class UserSettings(BaseModel):
     """User settings."""
+
     id: str
     owner: Dict[str, Any]
     org: Dict[str, Any]

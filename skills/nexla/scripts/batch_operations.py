@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Batch operations for Nexla resources."""
 
-import sys
-import json
 import argparse
-from typing import Dict, List, Any
+import json
+import sys
+from typing import Any, Dict, List
 
 try:
     from nexla_sdk import NexlaClient

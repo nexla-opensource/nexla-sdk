@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Health check script for Nexla flows with alerting."""
 
-import sys
-import json
 import argparse
+import json
+import sys
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 try:
     from nexla_sdk import NexlaClient
@@ -15,7 +15,10 @@ except ImportError:
 
 
 def check_flow_health(
-    client: NexlaClient, resource_type: str, resource_id: int, error_threshold: float = 0.2
+    client: NexlaClient,
+    resource_type: str,
+    resource_id: int,
+    error_threshold: float = 0.2,
 ) -> Dict[str, Any]:
     """
     Comprehensive health check for a flow.
@@ -206,7 +209,9 @@ Example usage:
             resource_type = resource["type"]
             resource_id = resource["id"]
 
-            health = check_flow_health(client, resource_type, resource_id, args.threshold)
+            health = check_flow_health(
+                client, resource_type, resource_id, args.threshold
+            )
             results.append(health)
 
             if health["issues"]:

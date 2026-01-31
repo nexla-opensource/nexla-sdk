@@ -3,6 +3,7 @@ from enum import Enum
 
 class AccessRole(str, Enum):
     """Access roles for resources."""
+
     OWNER = "owner"
     ADMIN = "admin"
     OPERATOR = "operator"
@@ -11,6 +12,7 @@ class AccessRole(str, Enum):
 
 class ResourceStatus(str, Enum):
     """Common resource status values."""
+
     ACTIVE = "ACTIVE"
     PAUSED = "PAUSED"
     DRAFT = "DRAFT"
@@ -22,6 +24,7 @@ class ResourceStatus(str, Enum):
 
 class ResourceType(str, Enum):
     """Resource types in Nexla."""
+
     ORG = "ORG"
     USER = "USER"
     TEAM = "TEAM"
@@ -42,6 +45,7 @@ class ResourceType(str, Enum):
 
 class NotificationLevel(str, Enum):
     """Notification levels."""
+
     DEBUG = "DEBUG"
     INFO = "INFO"
     WARN = "WARN"
@@ -52,6 +56,7 @@ class NotificationLevel(str, Enum):
 
 class NotificationChannel(str, Enum):
     """Notification delivery channels."""
+
     APP = "APP"
     EMAIL = "EMAIL"
     SMS = "SMS"
@@ -61,6 +66,7 @@ class NotificationChannel(str, Enum):
 
 class UserTier(str, Enum):
     """User account tiers."""
+
     FREE = "FREE"
     TRIAL = "TRIAL"
     PAID = "PAID"
@@ -69,6 +75,7 @@ class UserTier(str, Enum):
 
 class UserStatus(str, Enum):
     """User account status."""
+
     ACTIVE = "ACTIVE"
     DEACTIVATED = "DEACTIVATED"
     SOURCE_COUNT_CAPPED = "SOURCE_COUNT_CAPPED"
@@ -78,12 +85,14 @@ class UserStatus(str, Enum):
 
 class OrgMembershipStatus(str, Enum):
     """Organization membership status."""
+
     ACTIVE = "ACTIVE"
     DEACTIVATED = "DEACTIVATED"
 
 
 class ConnectorCategory(str, Enum):
     """Connector categories."""
+
     FILE = "file"
     DATABASE = "database"
     NOSQL = "nosql"

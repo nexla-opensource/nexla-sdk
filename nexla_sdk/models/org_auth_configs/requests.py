@@ -28,4 +28,3 @@ class AuthConfigPayload(BaseModel):
     oidc_keys_url_key: Optional[str] = None
     oidc_id_claims: Optional[Dict[str, Any]] = None
     oidc_access_claims: Optional[Dict[str, Any]] = None
-

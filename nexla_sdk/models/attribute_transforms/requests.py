@@ -31,4 +31,3 @@ class AttributeTransformUpdate(BaseModel):
     custom_config: Optional[Dict[str, Any]] = None
     data_credentials_id: Optional[int] = None
     runtime_data_credentials_id: Optional[int] = None
-

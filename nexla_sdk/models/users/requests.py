@@ -1,10 +1,12 @@
-from typing import Optional, Union, List, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
+
 from nexla_sdk.models.base import BaseModel
 
 
 class UserCreate(BaseModel):
     """Request model for creating a user."""
+
     full_name: str
     email: str
     default_org_id: Optional[int] = None
@@ -18,6 +20,7 @@ class UserCreate(BaseModel):
 
 class UserUpdate(BaseModel):
     """Request model for updating a user."""
+
     name: Optional[str] = None
     email: Optional[str] = None
     status: Optional[str] = None

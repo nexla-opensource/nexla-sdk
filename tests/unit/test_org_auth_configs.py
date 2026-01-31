@@ -4,7 +4,6 @@ from nexla_sdk import NexlaClient
 from nexla_sdk.models.org_auth_configs.requests import AuthConfigPayload
 from nexla_sdk.models.org_auth_configs.responses import AuthConfig
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -39,7 +38,9 @@ class TestOrgAuthConfigsResource:
         mock_http_client.add_response("/api_auth_configs", created)
         res = client.org_auth_configs.create(payload)
         assert isinstance(res, AuthConfig) and res.id == 2
-        mock_http_client.assert_request_made("POST", "/api_auth_configs", json=payload.model_dump(exclude_none=True))
+        mock_http_client.assert_request_made(
+            "POST", "/api_auth_configs", json=payload.model_dump(exclude_none=True)
+        )
 
         mock_http_client.clear_responses()
         updated = {"id": 2, "name": "Okta-2", "protocol": "saml"}
@@ -53,4 +54,3 @@ class TestOrgAuthConfigsResource:
         del_res = client.org_auth_configs.delete(2)
         assert del_res.get("status") == "deleted"
         mock_http_client.assert_request_made("DELETE", "/api_auth_configs/2")
-

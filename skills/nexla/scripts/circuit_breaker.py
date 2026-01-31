@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Circuit breaker pattern implementation for Nexla operations."""
 
-import time
 import functools
+import time
 from enum import Enum
-from typing import Callable, TypeVar, Optional
+from typing import Callable, Optional, TypeVar
 
 T = TypeVar("T")
 

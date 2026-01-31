@@ -2,7 +2,6 @@ import pytest
 
 from nexla_sdk import NexlaClient
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -28,7 +27,8 @@ class TestApprovalRequestsResource:
         assert ap.id == 2
 
         mock_http_client.clear_responses()
-        mock_http_client.add_response("/approval_requests/2/reject", {"id": 2, "status": "rejected"})
+        mock_http_client.add_response(
+            "/approval_requests/2/reject", {"id": 2, "status": "rejected"}
+        )
         rj = client.approval_requests.reject(2, reason="not needed")
         assert rj.id == 2
-

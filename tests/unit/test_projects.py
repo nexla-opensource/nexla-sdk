@@ -1,13 +1,19 @@
 """Unit tests for projects resource."""
+
 import pytest
 from pydantic import ValidationError
 
-from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
-from nexla_sdk.models.projects.requests import ProjectCreate, ProjectUpdate, ProjectFlowList, ProjectFlowIdentifier
-from nexla_sdk.models.flows.responses import FlowResponse
-from nexla_sdk.exceptions import ServerError, NotFoundError
+from nexla_sdk.exceptions import NotFoundError, ServerError
 from nexla_sdk.http_client import HttpClientError
-from tests.utils.mock_builders import MockResponseBuilder, MockDataFactory
+from nexla_sdk.models.flows.responses import FlowResponse
+from nexla_sdk.models.projects.requests import (
+    ProjectCreate,
+    ProjectFlowIdentifier,
+    ProjectFlowList,
+    ProjectUpdate,
+)
+from nexla_sdk.models.projects.responses import Project, ProjectDataFlow
+from tests.utils.mock_builders import MockDataFactory, MockResponseBuilder
 
 
 @pytest.mark.unit
@@ -35,7 +41,9 @@ class TestProjectsResource:
         mock_client.http_client.add_response("/projects", mock_data)
 
         # Act
-        projects = mock_client.projects.list(page=2, per_page=10, access_role="collaborator")
+        projects = mock_client.projects.list(
+            page=2, per_page=10, access_role="collaborator"
+        )
 
         # Assert
         assert len(projects) == 1
@@ -52,8 +60,12 @@ class TestProjectsResource:
         # Arrange
         factory = MockDataFactory()
         project_data = factory.create_mock_project()
-        project_data['data_flows'] = [factory.create_mock_project_data_flow() for _ in range(2)]
-        project_data['flows'] = [factory.create_mock_project_data_flow() for _ in range(2)]
+        project_data["data_flows"] = [
+            factory.create_mock_project_data_flow() for _ in range(2)
+        ]
+        project_data["flows"] = [
+            factory.create_mock_project_data_flow() for _ in range(2)
+        ]
         mock_client.http_client.add_response("/projects", [project_data])
 
         # Act
@@ -113,8 +125,8 @@ class TestProjectsResource:
             description="Test project description",
             data_flows=[
                 ProjectFlowIdentifier(data_source_id=123),
-                ProjectFlowIdentifier(data_set_id=456)
-            ]
+                ProjectFlowIdentifier(data_set_id=456),
+            ],
         )
 
         # Act
@@ -132,12 +144,13 @@ class TestProjectsResource:
         """Test updating a project."""
         # Arrange
         project_id = 123
-        mock_data = MockResponseBuilder.project(project_id=project_id, name="Updated Project")
+        mock_data = MockResponseBuilder.project(
+            project_id=project_id, name="Updated Project"
+        )
         mock_client.http_client.add_response(f"/projects/{project_id}", mock_data)
 
         update_data = ProjectUpdate(
-            name="Updated Project",
-            description="Updated description"
+            name="Updated Project", description="Updated description"
         )
 
         # Act
@@ -152,7 +165,9 @@ class TestProjectsResource:
         """Test deleting a project."""
         # Arrange
         project_id = 123
-        mock_client.http_client.add_response(f"/projects/{project_id}", {"status": "deleted"})
+        mock_client.http_client.add_response(
+            f"/projects/{project_id}", {"status": "deleted"}
+        )
 
         # Act
         result = mock_client.projects.delete(project_id)
@@ -173,7 +188,9 @@ class TestProjectsResource:
 
         # Assert
         assert isinstance(flows, FlowResponse)
-        mock_client.http_client.assert_request_made("GET", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "GET", f"/projects/{project_id}/flows"
+        )
 
     def test_search_flows(self, mock_client):
         """Test searching flows in a project."""
@@ -181,14 +198,18 @@ class TestProjectsResource:
         project_id = 123
         filters = [{"field": "name", "operator": "contains", "value": "test"}]
         mock_data = MockResponseBuilder.flow_response()
-        mock_client.http_client.add_response(f"/projects/{project_id}/flows/search", mock_data)
+        mock_client.http_client.add_response(
+            f"/projects/{project_id}/flows/search", mock_data
+        )
 
         # Act
         flows = mock_client.projects.search_flows(project_id, filters)
 
         # Assert
         assert isinstance(flows, FlowResponse)
-        mock_client.http_client.assert_request_made("POST", f"/projects/{project_id}/flows/search")
+        mock_client.http_client.assert_request_made(
+            "POST", f"/projects/{project_id}/flows/search"
+        )
 
     def test_add_data_flows(self, mock_client):
         """Test adding data flows to a project."""
@@ -201,7 +222,7 @@ class TestProjectsResource:
         flows = ProjectFlowList(
             data_flows=[
                 ProjectFlowIdentifier(data_source_id=456),
-                ProjectFlowIdentifier(data_set_id=789)
+                ProjectFlowIdentifier(data_set_id=789),
             ]
         )
 
@@ -212,7 +233,9 @@ class TestProjectsResource:
         assert isinstance(result, list)
         assert len(result) == 2
         assert all(isinstance(flow, ProjectDataFlow) for flow in result)
-        mock_client.http_client.assert_request_made("PUT", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "PUT", f"/projects/{project_id}/flows"
+        )
 
     def test_replace_data_flows(self, mock_client):
         """Test replacing data flows in a project."""
@@ -222,9 +245,7 @@ class TestProjectsResource:
         mock_data = [factory.create_mock_project_data_flow()]
         mock_client.http_client.add_response(f"/projects/{project_id}/flows", mock_data)
 
-        flows = ProjectFlowList(
-            data_flows=[ProjectFlowIdentifier(data_source_id=999)]
-        )
+        flows = ProjectFlowList(data_flows=[ProjectFlowIdentifier(data_source_id=999)])
 
         # Act
         result = mock_client.projects.replace_data_flows(project_id, flows)
@@ -232,7 +253,9 @@ class TestProjectsResource:
         # Assert
         assert isinstance(result, list)
         assert len(result) == 1
-        mock_client.http_client.assert_request_made("POST", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "POST", f"/projects/{project_id}/flows"
+        )
 
     def test_remove_data_flows(self, mock_client):
         """Test removing data flows from a project."""
@@ -242,9 +265,7 @@ class TestProjectsResource:
         mock_data = [factory.create_mock_project_data_flow()]
         mock_client.http_client.add_response(f"/projects/{project_id}/flows", mock_data)
 
-        flows = ProjectFlowList(
-            data_flows=[ProjectFlowIdentifier(data_source_id=456)]
-        )
+        flows = ProjectFlowList(data_flows=[ProjectFlowIdentifier(data_source_id=456)])
 
         # Act
         result = mock_client.projects.remove_data_flows(project_id, flows)
@@ -252,7 +273,9 @@ class TestProjectsResource:
         # Assert
         assert isinstance(result, list)
         assert len(result) == 1
-        mock_client.http_client.assert_request_made("DELETE", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "DELETE", f"/projects/{project_id}/flows"
+        )
 
     def test_remove_all_data_flows(self, mock_client):
         """Test removing all data flows from a project."""
@@ -266,7 +289,9 @@ class TestProjectsResource:
         # Assert
         assert isinstance(result, list)
         assert len(result) == 0
-        mock_client.http_client.assert_request_made("DELETE", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "DELETE", f"/projects/{project_id}/flows"
+        )
 
     def test_backward_compatibility_add_flows(self, mock_client):
         """Test backward compatibility add_flows method."""
@@ -276,9 +301,7 @@ class TestProjectsResource:
         mock_data = [factory.create_mock_project_data_flow()]
         mock_client.http_client.add_response(f"/projects/{project_id}/flows", mock_data)
 
-        flows = ProjectFlowList(
-            data_flows=[ProjectFlowIdentifier(data_source_id=123)]
-        )
+        flows = ProjectFlowList(data_flows=[ProjectFlowIdentifier(data_source_id=123)])
 
         # Act
         result = mock_client.projects.add_flows(project_id, flows)
@@ -286,7 +309,9 @@ class TestProjectsResource:
         # Assert
         assert isinstance(result, list)
         assert len(result) == 1
-        mock_client.http_client.assert_request_made("PUT", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "PUT", f"/projects/{project_id}/flows"
+        )
 
     def test_backward_compatibility_replace_flows(self, mock_client):
         """Test backward compatibility replace_flows method."""
@@ -296,9 +321,7 @@ class TestProjectsResource:
         mock_data = [factory.create_mock_project_data_flow()]
         mock_client.http_client.add_response(f"/projects/{project_id}/flows", mock_data)
 
-        flows = ProjectFlowList(
-            data_flows=[ProjectFlowIdentifier(data_source_id=123)]
-        )
+        flows = ProjectFlowList(data_flows=[ProjectFlowIdentifier(data_source_id=123)])
 
         # Act
         result = mock_client.projects.replace_flows(project_id, flows)
@@ -306,7 +329,9 @@ class TestProjectsResource:
         # Assert
         assert isinstance(result, list)
         assert len(result) == 1
-        mock_client.http_client.assert_request_made("POST", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "POST", f"/projects/{project_id}/flows"
+        )
 
     def test_backward_compatibility_remove_flows(self, mock_client):
         """Test backward compatibility remove_flows method."""
@@ -316,9 +341,7 @@ class TestProjectsResource:
         mock_data = [factory.create_mock_project_data_flow()]
         mock_client.http_client.add_response(f"/projects/{project_id}/flows", mock_data)
 
-        flows = ProjectFlowList(
-            data_flows=[ProjectFlowIdentifier(data_source_id=123)]
-        )
+        flows = ProjectFlowList(data_flows=[ProjectFlowIdentifier(data_source_id=123)])
 
         # Act
         result = mock_client.projects.remove_flows(project_id, flows)
@@ -326,7 +349,9 @@ class TestProjectsResource:
         # Assert
         assert isinstance(result, list)
         assert len(result) == 1
-        mock_client.http_client.assert_request_made("DELETE", f"/projects/{project_id}/flows")
+        mock_client.http_client.assert_request_made(
+            "DELETE", f"/projects/{project_id}/flows"
+        )
 
     def test_http_error_handling(self, mock_client):
         """Test HTTP error handling."""
@@ -336,8 +361,8 @@ class TestProjectsResource:
             HttpClientError(
                 "Server Error",
                 status_code=500,
-                response={"message": "Internal server error"}
-            )
+                response={"message": "Internal server error"},
+            ),
         )
 
         # Act & Assert
@@ -355,8 +380,8 @@ class TestProjectsResource:
             HttpClientError(
                 "Project not found",
                 status_code=404,
-                response={"message": "Project not found"}
-            )
+                response={"message": "Project not found"},
+            ),
         )
 
         # Act & Assert

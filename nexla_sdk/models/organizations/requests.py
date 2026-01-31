@@ -1,15 +1,18 @@
-from typing import Optional, List, Dict, Any
+from typing import Any, Dict, List, Optional
+
 from nexla_sdk.models.base import BaseModel
 
 
 class OrgOwnerRequest(BaseModel):
     """Request model for specifying an org owner."""
+
     full_name: str
     email: str
 
 
 class OrgMemberCreateRequest(BaseModel):
     """Request model for creating an org member."""
+
     full_name: str
     email: str
     admin: bool = False
@@ -17,6 +20,7 @@ class OrgMemberCreateRequest(BaseModel):
 
 class OrganizationCreate(BaseModel):
     """Request model for creating an organization."""
+
     name: str
     email_domain: str
     owner: Optional[OrgOwnerRequest] = None
@@ -31,6 +35,7 @@ class OrganizationCreate(BaseModel):
 
 class OrganizationUpdate(BaseModel):
     """Request model for updating an organization."""
+
     name: Optional[str] = None
     description: Optional[str] = None
     owner: Optional[OrgOwnerRequest] = None
@@ -43,6 +48,7 @@ class OrganizationUpdate(BaseModel):
 
 class OrgMemberUpdate(BaseModel):
     """Request model for updating org member."""
+
     id: Optional[int] = None
     email: Optional[str] = None
     full_name: Optional[str] = None
@@ -52,11 +58,13 @@ class OrgMemberUpdate(BaseModel):
 
 class OrgMemberList(BaseModel):
     """Request model for updating org members."""
+
     members: List[OrgMemberUpdate]
 
 
 class OrgMemberDeleteRequest(BaseModel):
     """Request model for deleting a single org member."""
+
     id: Optional[int] = None
     email: Optional[str] = None
     delegate_owner_id: Optional[int] = None
@@ -64,9 +72,11 @@ class OrgMemberDeleteRequest(BaseModel):
 
 class OrgMemberDelete(BaseModel):
     """Request model for deleting org members."""
+
     members: List[OrgMemberDeleteRequest]
 
 
 class OrgMemberActivateDeactivateRequest(BaseModel):
     """Request model for activating/deactivating org members."""
+
     members: List[Dict[str, Any]]

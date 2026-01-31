@@ -1,12 +1,17 @@
 """Unit tests for destinations resource."""
+
 import pytest
 
-from nexla_sdk.models.destinations.responses import Destination
-from nexla_sdk.models.destinations.requests import DestinationCreate, DestinationUpdate, DestinationCopyOptions
-from nexla_sdk.exceptions import ServerError, NotFoundError
+from nexla_sdk.exceptions import NotFoundError, ServerError
 from nexla_sdk.http_client import HttpClientError
+from nexla_sdk.models.destinations.requests import (
+    DestinationCopyOptions,
+    DestinationCreate,
+    DestinationUpdate,
+)
+from nexla_sdk.models.destinations.responses import Destination
+from tests.utils.assertions import assert_model_list_valid
 from tests.utils.mock_builders import MockResponseBuilder
-from tests.utils.assertions import NexlaAssertions, assert_model_list_valid
 
 
 @pytest.mark.unit
@@ -18,7 +23,7 @@ class TestDestinationsResource:
         # Arrange
         mock_destinations = [
             MockResponseBuilder.destination({"id": 1, "name": "Dest 1"}),
-            MockResponseBuilder.destination({"id": 2, "name": "Dest 2"})
+            MockResponseBuilder.destination({"id": 2, "name": "Dest 2"}),
         ]
         mock_client.http_client.add_response("/data_sinks", mock_destinations)
 
@@ -38,9 +43,7 @@ class TestDestinationsResource:
 
         # Act
         destinations = mock_client.destinations.list(
-            page=2,
-            per_page=50,
-            access_role="owner"
+            page=2, per_page=50, access_role="owner"
         )
 
         # Assert
@@ -57,8 +60,12 @@ class TestDestinationsResource:
         """Test getting single destination."""
         # Arrange
         destination_id = 12345
-        mock_response = MockResponseBuilder.destination({"id": destination_id, "name": "Test Destination"})
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", mock_response)
+        mock_response = MockResponseBuilder.destination(
+            {"id": destination_id, "name": "Test Destination"}
+        )
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}", mock_response
+        )
 
         # Act
         destination = mock_client.destinations.get(destination_id)
@@ -67,18 +74,24 @@ class TestDestinationsResource:
         assert isinstance(destination, Destination)
         assert destination.id == destination_id
         assert destination.name == "Test Destination"
-        mock_client.http_client.assert_request_made("GET", f"/data_sinks/{destination_id}")
+        mock_client.http_client.assert_request_made(
+            "GET", f"/data_sinks/{destination_id}"
+        )
 
     def test_get_destination_with_expand(self, mock_client):
         """Test getting destination with expand parameter."""
         # Arrange
         destination_id = 12345
-        mock_response = MockResponseBuilder.destination({
-            "id": destination_id,
-            "name": "Test Destination",
-            "data_set": MockResponseBuilder.data_set_info()
-        })
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", mock_response)
+        mock_response = MockResponseBuilder.destination(
+            {
+                "id": destination_id,
+                "name": "Test Destination",
+                "data_set": MockResponseBuilder.data_set_info(),
+            }
+        )
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}", mock_response
+        )
 
         # Act
         destination = mock_client.destinations.get(destination_id, expand=True)
@@ -86,7 +99,9 @@ class TestDestinationsResource:
         # Assert
         assert isinstance(destination, Destination)
         assert destination.id == destination_id
-        mock_client.http_client.assert_request_made("GET", f"/data_sinks/{destination_id}")
+        mock_client.http_client.assert_request_made(
+            "GET", f"/data_sinks/{destination_id}"
+        )
 
         # Verify expand parameter was sent
         request = mock_client.http_client.get_last_request()
@@ -100,13 +115,11 @@ class TestDestinationsResource:
             sink_type="s3",
             data_credentials_id=100,
             data_set_id=200,
-            description="Test description"
+            description="Test description",
         )
-        mock_response = MockResponseBuilder.destination({
-            "id": 12345,
-            "name": "Test Destination",
-            "sink_type": "s3"
-        })
+        mock_response = MockResponseBuilder.destination(
+            {"id": 12345, "name": "Test Destination", "sink_type": "s3"}
+        )
         mock_client.http_client.add_response("/data_sinks", mock_response)
 
         # Act
@@ -128,14 +141,14 @@ class TestDestinationsResource:
         # Arrange
         destination_id = 12345
         update_data = DestinationUpdate(
-            name="Updated Destination",
-            description="Updated description"
+            name="Updated Destination", description="Updated description"
         )
-        mock_response = MockResponseBuilder.destination({
-            "id": destination_id,
-            "name": "Updated Destination"
-        })
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", mock_response)
+        mock_response = MockResponseBuilder.destination(
+            {"id": destination_id, "name": "Updated Destination"}
+        )
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}", mock_response
+        )
 
         # Act
         destination = mock_client.destinations.update(destination_id, update_data)
@@ -143,30 +156,37 @@ class TestDestinationsResource:
         # Assert
         assert isinstance(destination, Destination)
         assert destination.name == "Updated Destination"
-        mock_client.http_client.assert_request_made("PUT", f"/data_sinks/{destination_id}")
+        mock_client.http_client.assert_request_made(
+            "PUT", f"/data_sinks/{destination_id}"
+        )
 
     def test_delete_destination(self, mock_client):
         """Test deleting destination."""
         # Arrange
         destination_id = 12345
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}", {"status": "deleted"})
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}", {"status": "deleted"}
+        )
 
         # Act
         result = mock_client.destinations.delete(destination_id)
 
         # Assert
         assert result == {"status": "deleted"}
-        mock_client.http_client.assert_request_made("DELETE", f"/data_sinks/{destination_id}")
+        mock_client.http_client.assert_request_made(
+            "DELETE", f"/data_sinks/{destination_id}"
+        )
 
     def test_activate_destination(self, mock_client):
         """Test activating destination."""
         # Arrange
         destination_id = 12345
-        mock_response = MockResponseBuilder.destination({
-            "id": destination_id,
-            "status": "ACTIVE"
-        })
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}/activate", mock_response)
+        mock_response = MockResponseBuilder.destination(
+            {"id": destination_id, "status": "ACTIVE"}
+        )
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}/activate", mock_response
+        )
 
         # Act
         destination = mock_client.destinations.activate(destination_id)
@@ -174,17 +194,20 @@ class TestDestinationsResource:
         # Assert
         assert isinstance(destination, Destination)
         assert destination.status == "ACTIVE"
-        mock_client.http_client.assert_request_made("PUT", f"/data_sinks/{destination_id}/activate")
+        mock_client.http_client.assert_request_made(
+            "PUT", f"/data_sinks/{destination_id}/activate"
+        )
 
     def test_pause_destination(self, mock_client):
         """Test pausing destination."""
         # Arrange
         destination_id = 12345
-        mock_response = MockResponseBuilder.destination({
-            "id": destination_id,
-            "status": "PAUSED"
-        })
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}/pause", mock_response)
+        mock_response = MockResponseBuilder.destination(
+            {"id": destination_id, "status": "PAUSED"}
+        )
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}/pause", mock_response
+        )
 
         # Act
         destination = mock_client.destinations.pause(destination_id)
@@ -192,21 +215,23 @@ class TestDestinationsResource:
         # Assert
         assert isinstance(destination, Destination)
         assert destination.status == "PAUSED"
-        mock_client.http_client.assert_request_made("PUT", f"/data_sinks/{destination_id}/pause")
+        mock_client.http_client.assert_request_made(
+            "PUT", f"/data_sinks/{destination_id}/pause"
+        )
 
     def test_copy_destination(self, mock_client):
         """Test copying destination."""
         # Arrange
         destination_id = 12345
         copy_options = DestinationCopyOptions(
-            reuse_data_credentials=True,
-            copy_access_controls=False
+            reuse_data_credentials=True, copy_access_controls=False
         )
-        mock_response = MockResponseBuilder.destination({
-            "id": 54321,
-            "name": "Copied Destination"
-        })
-        mock_client.http_client.add_response(f"/data_sinks/{destination_id}/copy", mock_response)
+        mock_response = MockResponseBuilder.destination(
+            {"id": 54321, "name": "Copied Destination"}
+        )
+        mock_client.http_client.add_response(
+            f"/data_sinks/{destination_id}/copy", mock_response
+        )
 
         # Act
         destination = mock_client.destinations.copy(destination_id, copy_options)
@@ -214,7 +239,9 @@ class TestDestinationsResource:
         # Assert
         assert isinstance(destination, Destination)
         assert destination.id == 54321
-        mock_client.http_client.assert_request_made("POST", f"/data_sinks/{destination_id}/copy")
+        mock_client.http_client.assert_request_made(
+            "POST", f"/data_sinks/{destination_id}/copy"
+        )
 
     def test_http_error_handling(self, mock_client):
         """Test HTTP error handling."""
@@ -224,8 +251,8 @@ class TestDestinationsResource:
             HttpClientError(
                 "Server Error",
                 status_code=500,
-                response={"message": "Internal server error"}
-            )
+                response={"message": "Internal server error"},
+            ),
         )
 
         # Act & Assert
@@ -243,8 +270,8 @@ class TestDestinationsResource:
             HttpClientError(
                 "Not found",
                 status_code=404,
-                response={"message": "Destination not found"}
-            )
+                response={"message": "Destination not found"},
+            ),
         )
 
         # Act & Assert

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Retry and backoff utilities for Nexla operations."""
 
-import time
-import random
 import functools
-from typing import Callable, TypeVar, Type, Tuple
+import random
+import time
+from typing import Callable, Tuple, Type, TypeVar
 
 # Import Nexla SDK exceptions
 try:
-    from nexla_sdk import RateLimitError, ServerError, NexlaError
+    from nexla_sdk import NexlaError, RateLimitError, ServerError
 except ImportError:
     # Fallback for when SDK is not installed
     class NexlaError(Exception):
