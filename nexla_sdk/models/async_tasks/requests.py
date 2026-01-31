@@ -11,6 +11,7 @@ class AsyncTaskCreate(BaseModel):
         priority: Optional task priority
         arguments: Arguments for the task
     """
+
     type: str
     priority: Optional[int] = None
     arguments: Dict[str, Any]

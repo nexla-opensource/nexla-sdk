@@ -33,4 +33,3 @@ class AuthConfig(BaseModel):
     client_config: Optional[Dict[str, Any]] = None
     updated_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
-

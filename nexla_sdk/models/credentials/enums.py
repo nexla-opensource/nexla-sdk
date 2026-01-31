@@ -3,6 +3,7 @@ from enum import Enum
 
 class CredentialType(str, Enum):
     """Supported credential types."""
+
     AS400 = "as400"
     AWS_ATHENA = "aws_athena"
     AZURE_BLB = "azure_blb"
@@ -59,6 +60,7 @@ class CredentialType(str, Enum):
 
 class VerifiedStatus(str, Enum):
     """Credential verification status."""
+
     VERIFIED = "VERIFIED"
     UNVERIFIED = "UNVERIFIED"
     FAILED = "FAILED"

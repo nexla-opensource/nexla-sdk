@@ -1,9 +1,11 @@
 """Resource for sending data to Nexla webhooks."""
-from typing import Dict, Any, List, Optional
+
 import base64
+from typing import Any, Dict, List, Optional
+
+from nexla_sdk.exceptions import NexlaError
 from nexla_sdk.models.webhooks.requests import WebhookSendOptions
 from nexla_sdk.models.webhooks.responses import WebhookResponse
-from nexla_sdk.exceptions import NexlaError
 
 
 class WebhooksResource:
@@ -53,6 +55,7 @@ class WebhooksResource:
             return self._http_client
         # Import here to avoid circular imports
         from nexla_sdk.http_client import RequestsHttpClient
+
         self._http_client = RequestsHttpClient()
         return self._http_client
 
@@ -62,7 +65,7 @@ class WebhooksResource:
         url: str,
         json: Any = None,
         options: Optional[WebhookSendOptions] = None,
-        auth_method: str = "query"
+        auth_method: str = "query",
     ) -> Dict[str, Any]:
         """Make authenticated request to webhook.
 
@@ -79,9 +82,7 @@ class WebhooksResource:
         Raises:
             NexlaError: If request fails
         """
-        headers = {
-            "Content-Type": "application/json"
-        }
+        headers = {"Content-Type": "application/json"}
 
         params = {}
 
@@ -111,7 +112,7 @@ class WebhooksResource:
                 url=url,
                 headers=headers,
                 params=params if params else None,
-                json=json
+                json=json,
             )
             return response
         except Exception as e:
@@ -119,7 +120,7 @@ class WebhooksResource:
                 message=f"Webhook request failed: {e}",
                 operation="webhook_send",
                 context={"url": url, "method": method},
-                original_error=e
+                original_error=e,
             ) from e
 
     def send_one_record(
@@ -127,7 +128,7 @@ class WebhooksResource:
         webhook_url: str,
         record: Dict[str, Any],
         options: Optional[WebhookSendOptions] = None,
-        auth_method: str = "query"
+        auth_method: str = "query",
     ) -> WebhookResponse:
         """Send a single record to a webhook.
 
@@ -165,7 +166,7 @@ class WebhooksResource:
             url=webhook_url,
             json=record,
             options=options,
-            auth_method=auth_method
+            auth_method=auth_method,
         )
         return WebhookResponse.model_validate(response)
 
@@ -174,7 +175,7 @@ class WebhooksResource:
         webhook_url: str,
         records: List[Dict[str, Any]],
         options: Optional[WebhookSendOptions] = None,
-        auth_method: str = "query"
+        auth_method: str = "query",
     ) -> WebhookResponse:
         """Send multiple records to a webhook.
 
@@ -211,6 +212,6 @@ class WebhooksResource:
             url=webhook_url,
             json=records,
             options=options,
-            auth_method=auth_method
+            auth_method=auth_method,
         )
         return WebhookResponse.model_validate(response)

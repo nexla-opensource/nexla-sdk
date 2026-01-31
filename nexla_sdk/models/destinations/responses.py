@@ -1,14 +1,17 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.common import Owner, Organization, Connector
+from nexla_sdk.models.common import Connector, Organization, Owner
 from nexla_sdk.models.credentials.responses import Credential
 from nexla_sdk.models.destinations.enums import DestinationFormat
 
 
 class DataSetInfo(BaseModel):
     """Basic dataset information for destination."""
+
     id: int
     name: str
     description: Optional[str] = None
@@ -21,6 +24,7 @@ class DataSetInfo(BaseModel):
 
 class DataMapInfo(BaseModel):
     """Basic data map information for destination."""
+
     id: int
     owner_id: int
     org_id: int
@@ -33,6 +37,7 @@ class DataMapInfo(BaseModel):
 
 class Destination(BaseModel):
     """Destination (data sink) response model."""
+
     id: int
     name: str
     status: str
@@ -43,7 +48,7 @@ class Destination(BaseModel):
     access_roles: Optional[List[str]] = None
     managed: Optional[bool] = None
     connector: Optional[Connector] = None
-    
+
     description: Optional[str] = None
     data_set_id: Optional[int] = None
     data_map_id: Optional[int] = None

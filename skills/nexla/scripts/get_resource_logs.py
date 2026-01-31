@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fetch flow logs for a Nexla resource run."""
 
-import sys
-import json
 import argparse
+import json
+import sys
 from typing import Any, Dict, List, Optional
 
 try:

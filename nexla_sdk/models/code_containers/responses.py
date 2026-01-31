@@ -36,4 +36,3 @@ class CodeContainer(BaseModel):
     updated_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
     tags: Optional[List[str]] = None
-

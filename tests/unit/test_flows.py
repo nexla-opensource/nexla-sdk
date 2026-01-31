@@ -1,20 +1,24 @@
 """Unit tests for flows resource."""
+
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import MagicMock, patch
 
 from nexla_sdk import NexlaClient
-from nexla_sdk.models.flows.responses import (
-    FlowResponse, FlowMetrics, FlowLogsResponse, FlowMetricsApiResponse,
-    DocsRecommendation
-)
-from nexla_sdk.models.flows.requests import FlowCopyOptions
-from nexla_sdk.models.common import FlowNode
 from nexla_sdk.exceptions import ServerError
 from nexla_sdk.http_client import HttpClientError
-
+from nexla_sdk.models.common import FlowNode
+from nexla_sdk.models.flows.requests import FlowCopyOptions
+from nexla_sdk.models.flows.responses import (
+    DocsRecommendation,
+    FlowLogsResponse,
+    FlowMetrics,
+    FlowMetricsApiResponse,
+    FlowResponse,
+)
+from tests.utils.assertions import NexlaAssertions
 from tests.utils.fixtures import MockHTTPClient
 from tests.utils.mock_builders import MockDataFactory, MockResponseBuilder
-from tests.utils.assertions import NexlaAssertions
 
 pytestmark = pytest.mark.unit
 
@@ -56,8 +60,7 @@ class TestFlowsModels:
     def test_docs_recommendation_model(self):
         """Test DocsRecommendation model."""
         response_data = MockResponseBuilder.docs_recommendation_response(
-            recommendation="Test recommendation",
-            status="success"
+            recommendation="Test recommendation", status="success"
         )
         response = DocsRecommendation.model_validate(response_data)
         assert response.recommendation == "Test recommendation"
@@ -85,7 +88,9 @@ class TestFlowsUnit:
     def mock_client(self, mock_http_client) -> NexlaClient:
         """Create a test client with mocked HTTP and access token auth."""
         # Use access_token to avoid token fetch call
-        with patch('nexla_sdk.client.RequestsHttpClient', return_value=mock_http_client):
+        with patch(
+            "nexla_sdk.client.RequestsHttpClient", return_value=mock_http_client
+        ):
             client = NexlaClient(access_token="test-access-token")
         client.http_client = mock_http_client
         return client
@@ -132,7 +137,9 @@ class TestFlowsUnit:
         assert last_request["params"]["flows_only"] == 1
         assert last_request["params"]["include_run_metrics"] == 1
 
-    def test_list_flows_with_access_role(self, mock_client, mock_http_client, mock_factory):
+    def test_list_flows_with_access_role(
+        self, mock_client, mock_http_client, mock_factory
+    ):
         """Test listing flows with access_role parameter."""
         # Arrange
         mock_response = mock_factory.create_mock_flow_response()
@@ -171,7 +178,9 @@ class TestFlowsUnit:
         resource_type = "data_sources"
         resource_id = 5023
         mock_response = mock_factory.create_mock_flow_response()
-        mock_http_client.add_response(f"/{resource_type}/{resource_id}/flow", mock_response)
+        mock_http_client.add_response(
+            f"/{resource_type}/{resource_id}/flow", mock_response
+        )
 
         # Act
         flow = mock_client.flows.get_by_resource(resource_type, resource_id)
@@ -257,7 +266,7 @@ class TestFlowsUnit:
             copy_access_controls=True,
             copy_dependent_data_flows=False,
             owner_id=123,
-            org_id=456
+            org_id=456,
         )
         mock_response = mock_factory.create_mock_flow_response()
         mock_http_client.add_response(f"/flows/{flow_id}/copy", mock_response)
@@ -301,17 +310,15 @@ class TestFlowsUnit:
         error_response = {
             "data_sources": [5023],
             "data_sets": [5059, 5061, 5062],
-            "message": "Active flow resources must be paused before flow deletion!"
+            "message": "Active flow resources must be paused before flow deletion!",
         }
 
         # Mock the HTTP client to raise HttpClientError
         mock_http_client.add_error(
             f"/flows/{flow_id}",
             HttpClientError(
-                "Method not allowed",
-                status_code=405,
-                response=error_response
-            )
+                "Method not allowed", status_code=405, response=error_response
+            ),
         )
 
         # Act & Assert
@@ -327,7 +334,9 @@ class TestFlowsUnit:
         resource_type = "data_sources"
         resource_id = 5023
         mock_response = {"status": "ok"}
-        mock_http_client.add_response(f"/{resource_type}/{resource_id}/flow", mock_response)
+        mock_http_client.add_response(
+            f"/{resource_type}/{resource_id}/flow", mock_response
+        )
 
         # Act
         result = mock_client.flows.delete_by_resource(resource_type, resource_id)
@@ -346,10 +355,14 @@ class TestFlowsUnit:
         resource_type = "data_sets"
         resource_id = 5061
         mock_response = mock_factory.create_mock_flow_response()
-        mock_http_client.add_response(f"/{resource_type}/{resource_id}/activate", mock_response)
+        mock_http_client.add_response(
+            f"/{resource_type}/{resource_id}/activate", mock_response
+        )
 
         # Act
-        flow = mock_client.flows.activate_by_resource(resource_type, resource_id, all=True)
+        flow = mock_client.flows.activate_by_resource(
+            resource_type, resource_id, all=True
+        )
 
         # Assert
         assert isinstance(flow, FlowResponse)
@@ -366,7 +379,9 @@ class TestFlowsUnit:
         resource_type = "data_sinks"
         resource_id = 5029
         mock_response = mock_factory.create_mock_flow_response()
-        mock_http_client.add_response(f"/{resource_type}/{resource_id}/pause", mock_response)
+        mock_http_client.add_response(
+            f"/{resource_type}/{resource_id}/pause", mock_response
+        )
 
         # Act
         flow = mock_client.flows.pause_by_resource(resource_type, resource_id)
@@ -402,11 +417,7 @@ class TestFlowsUnit:
         """Test parsing of nested flow node structure."""
         # Arrange
         # Create a deep flow structure
-        mock_response = {
-            "flows": [
-                mock_factory.create_mock_flow_node(max_depth=4)
-            ]
-        }
+        mock_response = {"flows": [mock_factory.create_mock_flow_node(max_depth=4)]}
         mock_http_client.add_response("/flows", mock_response)
 
         # Act
@@ -449,7 +460,7 @@ class TestFlowsUnit:
                 {
                     # Missing required 'id' field
                     "parent_data_set_id": None,
-                    "data_source": {"id": 123}
+                    "data_source": {"id": 123},
                 }
             ]
         }
@@ -457,6 +468,7 @@ class TestFlowsUnit:
 
         # Act & Assert
         from pydantic import ValidationError
+
         with pytest.raises(ValidationError) as exc_info:
             mock_client.flows.list()
 
@@ -471,16 +483,20 @@ class TestFlowsUnit:
         flow_id = 5059
         mock_response = MockResponseBuilder.docs_recommendation_response(
             recommendation="This flow ingests data from S3 and transforms it.",
-            status="success"
+            status="success",
         )
-        mock_http_client.add_response(f"/flows/{flow_id}/docs/recommendation", mock_response)
+        mock_http_client.add_response(
+            f"/flows/{flow_id}/docs/recommendation", mock_response
+        )
 
         # Act
         result = mock_client.flows.docs_recommendation(flow_id)
 
         # Assert
         assert isinstance(result, DocsRecommendation)
-        assert result.recommendation == "This flow ingests data from S3 and transforms it."
+        assert (
+            result.recommendation == "This flow ingests data from S3 and transforms it."
+        )
         assert result.status == "success"
 
         # Verify request
@@ -496,14 +512,16 @@ class TestFlowsUnit:
         run_id = 12345
         from_ts = 1704067200
         mock_response = MockResponseBuilder.flow_logs_response(log_count=3)
-        mock_http_client.add_response(f"/data_flows/{resource_type}/{resource_id}/logs", mock_response)
+        mock_http_client.add_response(
+            f"/data_flows/{resource_type}/{resource_id}/logs", mock_response
+        )
 
         # Act
         result = mock_client.flows.get_logs(
             resource_type=resource_type,
             resource_id=resource_id,
             run_id=run_id,
-            from_ts=from_ts
+            from_ts=from_ts,
         )
 
         # Assert
@@ -532,7 +550,7 @@ class TestFlowsUnit:
             run_id=100,
             from_ts=1704067200,
             page=2,
-            per_page=25
+            per_page=25,
         )
 
         # Assert
@@ -554,7 +572,7 @@ class TestFlowsUnit:
             from_ts=1704067200,
             to_ts=1704153600,
             page=1,
-            per_page=50
+            per_page=50,
         )
 
         # Assert
@@ -572,13 +590,13 @@ class TestFlowsUnit:
         resource_id = 5023
         from_date = "2024-01-01"
         mock_response = MockResponseBuilder.flow_metrics_api_response()
-        mock_http_client.add_response(f"/data_flows/{resource_type}/{resource_id}/metrics", mock_response)
+        mock_http_client.add_response(
+            f"/data_flows/{resource_type}/{resource_id}/metrics", mock_response
+        )
 
         # Act
         result = mock_client.flows.get_metrics(
-            resource_type=resource_type,
-            resource_id=resource_id,
-            from_date=from_date
+            resource_type=resource_type, resource_id=resource_id, from_date=from_date
         )
 
         # Assert
@@ -590,21 +608,25 @@ class TestFlowsUnit:
         # Verify request
         last_request = mock_http_client.get_last_request()
         assert last_request["method"] == "GET"
-        assert f"/data_flows/{resource_type}/{resource_id}/metrics" in last_request["url"]
+        assert (
+            f"/data_flows/{resource_type}/{resource_id}/metrics" in last_request["url"]
+        )
         assert last_request["params"]["from"] == from_date
 
     def test_get_metrics_with_groupby(self, mock_client, mock_http_client):
         """Test get_metrics with groupby parameter."""
         # Arrange
         mock_response = MockResponseBuilder.flow_metrics_api_response()
-        mock_http_client.add_response("/data_flows/data_sets/5061/metrics", mock_response)
+        mock_http_client.add_response(
+            "/data_flows/data_sets/5061/metrics", mock_response
+        )
 
         # Act
         mock_client.flows.get_metrics(
             resource_type="data_sets",
             resource_id=5061,
             from_date="2024-01-01",
-            groupby="runId"
+            groupby="runId",
         )
 
         # Assert
@@ -615,14 +637,16 @@ class TestFlowsUnit:
         """Test get_metrics with orderby parameter."""
         # Arrange
         mock_response = MockResponseBuilder.flow_metrics_api_response()
-        mock_http_client.add_response("/data_flows/data_sets/5061/metrics", mock_response)
+        mock_http_client.add_response(
+            "/data_flows/data_sets/5061/metrics", mock_response
+        )
 
         # Act
         mock_client.flows.get_metrics(
             resource_type="data_sets",
             resource_id=5061,
             from_date="2024-01-01",
-            orderby="created_at"
+            orderby="created_at",
         )
 
         # Assert
@@ -633,7 +657,9 @@ class TestFlowsUnit:
         """Test get_metrics with all parameters."""
         # Arrange
         mock_response = MockResponseBuilder.flow_metrics_api_response()
-        mock_http_client.add_response("/data_flows/data_sinks/5029/metrics", mock_response)
+        mock_http_client.add_response(
+            "/data_flows/data_sinks/5029/metrics", mock_response
+        )
 
         # Act
         mock_client.flows.get_metrics(
@@ -644,7 +670,7 @@ class TestFlowsUnit:
             groupby="runId",
             orderby="created_at",
             page=2,
-            per_page=100
+            per_page=100,
         )
 
         # Assert

@@ -1,12 +1,15 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.common import Owner, Organization
+from nexla_sdk.models.common import Organization, Owner
 
 
 class Lookup(BaseModel):
     """Lookup (data map) response model."""
+
     id: int
     name: str
     description: str
@@ -19,7 +22,7 @@ class Lookup(BaseModel):
     data_type: str
     emit_data_default: bool
     use_versioning: bool
-    
+
     data_format: Optional[str] = None
     data_sink_id: Optional[int] = None
     data_defaults: Dict[str, Any] = Field(default_factory=dict)

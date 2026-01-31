@@ -5,12 +5,13 @@ Generate API Reference (MDX) for the Nexla Python SDK using introspection.
 Outputs under docs-site/docs/api/python/modules.
 Also writes a coverage and gaps REPORT.md.
 """
-import sys
-import inspect
+
 import importlib
+import inspect
 import pkgutil
+import sys
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[2]
 PKG_NAME = "nexla_sdk"
@@ -28,7 +29,9 @@ def iter_module_names(package: str) -> List[str]:
     spec = importlib.util.find_spec(package)
     if spec is None or not spec.submodule_search_locations:
         return names
-    for m in pkgutil.walk_packages(spec.submodule_search_locations, prefix=f"{package}."):
+    for m in pkgutil.walk_packages(
+        spec.submodule_search_locations, prefix=f"{package}."
+    ):
         # Skip private or cache
         if any(part.startswith("_") for part in m.name.split(".")):
             continue
@@ -50,9 +53,13 @@ def public_members(mod) -> Tuple[List[Tuple[str, Any]], List[Tuple[str, Any]]]:
     for n, obj in inspect.getmembers(mod):
         if n.startswith("_"):
             continue
-        if inspect.isclass(obj) and getattr(obj, "__module__", "").startswith(mod.__name__):
+        if inspect.isclass(obj) and getattr(obj, "__module__", "").startswith(
+            mod.__name__
+        ):
             classes.append((n, obj))
-        elif inspect.isfunction(obj) and getattr(obj, "__module__", "").startswith(mod.__name__):
+        elif inspect.isfunction(obj) and getattr(obj, "__module__", "").startswith(
+            mod.__name__
+        ):
             functions.append((n, obj))
     return classes, functions
 
@@ -94,6 +101,7 @@ def pydantic_fields(cls) -> List[Tuple[str, str, Optional[str]]]:
 def enum_members(cls) -> List[Tuple[str, Any]]:
     try:
         import enum
+
         if issubclass(cls, enum.Enum):
             return [(m.name, m.value) for m in cls]  # type: ignore[attr-defined]
     except Exception:
@@ -108,7 +116,9 @@ def format_signature(obj) -> str:
         return "()"
 
 
-def write_module_page(module_name: str, mod, coverage: Dict[str, Any], gaps: List[str]) -> None:
+def write_module_page(
+    module_name: str, mod, coverage: Dict[str, Any], gaps: List[str]
+) -> None:
     classes, functions = public_members(mod)
     file, line = get_source_info(mod)
     title = module_name
@@ -123,7 +133,7 @@ def write_module_page(module_name: str, mod, coverage: Dict[str, Any], gaps: Lis
     TRACE[module_name] = {
         "module_source": f"{file}:{line}" if file and line else None,
         "classes": {},
-        "functions": {}
+        "functions": {},
     }
 
     with out_path.open("w", encoding="utf-8") as f:
@@ -172,7 +182,8 @@ def write_module_page(module_name: str, mod, coverage: Dict[str, Any], gaps: Lis
                 methods = [
                     (n, m)
                     for n, m in inspect.getmembers(cls, predicate=inspect.isfunction)
-                    if not n.startswith("_") and getattr(m, "__module__", "").startswith(mod.__name__)
+                    if not n.startswith("_")
+                    and getattr(m, "__module__", "").startswith(mod.__name__)
                 ]
                 if methods:
                     f.write("Methods:\n\n")
@@ -183,7 +194,9 @@ def write_module_page(module_name: str, mod, coverage: Dict[str, Any], gaps: Lis
                         f.write(f"- `{n}{sig}`\n")
                         if mfile and mline:
                             f.write(f"  - Source: `{mfile}:{mline}`\n")
-                            TRACE[module_name]["classes"][f"{cname}.{n}"] = f"{mfile}:{mline}"
+                            TRACE[module_name]["classes"][
+                                f"{cname}.{n}"
+                            ] = f"{mfile}:{mline}"
                         if mdoc:
                             f.write(f"  - {mdoc.splitlines()[0]}\n")
                     f.write("\n")
@@ -205,7 +218,9 @@ def write_module_page(module_name: str, mod, coverage: Dict[str, Any], gaps: Lis
 
         # TODO marker if no symbols found
         if total_symbols == 0:
-            f.write("🚧 TODO: No public symbols detected. Verify module visibility and docstrings.\n\n")
+            f.write(
+                "🚧 TODO: No public symbols detected. Verify module visibility and docstrings.\n\n"
+            )
             if file and line:
                 gaps.append(f"No symbols in {file}:{line}")
 

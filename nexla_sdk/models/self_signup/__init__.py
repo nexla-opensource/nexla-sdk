@@ -1,7 +1,6 @@
-from .responses import SelfSignupRequest, BlockedDomain
+from .responses import BlockedDomain, SelfSignupRequest
 
 __all__ = [
-    'SelfSignupRequest',
-    'BlockedDomain',
+    "SelfSignupRequest",
+    "BlockedDomain",
 ]
-

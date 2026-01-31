@@ -1,12 +1,15 @@
-from typing import List, Optional, Dict
 from datetime import datetime
+from typing import Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.users.responses import User
 
 
 class OrgTier(BaseModel):
     """Organization tier information."""
+
     id: int
     name: str
     display_name: str
@@ -18,6 +21,7 @@ class OrgTier(BaseModel):
 
 class Organization(BaseModel):
     """Organization response model."""
+
     id: int
     name: str
     email_domain: Optional[str] = None
@@ -37,7 +41,7 @@ class Organization(BaseModel):
     default_cluster_id: Optional[int] = None
     billing_owner: Optional[User] = None
     admins: List[User] = Field(default_factory=list)
-    org_tier: Optional[OrgTier] = Field(default=None, alias='account_tier')
+    org_tier: Optional[OrgTier] = Field(default=None, alias="account_tier")
     account_tier_display_name: Optional[str] = None
     account_tier_name: Optional[str] = None
     email_domain_verified_at: Optional[datetime] = None
@@ -48,10 +52,11 @@ class Organization(BaseModel):
 
 class OrgMember(BaseModel):
     """Organization member information."""
+
     id: int
     full_name: str
     email: str
-    is_admin: bool = Field(..., alias='is_admin?')
+    is_admin: bool = Field(..., alias="is_admin?")
     access_role: Optional[List[str]] = None
     org_membership_status: str
     user_status: str
@@ -59,6 +64,7 @@ class OrgMember(BaseModel):
 
 class AccountSummary(BaseModel):
     """Organization account summary statistics."""
+
     org_id: int
     data_sources: Dict[str, int]
     data_sets: Dict[str, Dict[str, int]]
@@ -67,6 +73,7 @@ class AccountSummary(BaseModel):
 
 class CustodianUser(BaseModel):
     """Simplified user view for organization custodians endpoints."""
+
     id: int
     email: Optional[str] = None
     full_name: Optional[str] = None

@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from nexla_sdk.models.base import BaseModel
+
 from .responses import CodeOperation
 
 
@@ -37,4 +38,3 @@ class CodeContainerUpdate(BaseModel):
     data_credentials_id: Optional[int] = None
     runtime_data_credentials_id: Optional[int] = None
     ai_function_type: Optional[str] = None
-

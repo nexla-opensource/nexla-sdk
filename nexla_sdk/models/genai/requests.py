@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from nexla_sdk.models.base import BaseModel
 
@@ -25,4 +25,3 @@ class GenAiOrgSettingPayload(BaseModel):
     org_id: Optional[int] = None
     gen_ai_config_id: int
     gen_ai_usage: str  # all | gen_docs | check_code
-

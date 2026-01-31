@@ -1,13 +1,16 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field, field_validator
+
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.common import Owner, Organization, Connector
+from nexla_sdk.models.common import Connector, Organization, Owner
 from nexla_sdk.models.credentials.responses import Credential
 
 
 class DataSetBrief(BaseModel):
     """Brief dataset information."""
+
     id: int
     owner_id: int
     org_id: int
@@ -20,12 +23,14 @@ class DataSetBrief(BaseModel):
 
 class RunInfo(BaseModel):
     """Run information."""
+
     id: int
     created_at: datetime
 
 
 class Source(BaseModel):
     """Data source response model."""
+
     id: int
     name: str
     status: str
@@ -37,7 +42,7 @@ class Source(BaseModel):
     managed: Optional[bool] = None
     auto_generated: Optional[bool] = None
     connector: Optional[Connector] = None
-    
+
     description: Optional[str] = None
     ingest_method: Optional[str] = None
     source_format: Optional[str] = None
@@ -57,16 +62,16 @@ class Source(BaseModel):
     tags: List[str] = Field(default_factory=list)
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    
-    @field_validator('data_sets', mode='before')
+
+    @field_validator("data_sets", mode="before")
     @classmethod
     def validate_data_sets(cls, v):
         """Handle None data_sets."""
         if v is None:
             return []
         return v
-    
-    @field_validator('tags', mode='before')
+
+    @field_validator("tags", mode="before")
     @classmethod
     def validate_tags(cls, v):
         """Handle None tags."""

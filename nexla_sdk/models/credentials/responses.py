@@ -1,12 +1,15 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field, field_validator
+
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.common import Owner, Organization, Connector
+from nexla_sdk.models.common import Connector, Organization, Owner
 
 
 class Credential(BaseModel):
     """Data credential response model."""
+
     id: int
     name: str
     credentials_type: str
@@ -15,7 +18,7 @@ class Credential(BaseModel):
     access_roles: Optional[List[str]] = None
     verified_status: Optional[str] = None
     connector: Optional[Connector] = None
-    
+
     description: Optional[str] = None
     credentials_version: Optional[str] = None
     api_keys: Optional[List[Dict[str, Any]]] = None
@@ -30,8 +33,8 @@ class Credential(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     managed: bool = False
-    
-    @field_validator('access_roles', mode='before')
+
+    @field_validator("access_roles", mode="before")
     @classmethod
     def validate_access_roles(cls, v):
         """Handle access_roles with None values."""
@@ -40,8 +43,8 @@ class Credential(BaseModel):
         if isinstance(v, list):
             return [role for role in v if role is not None]
         return v
-    
-    @field_validator('tags', mode='before')
+
+    @field_validator("tags", mode="before")
     @classmethod
     def validate_tags(cls, v):
         """Handle None tags."""
@@ -52,6 +55,7 @@ class Credential(BaseModel):
 
 class ProbeTreeResponse(BaseModel):
     """Response from credential probe tree operation."""
+
     status: str
     message: str
     connection_type: str
@@ -60,6 +64,7 @@ class ProbeTreeResponse(BaseModel):
 
 class ProbeSampleResponse(BaseModel):
     """Response from credential probe sample operation."""
+
     status: str
     message: str
     connection_type: str

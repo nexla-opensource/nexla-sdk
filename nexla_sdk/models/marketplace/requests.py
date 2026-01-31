@@ -5,6 +5,7 @@ from nexla_sdk.models.base import BaseModel
 
 class CustodianRef(BaseModel):
     """Reference to a user for custodians payload (by id or email)."""
+
     id: Optional[int] = None
     email: Optional[str] = None
 
@@ -26,4 +27,3 @@ class MarketplaceDomainsItemCreate(BaseModel):
     name: str
     description: Optional[str] = None
     data_set_id: int
-

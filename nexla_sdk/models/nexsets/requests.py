@@ -1,19 +1,23 @@
 """Request models for nexsets."""
-from typing import Optional, Dict, Any, List, Union
+
+from typing import Any, Dict, List, Optional, Union
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
 
 
 class NexsetCreate(BaseModel):
     """Request model for creating a nexset."""
+
     name: str
     parent_data_set_id: int
     has_custom_transform: bool
-    
+
     # One of these must be provided based on has_custom_transform
     transform: Optional[Dict[str, Any]] = None
     transform_id: Optional[int] = None
-    
+
     description: Optional[str] = None
     output_schema_annotations: Optional[Dict[str, Any]] = None
     output_schema_validation_enabled: bool = False
@@ -25,6 +29,7 @@ class NexsetCreate(BaseModel):
 
 class NexsetUpdate(BaseModel):
     """Request model for updating a nexset."""
+
     name: Optional[str] = None
     description: Optional[str] = None
     has_custom_transform: Optional[bool] = None
@@ -40,6 +45,7 @@ class NexsetUpdate(BaseModel):
 
 class NexsetCopyOptions(BaseModel):
     """Options for copying a nexset."""
+
     copy_access_controls: bool = False
     owner_id: Optional[int] = None
     org_id: Optional[int] = None

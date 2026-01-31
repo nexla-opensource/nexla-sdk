@@ -1,16 +1,19 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
 from nexla_sdk.models.common import FlowNode
-from nexla_sdk.models.sources.responses import Source
-from nexla_sdk.models.nexsets.responses import Nexset
-from nexla_sdk.models.destinations.responses import Destination
 from nexla_sdk.models.credentials.responses import Credential
+from nexla_sdk.models.destinations.responses import Destination
+from nexla_sdk.models.nexsets.responses import Nexset
+from nexla_sdk.models.sources.responses import Source
 
 
 class FlowMetrics(BaseModel):
     """Flow metrics information."""
+
     origin_node_id: int
     records: int
     size: int
@@ -21,6 +24,7 @@ class FlowMetrics(BaseModel):
 
 class FlowLogEntry(BaseModel):
     """A single flow execution log entry."""
+
     timestamp: Optional[datetime] = None
     level: Optional[str] = None
     message: Optional[str] = None
@@ -32,6 +36,7 @@ class FlowLogEntry(BaseModel):
 
 class FlowLogsMeta(BaseModel):
     """Metadata for flow logs pagination."""
+
     current_page: Optional[int] = Field(default=None, alias="currentPage")
     page_count: Optional[int] = Field(default=None, alias="pageCount")
     total_count: Optional[int] = Field(default=None, alias="totalCount")
@@ -46,6 +51,7 @@ class FlowLogsResponse(BaseModel):
         logs: List of log entries.
         meta: Pagination metadata.
     """
+
     status: Optional[int] = None
     message: Optional[str] = None
     logs: List[FlowLogEntry] = Field(default_factory=list)
@@ -54,6 +60,7 @@ class FlowLogsResponse(BaseModel):
 
 class FlowMetricData(BaseModel):
     """Flow metric data for a resource."""
+
     records: Optional[int] = None
     size: Optional[int] = None
     errors: Optional[int] = None
@@ -63,6 +70,7 @@ class FlowMetricData(BaseModel):
 
 class FlowMetricsMeta(BaseModel):
     """Metadata for flow metrics pagination."""
+
     current_page: Optional[int] = Field(default=None, alias="currentPage")
     page_count: Optional[int] = Field(default=None, alias="pageCount")
     total_count: Optional[int] = Field(default=None, alias="totalCount")
@@ -70,6 +78,7 @@ class FlowMetricsMeta(BaseModel):
 
 class FlowMetricsData(BaseModel):
     """Flow metrics data container."""
+
     data: Optional[Dict[str, Any]] = None
     meta: Optional[FlowMetricsMeta] = None
 
@@ -82,6 +91,7 @@ class FlowMetricsApiResponse(BaseModel):
         message: Status message ("Ok" for success).
         metrics: Metrics data including resource-keyed data and pagination.
     """
+
     status: Optional[int] = None
     message: Optional[str] = None
     metrics: Optional[FlowMetricsData] = None
@@ -94,12 +104,14 @@ class DocsRecommendation(BaseModel):
         recommendation: The AI-generated documentation suggestion.
         status: Status of the recommendation request.
     """
+
     recommendation: Optional[str] = None
     status: Optional[str] = None
 
 
 class FlowElements(BaseModel):
     """Flow elements containing all resources."""
+
     code_containers: List[Dict[str, Any]] = Field(default_factory=list)
     data_sources: List[Source] = Field(default_factory=list)
     data_sets: List[Nexset] = Field(default_factory=list)
@@ -113,6 +125,7 @@ class FlowElements(BaseModel):
 
 class FlowResponse(BaseModel):
     """Flow response model."""
+
     flows: List[FlowNode]
     # Include flow elements when not flows_only
     code_containers: Optional[List[Dict[str, Any]]] = None

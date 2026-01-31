@@ -1,11 +1,13 @@
 """
 HTTP client interface and implementations for Nexla SDK
 """
+
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import requests
 from requests.adapters import HTTPAdapter
+
 try:  # urllib3 Retry API
     from urllib3.util.retry import Retry
 except Exception:  # pragma: no cover
@@ -13,15 +15,17 @@ except Exception:  # pragma: no cover
 
 try:
     from importlib.metadata import version  # Python 3.8+
+
     _SDK_VERSION = version("nexla-sdk")
 except Exception:  # pragma: no cover
     _SDK_VERSION = "unknown"
 
 # Optional OpenTelemetry imports (guarded by availability)
 from . import telemetry
+
 try:  # pragma: no cover - optional dependency
-    from opentelemetry.trace import SpanKind, Status, StatusCode  # type: ignore
     from opentelemetry.propagate import inject  # type: ignore
+    from opentelemetry.trace import SpanKind, Status, StatusCode  # type: ignore
 except Exception:  # pragma: no cover
     SpanKind = None  # type: ignore[assignment]
     Status = None  # type: ignore[assignment]
@@ -36,21 +40,23 @@ class HttpClientInterface(ABC):
     Abstract interface for HTTP clients used by the Nexla SDK.
     This allows for different HTTP client implementations or mocks for testing.
     """
-    
+
     @abstractmethod
-    def request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
+    def request(
+        self, method: str, url: str, headers: Dict[str, str], **kwargs
+    ) -> Union[Dict[str, Any], None]:
         """
         Send an HTTP request
-        
+
         Args:
             method: HTTP method (GET, POST, PUT, DELETE, etc.)
             url: Request URL
             headers: Request headers
             **kwargs: Additional arguments for the request
-            
+
         Returns:
             Response data as dictionary or None for 204 No Content responses
-            
+
         Raises:
             HttpClientError: If the request fails
         """
@@ -59,7 +65,14 @@ class HttpClientInterface(ABC):
 
 class HttpClientError(Exception):
     """Base exception for HTTP client errors"""
-    def __init__(self, message: str, status_code: Optional[int] = None, response: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, Any]] = None):
+
+    def __init__(
+        self,
+        message: str,
+        status_code: Optional[int] = None,
+        response: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
+    ):
         super().__init__(message)
         self.status_code = status_code
         self.response = response or {}
@@ -88,23 +101,41 @@ class RequestsHttpClient(HttpClientInterface):
                 connect=max_retries,
                 backoff_factor=backoff_factor,
                 status_forcelist=[429, 502, 503, 504],
-                allowed_methods=["HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+                allowed_methods=[
+                    "HEAD",
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "PATCH",
+                    "OPTIONS",
+                ],
                 raise_on_status=False,
             )
             adapter = HTTPAdapter(max_retries=retry)
             self.session.mount("http://", adapter)
             self.session.mount("https://", adapter)
 
-    def request(self, method: str, url: str, headers: Dict[str, str], **kwargs) -> Union[Dict[str, Any], None]:
+    def request(
+        self, method: str, url: str, headers: Dict[str, str], **kwargs
+    ) -> Union[Dict[str, Any], None]:
         """Send an HTTP request using a session with sane defaults."""
         span_name = f"Nexla API {method.upper()}"
-        kind = SpanKind.CLIENT if telemetry._opentelemetry_available and SpanKind is not None else None  # type: ignore[assignment]
+        kind = (
+            SpanKind.CLIENT
+            if telemetry._opentelemetry_available and SpanKind is not None
+            else None
+        )  # type: ignore[assignment]
         with self.tracer.start_as_current_span(span_name, kind=kind):  # type: ignore[arg-type]
             # We intentionally fetch the current span after creating it to set attributes
             span = None
             try:
                 # Get the span from the current context if available (best-effort)
-                if telemetry._opentelemetry_available and hasattr(telemetry, "trace") and telemetry.trace:
+                if (
+                    telemetry._opentelemetry_available
+                    and hasattr(telemetry, "trace")
+                    and telemetry.trace
+                ):
                     span = telemetry.trace.get_current_span()  # type: ignore[attr-defined]
             except Exception:
                 span = None
@@ -138,7 +169,9 @@ class RequestsHttpClient(HttpClientInterface):
                 except Exception:
                     pass
 
-                response = self.session.request(method, url, headers=merged_headers, timeout=timeout, **kwargs)
+                response = self.session.request(
+                    method, url, headers=merged_headers, timeout=timeout, **kwargs
+                )
                 response.raise_for_status()
 
                 # Add response attributes
@@ -153,8 +186,8 @@ class RequestsHttpClient(HttpClientInterface):
                     return None
 
                 # Check if response content type indicates JSON
-                content_type = response.headers.get('content-type', '').lower()
-                if 'application/json' in content_type or 'text/json' in content_type:
+                content_type = response.headers.get("content-type", "").lower()
+                if "application/json" in content_type or "text/json" in content_type:
                     return response.json()
 
                 # Try to parse as JSON anyway, but handle cases where it's not JSON
@@ -162,12 +195,21 @@ class RequestsHttpClient(HttpClientInterface):
                     return response.json()
                 except (ValueError, requests.exceptions.JSONDecodeError):
                     # If it's not JSON, return the response as text in a dict
-                    return {"raw_text": response.text, "status_code": response.status_code}
+                    return {
+                        "raw_text": response.text,
+                        "status_code": response.status_code,
+                    }
 
             except requests.exceptions.HTTPError as e:
                 # Record exception on span
                 try:
-                    if span and getattr(span, "is_recording", lambda: False)() and telemetry._opentelemetry_available and Status is not None and StatusCode is not None:
+                    if (
+                        span
+                        and getattr(span, "is_recording", lambda: False)()
+                        and telemetry._opentelemetry_available
+                        and Status is not None
+                        and StatusCode is not None
+                    ):
                         span.record_exception(e)
                         span.set_status(Status(status_code=StatusCode.ERROR))  # type: ignore[call-arg]
                 except Exception:
@@ -175,12 +217,12 @@ class RequestsHttpClient(HttpClientInterface):
 
                 # Create standardized error with status code and response data
                 error_data: Dict[str, Any] = {}
-                if 'response' in e.__dict__:
+                if "response" in e.__dict__:
                     resp = e.response
                 else:
                     resp = response  # type: ignore[name-defined]
 
-                if resp is not None and getattr(resp, 'content', None):
+                if resp is not None and getattr(resp, "content", None):
                     try:
                         error_data = resp.json()
                     except ValueError:
@@ -188,15 +230,21 @@ class RequestsHttpClient(HttpClientInterface):
 
                 raise HttpClientError(
                     message=str(e),
-                    status_code=getattr(resp, 'status_code', None),
+                    status_code=getattr(resp, "status_code", None),
                     response=error_data,
-                    headers=dict(getattr(resp, 'headers', {}) or {})
+                    headers=dict(getattr(resp, "headers", {}) or {}),
                 ) from e
 
             except requests.exceptions.RequestException as e:
                 # Record exception on span
                 try:
-                    if span and getattr(span, "is_recording", lambda: False)() and telemetry._opentelemetry_available and Status is not None and StatusCode is not None:
+                    if (
+                        span
+                        and getattr(span, "is_recording", lambda: False)()
+                        and telemetry._opentelemetry_available
+                        and Status is not None
+                        and StatusCode is not None
+                    ):
                         span.record_exception(e)
                         span.set_status(Status(status_code=StatusCode.ERROR))  # type: ignore[call-arg]
                 except Exception:

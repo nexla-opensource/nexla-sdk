@@ -1,22 +1,25 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.common import Owner, Organization
+from nexla_sdk.models.common import Organization, Owner
 
 
 class Notification(BaseModel):
     """Notification response model."""
+
     id: int
     owner: Owner
     org: Organization
     access_roles: List[str]
     level: str
-    resource_id: int
+    resource_id: Optional[int] = None
     resource_type: str
     message_id: int
     message: str
-    
+
     read_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -24,6 +27,7 @@ class Notification(BaseModel):
 
 class NotificationType(BaseModel):
     """Notification type information."""
+
     id: int
     name: str
     description: str
@@ -36,6 +40,7 @@ class NotificationType(BaseModel):
 
 class NotificationChannelSetting(BaseModel):
     """Notification channel configuration."""
+
     id: int
     owner_id: int
     org_id: int
@@ -45,6 +50,7 @@ class NotificationChannelSetting(BaseModel):
 
 class NotificationSetting(BaseModel):
     """Notification setting configuration."""
+
     id: int
     org_id: int
     owner_id: int
@@ -59,11 +65,12 @@ class NotificationSetting(BaseModel):
     category: str
     event_type: str
     resource_type: str
-    
+
     config: Dict[str, Any] = Field(default_factory=dict)
     priority: Optional[int] = None
 
 
 class NotificationCount(BaseModel):
     """Notification count response."""
+
     count: int

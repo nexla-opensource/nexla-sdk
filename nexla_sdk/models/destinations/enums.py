@@ -3,6 +3,7 @@ from enum import Enum
 
 class DestinationStatus(str, Enum):
     """Destination status values."""
+
     ACTIVE = "ACTIVE"
     PAUSED = "PAUSED"
     DRAFT = "DRAFT"
@@ -12,51 +13,82 @@ class DestinationStatus(str, Enum):
 
 class DestinationType(str, Enum):
     """Supported sink types."""
+
     # File Systems
     S3 = "s3"
     GCS = "gcs"
     AZURE_BLB = "azure_blb"
+    AZURE_DATA_LAKE = "azure_data_lake"
     FTP = "ftp"
     DROPBOX = "dropbox"
     BOX = "box"
     GDRIVE = "gdrive"
     SHAREPOINT = "sharepoint"
-    
+    MIN_IO_S3 = "min_io_s3"
+    WEBDAV = "webdav"
+
     # Databases
     MYSQL = "mysql"
     POSTGRES = "postgres"
+    SUPABASE = "supabase"
     SQLSERVER = "sqlserver"
     ORACLE = "oracle"
+    ORACLE_AUTONOMOUS = "oracle_autonomous"
     REDSHIFT = "redshift"
     SNOWFLAKE = "snowflake"
+    SNOWFLAKE_DCR = "snowflake_dcr"
     BIGQUERY = "bigquery"
     DATABRICKS = "databricks"
-    
+    AS400 = "as400"
+    AWS_ATHENA = "aws_athena"
+    AZURE_SYNAPSE = "azure_synapse"
+    CLOUDSQL_MYSQL = "cloudsql_mysql"
+    CLOUDSQL_POSTGRES = "cloudsql_postgres"
+    CLOUDSQL_SQLSERVER = "cloudsql_sqlserver"
+    DB2 = "db2"
+    FIREBOLT = "firebolt"
+    GCP_ALLOYDB = "gcp_alloydb"
+    GCP_SPANNER = "gcp_spanner"
+    HANA_JDBC = "hana_jdbc"
+    HIVE = "hive"
+    NETSUITE_JDBC = "netsuite_jdbc"
+    SYBASE = "sybase"
+    TERADATA = "teradata"
+
+    # Delta Lake / Iceberg
+    DELTA_LAKE_AZURE_BLB = "delta_lake_azure_blb"
+    DELTA_LAKE_AZURE_DATA_LAKE = "delta_lake_azure_data_lake"
+    DELTA_LAKE_S3 = "delta_lake_s3"
+    S3_ICEBERG = "s3_iceberg"
+
     # NoSQL
     MONGO = "mongo"
     DYNAMODB = "dynamodb"
     FIREBASE = "firebase"
-    
-    # Streaming
+
+    # Streaming / Messaging
     KAFKA = "kafka"
     CONFLUENT_KAFKA = "confluent_kafka"
     GOOGLE_PUBSUB = "google_pubsub"
-    
+    JMS = "jms"
+    TIBCO = "tibco"
+
     # APIs
     REST = "rest"
-    
+    SOAP = "soap"
+
     # Special
     EMAIL = "email"
     DATA_MAP = "data_map"
-    
+    NEXLA_MONITOR = "nexla_monitor"
+
     # Vector Databases
     PINECONE = "pinecone"
-    
-    # Add all other types from the spec...
 
 
 class DestinationFormat(str, Enum):
     """Output format for destinations."""
+
     JSON = "json"
     CSV = "csv"
     PARQUET = "parquet"

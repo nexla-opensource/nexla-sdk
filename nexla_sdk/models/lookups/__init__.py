@@ -1,13 +1,15 @@
-from nexla_sdk.models.lookups.responses import Lookup
 from nexla_sdk.models.lookups.requests import (
-    LookupCreate, LookupUpdate, LookupEntriesUpsert
+    LookupCreate,
+    LookupEntriesUpsert,
+    LookupUpdate,
 )
+from nexla_sdk.models.lookups.responses import Lookup
 
 __all__ = [
     # Responses
-    'Lookup',
+    "Lookup",
     # Requests
-    'LookupCreate',
-    'LookupUpdate',
-    'LookupEntriesUpsert',
+    "LookupCreate",
+    "LookupUpdate",
+    "LookupEntriesUpsert",
 ]

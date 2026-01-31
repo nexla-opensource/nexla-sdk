@@ -1,6 +1,7 @@
 from typing import List
-from nexla_sdk.resources.base_resource import BaseResource
+
 from nexla_sdk.models.common import LogEntry
+from nexla_sdk.resources.base_resource import BaseResource
 
 
 class DocContainersResource(BaseResource):
@@ -13,7 +14,7 @@ class DocContainersResource(BaseResource):
 
     def get_audit_log(self, doc_container_id: int, **params) -> List[LogEntry]:
         path = f"{self._path}/{doc_container_id}/audit_log"
-        response = self._make_request('GET', path, params=params)
+        response = self._make_request("GET", path, params=params)
         return [LogEntry.model_validate(item) for item in (response or [])]
 
     # Accessors via BaseResource methods are compatible

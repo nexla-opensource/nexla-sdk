@@ -1,10 +1,13 @@
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
 
 
 class LookupCreate(BaseModel):
     """Request model for creating a lookup."""
+
     name: str
     data_type: str
     map_primary_key: str
@@ -17,6 +20,7 @@ class LookupCreate(BaseModel):
 
 class LookupUpdate(BaseModel):
     """Request model for updating a lookup."""
+
     name: Optional[str] = None
     description: Optional[str] = None
     map_primary_key: Optional[str] = None
@@ -27,4 +31,5 @@ class LookupUpdate(BaseModel):
 
 class LookupEntriesUpsert(BaseModel):
     """Request model for upserting lookup entries."""
+
     entries: List[Dict[str, Any]]

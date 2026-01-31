@@ -3,7 +3,6 @@ import pytest
 from nexla_sdk import NexlaClient
 from nexla_sdk.models.common import LogEntry
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -34,4 +33,3 @@ class TestDocContainersResource:
         out = client.doc_containers.get_audit_log(10)
         assert isinstance(out[0], LogEntry)
         mock_http_client.assert_request_made("GET", "/doc_containers/10/audit_log")
-

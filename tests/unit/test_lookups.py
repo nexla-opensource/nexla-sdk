@@ -1,13 +1,13 @@
 """Unit tests for lookups resource."""
+
 import pytest
 from pydantic import ValidationError
 
-from nexla_sdk.models.lookups.responses import Lookup
-from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate
-from nexla_sdk.exceptions import ServerError, NotFoundError
+from nexla_sdk.exceptions import NotFoundError
 from nexla_sdk.http_client import HttpClientError
-from tests.utils.mock_builders import MockResponseBuilder, MockDataFactory
-from tests.utils.assertions import NexlaAssertions, assert_model_list_valid
+from nexla_sdk.models.lookups.requests import LookupCreate, LookupUpdate
+from nexla_sdk.models.lookups.responses import Lookup
+from tests.utils.mock_builders import MockDataFactory
 
 
 @pytest.mark.unit
@@ -20,7 +20,7 @@ class TestLookupsUnit:
         mock_factory = MockDataFactory()
         mock_lookups = [
             mock_factory.create_mock_lookup(id=1001, name="Event Code Lookup"),
-            mock_factory.create_mock_lookup(id=1002, name="Status Code Lookup")
+            mock_factory.create_mock_lookup(id=1002, name="Status Code Lookup"),
         ]
         mock_client.http_client.add_response("/data_maps", mock_lookups)
 
@@ -40,7 +40,9 @@ class TestLookupsUnit:
         mock_client.http_client.add_response("/data_maps", mock_lookups)
 
         # Act
-        result = mock_client.lookups.list(page=2, per_page=50, access_role="collaborator")
+        result = mock_client.lookups.list(
+            page=2, per_page=50, access_role="collaborator"
+        )
 
         # Assert
         assert len(result) == 1
@@ -57,7 +59,9 @@ class TestLookupsUnit:
         # Arrange
         lookup_id = 1001
         mock_factory = MockDataFactory()
-        mock_lookup = mock_factory.create_mock_lookup(id=lookup_id, name="Event Code Lookup")
+        mock_lookup = mock_factory.create_mock_lookup(
+            id=lookup_id, name="Event Code Lookup"
+        )
         mock_client.http_client.add_response(f"/data_maps/{lookup_id}", mock_lookup)
 
         # Act
@@ -96,7 +100,7 @@ class TestLookupsUnit:
             map_primary_key="eventId",
             description="Maps event IDs to descriptions",
             data_defaults={"eventId": "Unknown", "description": "Unknown Event"},
-            emit_data_default=True
+            emit_data_default=True,
         )
 
         mock_factory = MockDataFactory()
@@ -104,7 +108,7 @@ class TestLookupsUnit:
             id=1003,
             name="New Event Lookup",
             data_type="string",
-            map_primary_key="eventId"
+            map_primary_key="eventId",
         )
         mock_client.http_client.add_response("/data_maps", mock_lookup)
 
@@ -129,14 +133,12 @@ class TestLookupsUnit:
         update_data = LookupUpdate(
             name="Updated Event Lookup",
             description="Updated description",
-            emit_data_default=False
+            emit_data_default=False,
         )
 
         mock_factory = MockDataFactory()
         mock_lookup = mock_factory.create_mock_lookup(
-            id=lookup_id,
-            name="Updated Event Lookup",
-            description="Updated description"
+            id=lookup_id, name="Updated Event Lookup", description="Updated description"
         )
         mock_client.http_client.add_response(f"/data_maps/{lookup_id}", mock_lookup)
 
@@ -152,7 +154,9 @@ class TestLookupsUnit:
         """Test deleting a lookup."""
         # Arrange
         lookup_id = 1001
-        mock_client.http_client.add_response(f"/data_maps/{lookup_id}", {"status": "deleted"})
+        mock_client.http_client.add_response(
+            f"/data_maps/{lookup_id}", {"status": "deleted"}
+        )
 
         # Act
         result = mock_client.lookups.delete(lookup_id)
@@ -167,14 +171,16 @@ class TestLookupsUnit:
         lookup_id = 1001
         entries = [
             {"eventId": "001", "description": "Login", "category": "Auth"},
-            {"eventId": "002", "description": "Logout", "category": "Auth"}
+            {"eventId": "002", "description": "Logout", "category": "Auth"},
         ]
 
         mock_response = [
             {"eventId": "001", "description": "Login", "category": "Auth"},
-            {"eventId": "002", "description": "Logout", "category": "Auth"}
+            {"eventId": "002", "description": "Logout", "category": "Auth"},
         ]
-        mock_client.http_client.add_response(f"/data_maps/{lookup_id}/entries", mock_response)
+        mock_client.http_client.add_response(
+            f"/data_maps/{lookup_id}/entries", mock_response
+        )
 
         # Act
         result = mock_client.lookups.upsert_entries(lookup_id, entries)
@@ -182,17 +188,19 @@ class TestLookupsUnit:
         # Assert
         assert result == mock_response
         assert len(result) == 2
-        mock_client.http_client.assert_request_made("PUT", f"/data_maps/{lookup_id}/entries")
+        mock_client.http_client.assert_request_made(
+            "PUT", f"/data_maps/{lookup_id}/entries"
+        )
 
     def test_get_entries_single_key(self, mock_client):
         """Test getting specific entries by single key."""
         # Arrange
         lookup_id = 1001
         entry_key = "001"
-        mock_response = [
-            {"eventId": "001", "description": "Login", "category": "Auth"}
-        ]
-        mock_client.http_client.add_response(f"/data_maps/{lookup_id}/entries/{entry_key}", mock_response)
+        mock_response = [{"eventId": "001", "description": "Login", "category": "Auth"}]
+        mock_client.http_client.add_response(
+            f"/data_maps/{lookup_id}/entries/{entry_key}", mock_response
+        )
 
         # Act
         result = mock_client.lookups.get_entries(lookup_id, entry_key)
@@ -200,7 +208,9 @@ class TestLookupsUnit:
         # Assert
         assert result == mock_response
         assert len(result) == 1
-        mock_client.http_client.assert_request_made("GET", f"/data_maps/{lookup_id}/entries/{entry_key}")
+        mock_client.http_client.assert_request_made(
+            "GET", f"/data_maps/{lookup_id}/entries/{entry_key}"
+        )
 
     def test_get_entries_multiple_keys(self, mock_client):
         """Test getting specific entries by multiple keys."""
@@ -209,9 +219,11 @@ class TestLookupsUnit:
         entry_keys = ["001", "002"]
         mock_response = [
             {"eventId": "001", "description": "Login", "category": "Auth"},
-            {"eventId": "002", "description": "Logout", "category": "Auth"}
+            {"eventId": "002", "description": "Logout", "category": "Auth"},
         ]
-        mock_client.http_client.add_response(f"/data_maps/{lookup_id}/entries/001,002", mock_response)
+        mock_client.http_client.add_response(
+            f"/data_maps/{lookup_id}/entries/001,002", mock_response
+        )
 
         # Act
         result = mock_client.lookups.get_entries(lookup_id, entry_keys)
@@ -219,35 +231,45 @@ class TestLookupsUnit:
         # Assert
         assert result == mock_response
         assert len(result) == 2
-        mock_client.http_client.assert_request_made("GET", f"/data_maps/{lookup_id}/entries/001,002")
+        mock_client.http_client.assert_request_made(
+            "GET", f"/data_maps/{lookup_id}/entries/001,002"
+        )
 
     def test_delete_entries_single_key(self, mock_client):
         """Test deleting specific entries by single key."""
         # Arrange
         lookup_id = 1001
         entry_key = "001"
-        mock_client.http_client.add_response(f"/data_maps/{lookup_id}/entries/{entry_key}", {"status": "deleted"})
+        mock_client.http_client.add_response(
+            f"/data_maps/{lookup_id}/entries/{entry_key}", {"status": "deleted"}
+        )
 
         # Act
         result = mock_client.lookups.delete_entries(lookup_id, entry_key)
 
         # Assert
         assert result == {"status": "deleted"}
-        mock_client.http_client.assert_request_made("DELETE", f"/data_maps/{lookup_id}/entries/{entry_key}")
+        mock_client.http_client.assert_request_made(
+            "DELETE", f"/data_maps/{lookup_id}/entries/{entry_key}"
+        )
 
     def test_delete_entries_multiple_keys(self, mock_client):
         """Test deleting specific entries by multiple keys."""
         # Arrange
         lookup_id = 1001
         entry_keys = ["001", "002"]
-        mock_client.http_client.add_response(f"/data_maps/{lookup_id}/entries/001,002", {"status": "deleted"})
+        mock_client.http_client.add_response(
+            f"/data_maps/{lookup_id}/entries/001,002", {"status": "deleted"}
+        )
 
         # Act
         result = mock_client.lookups.delete_entries(lookup_id, entry_keys)
 
         # Assert
         assert result == {"status": "deleted"}
-        mock_client.http_client.assert_request_made("DELETE", f"/data_maps/{lookup_id}/entries/001,002")
+        mock_client.http_client.assert_request_made(
+            "DELETE", f"/data_maps/{lookup_id}/entries/001,002"
+        )
 
     def test_http_error_handling(self, mock_client):
         """Test HTTP error handling."""
@@ -255,10 +277,8 @@ class TestLookupsUnit:
         mock_client.http_client.add_error(
             "/data_maps/9999",
             HttpClientError(
-                "Not found",
-                status_code=404,
-                response={"message": "Lookup not found"}
-            )
+                "Not found", status_code=404, response={"message": "Lookup not found"}
+            ),
         )
 
         # Act & Assert
@@ -271,7 +291,7 @@ class TestLookupsUnit:
         invalid_response = {
             # Missing required 'id' field
             "name": "Invalid Lookup",
-            "map_primary_key": "key"
+            "map_primary_key": "key",
         }
         mock_client.http_client.add_response("/data_maps/1001", invalid_response)
 

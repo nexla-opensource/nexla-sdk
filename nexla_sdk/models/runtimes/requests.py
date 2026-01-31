@@ -1,10 +1,11 @@
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from nexla_sdk.models.base import BaseModel
 
 
 class RuntimeCreate(BaseModel):
     """Create payload for Custom Runtime matching OpenAPI RuntimePayload."""
+
     name: str
     description: Optional[str] = None
     active: Optional[bool] = None
@@ -15,6 +16,7 @@ class RuntimeCreate(BaseModel):
 
 class RuntimeUpdate(BaseModel):
     """Update payload for Custom Runtime matching OpenAPI RuntimePayload."""
+
     name: Optional[str] = None
     description: Optional[str] = None
     active: Optional[bool] = None

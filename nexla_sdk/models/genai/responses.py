@@ -26,4 +26,3 @@ class GenAiOrgSetting(BaseModel):
 class ActiveConfigView(BaseModel):
     gen_ai_usage: Optional[str] = None
     active_config: Optional[Dict[str, Any]] = None
-

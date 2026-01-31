@@ -1,10 +1,12 @@
-from typing import List, Optional, Dict, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from nexla_sdk.models.base import BaseModel
 
 
 class Owner(BaseModel):
     """User who owns a resource."""
+
     id: int
     full_name: str
     email: str
@@ -13,6 +15,7 @@ class Owner(BaseModel):
 
 class Organization(BaseModel):
     """Organization details."""
+
     id: int
     name: str
     email_domain: Optional[str] = None
@@ -30,6 +33,7 @@ class Organization(BaseModel):
 
 class Connector(BaseModel):
     """Connector information."""
+
     id: int
     type: str
     connection_type: str
@@ -40,6 +44,7 @@ class Connector(BaseModel):
 
 class LogEntry(BaseModel):
     """Audit log entry."""
+
     id: int
     item_type: str
     item_id: int
@@ -60,6 +65,7 @@ class LogEntry(BaseModel):
 
 class FlowNode(BaseModel):
     """Flow node in a data pipeline."""
+
     id: int
     origin_node_id: int
     parent_node_id: Optional[int] = None
@@ -72,4 +78,4 @@ class FlowNode(BaseModel):
     ingestion_mode: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
-    children: Optional[List['FlowNode']] = None
+    children: Optional[List["FlowNode"]] = None

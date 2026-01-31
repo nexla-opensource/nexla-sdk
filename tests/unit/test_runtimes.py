@@ -4,7 +4,6 @@ from nexla_sdk import NexlaClient
 from nexla_sdk.models.runtimes.requests import RuntimeCreate, RuntimeUpdate
 from nexla_sdk.models.runtimes.responses import Runtime
 
-
 pytestmark = pytest.mark.unit
 
 
@@ -48,4 +47,3 @@ class TestRuntimesResource:
         mock_http_client.add_response("/runtimes/2", {"status": "deleted"})
         d = client.runtimes.delete(2)
         assert d.get("status") == "deleted"
-

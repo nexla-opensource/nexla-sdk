@@ -1,12 +1,15 @@
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
 from pydantic import Field
+
 from nexla_sdk.models.base import BaseModel
-from nexla_sdk.models.common import Owner, Organization
+from nexla_sdk.models.common import Organization, Owner
 
 
 class ProjectDataFlow(BaseModel):
     """Project data flow information."""
+
     id: int
     project_id: int
     data_source_id: Optional[int] = None
@@ -20,13 +23,14 @@ class ProjectDataFlow(BaseModel):
 
 class Project(BaseModel):
     """Project response model."""
+
     id: int
     owner: Owner
     org: Organization
     name: str
     description: str
     access_roles: List[str]
-    
+
     # Optional fields
     data_flows: List[ProjectDataFlow] = Field(default_factory=list)
     flows: List[ProjectDataFlow] = Field(default_factory=list)
