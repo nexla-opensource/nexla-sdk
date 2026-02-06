@@ -92,17 +92,21 @@ class MetricsResource(BaseResource):
         path = "/limits"
         return self._make_request("GET", path)
 
+    def publish_raw(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Publish raw metrics (super user only)."""
+        return self._make_request("POST", "/metrics/raw", json=payload)
+
     # Convenience wrappers for flow-level logs/metrics
     def get_flow_metrics(
         self,
         resource_type: str,
         resource_id: int,
         from_date: str,
-        to_date: str = None,
-        groupby: str = None,
-        orderby: str = None,
-        page: int = None,
-        per_page: int = None,
+        to_date: Optional[str] = None,
+        groupby: Optional[str] = None,
+        orderby: Optional[str] = None,
+        page: Optional[int] = None,
+        per_page: Optional[int] = None,
     ) -> Dict[str, Any]:
         path = f"/data_flows/{resource_type}/{resource_id}/metrics"
         params = {"from": from_date}
@@ -124,9 +128,9 @@ class MetricsResource(BaseResource):
         resource_id: int,
         run_id: int,
         from_ts: int,
-        to_ts: int = None,
-        page: int = None,
-        per_page: int = None,
+        to_ts: Optional[int] = None,
+        page: Optional[int] = None,
+        per_page: Optional[int] = None,
     ) -> Dict[str, Any]:
         path = f"/data_flows/{resource_type}/{resource_id}/logs"
         params = {"run_id": run_id, "from": from_ts}

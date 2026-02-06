@@ -12,6 +12,12 @@ from nexla_sdk.models.access import (
     UserAccessorRequest,
     UserAccessorResponse,
 )
+from nexla_sdk.models.api_keys import (
+    ApiKey,
+    ApiKeyCreate,
+    ApiKeyUpdate,
+    ApiKeysIndex,
+)
 from nexla_sdk.models.approval_requests import ApprovalDecision, ApprovalRequest
 from nexla_sdk.models.async_tasks import (
     AsyncTask,
@@ -24,13 +30,50 @@ from nexla_sdk.models.attribute_transforms import (
     AttributeTransformCreate,
     AttributeTransformUpdate,
 )
+from nexla_sdk.models.auth_templates import (
+    AuthParameter,  # Deprecated alias for AuthTemplateParameter
+    AuthParameterCreate,
+    AuthTemplate,
+    AuthTemplateCreate,
+    AuthTemplateParameter,
+    AuthTemplateUpdate,
+)
+from nexla_sdk.models.auth_parameters import (
+    AuthParameter as AuthParameterResource,
+    AuthParameterCreate as AuthParameterResourceCreate,
+    AuthParameterUpdate as AuthParameterResourceUpdate,
+)
+from nexla_sdk.models.resource_parameters import (
+    ResourceParameter,
+    ResourceParameterCreate,
+    ResourceParameterUpdate,
+)
+from nexla_sdk.models.vendor_endpoints import (
+    VendorEndpoint,
+    VendorEndpointCreate,
+    VendorEndpointUpdate,
+)
 from nexla_sdk.models.base import BaseModel
+from nexla_sdk.models.clusters import (
+    Cluster,
+    ClusterCreate,
+    ClusterEndpoint,
+    ClusterEndpointCreate,
+    ClusterEndpointItem,
+    ClusterEndpointRef,
+    ClusterEndpointUpdate,
+    ClusterUpdate,
+)
 from nexla_sdk.models.code_containers import (
     CodeContainer,
     CodeContainerCreate,
     CodeContainerUpdate,
 )
 from nexla_sdk.models.common import Connector, FlowNode, LogEntry, Organization, Owner
+from nexla_sdk.models.connectors import (
+    Connector as ConnectorDefinition,
+    ConnectorUpdate,
+)
 
 # Import all models from subpackages
 from nexla_sdk.models.credentials import (
@@ -45,6 +88,17 @@ from nexla_sdk.models.credentials import (
     VerifiedStatus,
 )
 from nexla_sdk.models.data_schemas import DataSchema
+from nexla_sdk.models.custom_data_flows import (
+    CustomDataFlow,
+    CustomDataFlowCreate,
+    CustomDataFlowUpdate,
+)
+from nexla_sdk.models.data_credentials_groups import (
+    DataCredentialsGroup,
+    DataCredentialsGroupCreate,
+    DataCredentialsGroupUpdate,
+    DataCredentialsGroupRemoveCredentials,
+)
 from nexla_sdk.models.destinations import (
     DataMapInfo,
     DataSetInfo,
@@ -57,6 +111,35 @@ from nexla_sdk.models.destinations import (
     DestinationUpdate,
 )
 from nexla_sdk.models.doc_containers import DocContainer
+from nexla_sdk.models.notification_channel_settings import (
+    NotificationChannelSetting as NotificationChannelSettingResource,
+    NotificationChannelSettingCreate as NotificationChannelSettingResourceCreate,
+    NotificationChannelSettingUpdate as NotificationChannelSettingResourceUpdate,
+)
+from nexla_sdk.models.notification_types import NotificationType as NotificationTypeResource
+from nexla_sdk.models.quarantine_settings import (
+    QuarantineSetting,
+    QuarantineSettingCreate,
+    QuarantineSettingUpdate,
+)
+from nexla_sdk.models.dashboard_transforms import (
+    DashboardTransform,
+    DashboardTransformCreate,
+    DashboardTransformUpdate,
+)
+from nexla_sdk.models.catalog_configs import (
+    CatalogConfig,
+    CatalogConfigCreate,
+    CatalogConfigUpdate,
+)
+from nexla_sdk.models.catalog_refs import (
+    CatalogRef,
+    CatalogRefCreate,
+    CatalogRefUpdate,
+)
+from nexla_sdk.models.org_tiers import OrgTier as OrgTierInfo
+from nexla_sdk.models.user_tiers import UserTier as UserTierInfo
+from nexla_sdk.models.user_settings import UserSetting, UserSettingCreate, UserSettingUpdate
 from nexla_sdk.models.enums import (
     AccessRole,
     ConnectorCategory,
@@ -67,6 +150,18 @@ from nexla_sdk.models.enums import (
     ResourceType,
     UserStatus,
     UserTier,
+)
+from nexla_sdk.models.flexible_enums import (
+    FlexibleConnectorCategory,
+    FlexibleCredentialType,
+    FlexibleDestinationFormat,
+    FlexibleDestinationType,
+    FlexibleEnum,
+    FlexibleSourceType,
+)
+from nexla_sdk.models.flow_triggers import (
+    FlowTrigger,
+    FlowTriggerCreate,
 )
 from nexla_sdk.models.flows import (
     DocsRecommendation,
@@ -129,6 +224,7 @@ from nexla_sdk.models.notifications import (
     NotificationChannelSettingUpdate,
     NotificationCount,
     NotificationSetting,
+    NotificationSettingBrief,
     NotificationSettingCreate,
     NotificationSettingUpdate,
     NotificationType,
@@ -155,6 +251,11 @@ from nexla_sdk.models.projects import (
 )
 from nexla_sdk.models.runtimes import Runtime, RuntimeCreate, RuntimeUpdate
 from nexla_sdk.models.self_signup import BlockedDomain, SelfSignupRequest
+from nexla_sdk.models.service_keys import (
+    ServiceKey,
+    ServiceKeyCreate,
+    ServiceKeyUpdate,
+)
 from nexla_sdk.models.sources import (
     DataSetBrief,
     FlowType,
@@ -181,10 +282,24 @@ from nexla_sdk.models.users import (
     DefaultOrg,
     OrgMembership,
     User,
+    UserCredit,
+    UserCreditCreate,
     UserCreate,
     UserExpanded,
     UserSettings,
     UserUpdate,
+)
+from nexla_sdk.models.validators import (
+    Validator,
+    ValidatorCopyOptions,
+    ValidatorCreate,
+    ValidatorUpdate,
+)
+from nexla_sdk.models.vendors import (
+    Vendor,
+    VendorCreate,
+    VendorRef,
+    VendorUpdate,
 )
 from nexla_sdk.models.webhooks import WebhookResponse, WebhookSendOptions
 
@@ -209,6 +324,9 @@ __all__ = [
     "AccessorRequestList",
     "AccessorResponseList",
     "AccessorType",
+    # API Keys
+    "ApiKey",
+    "ApiKeysIndex",
     # General Enums
     "AccessRole",
     "ResourceStatus",
@@ -219,6 +337,35 @@ __all__ = [
     "UserStatus",
     "OrgMembershipStatus",
     "ConnectorCategory",
+    # Auth Templates
+    "AuthTemplate",
+    "AuthTemplateCreate",
+    "AuthTemplateUpdate",
+    "AuthTemplateParameter",
+    "AuthParameterCreate",
+    "AuthParameter",  # Deprecated - use AuthTemplateParameter instead
+    # Clusters
+    "Cluster",
+    "ClusterCreate",
+    "ClusterUpdate",
+    "ClusterEndpoint",
+    "ClusterEndpointCreate",
+    "ClusterEndpointUpdate",
+    "ClusterEndpointItem",
+    "ClusterEndpointRef",
+    # Connectors
+    "ConnectorDefinition",
+    "ConnectorUpdate",
+    # Flexible Enum helpers
+    "FlexibleEnum",
+    "FlexibleDestinationType",
+    "FlexibleDestinationFormat",
+    "FlexibleSourceType",
+    "FlexibleCredentialType",
+    "FlexibleConnectorCategory",
+    # Flow Triggers
+    "FlowTrigger",
+    "FlowTriggerCreate",
     # Credential models and enums
     "CredentialType",
     "VerifiedStatus",
@@ -336,6 +483,16 @@ __all__ = [
     "Transform",
     "TransformCreate",
     "TransformUpdate",
+    # Validators
+    "Validator",
+    "ValidatorCreate",
+    "ValidatorUpdate",
+    "ValidatorCopyOptions",
+    # Vendors
+    "Vendor",
+    "VendorCreate",
+    "VendorUpdate",
+    "VendorRef",
     # Attribute transforms
     "AttributeTransform",
     "AttributeTransformCreate",
@@ -371,9 +528,65 @@ __all__ = [
     # Self-signup
     "SelfSignupRequest",
     "BlockedDomain",
+    # Service Keys
+    "ServiceKey",
+    "ServiceKeyCreate",
+    "ServiceKeyUpdate",
     # Doc containers / Data schemas
     "DocContainer",
     "DataSchema",
+    # Custom data flows
+    "CustomDataFlow",
+    "CustomDataFlowCreate",
+    "CustomDataFlowUpdate",
+    # API keys (requests)
+    "ApiKeyCreate",
+    "ApiKeyUpdate",
+    # Data credentials groups
+    "DataCredentialsGroup",
+    "DataCredentialsGroupCreate",
+    "DataCredentialsGroupUpdate",
+    "DataCredentialsGroupRemoveCredentials",
+    # Auth/resource parameters
+    "AuthParameterResource",
+    "AuthParameterResourceCreate",
+    "AuthParameterResourceUpdate",
+    "ResourceParameter",
+    "ResourceParameterCreate",
+    "ResourceParameterUpdate",
+    # Vendor endpoints
+    "VendorEndpoint",
+    "VendorEndpointCreate",
+    "VendorEndpointUpdate",
+    # Notification channel/types (resource-level)
+    "NotificationChannelSettingResource",
+    "NotificationChannelSettingResourceCreate",
+    "NotificationChannelSettingResourceUpdate",
+    "NotificationTypeResource",
+    # Quarantine settings
+    "QuarantineSetting",
+    "QuarantineSettingCreate",
+    "QuarantineSettingUpdate",
+    # Dashboard transforms
+    "DashboardTransform",
+    "DashboardTransformCreate",
+    "DashboardTransformUpdate",
+    # Catalog configs/refs
+    "CatalogConfig",
+    "CatalogConfigCreate",
+    "CatalogConfigUpdate",
+    "CatalogRef",
+    "CatalogRefCreate",
+    "CatalogRefUpdate",
+    # Org/User tiers and settings
+    "OrgTierInfo",
+    "UserTierInfo",
+    "UserSetting",
+    "UserSettingCreate",
+    "UserSettingUpdate",
+    # User credits
+    "UserCredit",
+    "UserCreditCreate",
     # Webhooks
     "WebhookSendOptions",
     "WebhookResponse",
