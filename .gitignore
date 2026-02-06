@@ -202,3 +202,6 @@ create_flow_sample/
 .claude/
 .direnv/
 .envrc
+
+# Parity artifacts generated from local backend/spec analysis
+artifacts/parity/*.json
